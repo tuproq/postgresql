@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "chaqmoq-postgresql",
+    name: "tuproq-postgresql",
     products: [
         .library(name: "PostgreSQL", targets: ["PostgreSQL"])
     ],
