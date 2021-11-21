@@ -96,8 +96,8 @@ extension Message {
         /// ParseComplete (B)
         case parseComplete // '1'
 
-        /// PasswordMessage (F)
-        case passwordMessage // 'p'
+        /// Password (F)
+        case password // 'p'
 
         /// PortalSuspended (B)
         case portalSuspended // 's'
@@ -120,8 +120,8 @@ extension Message {
         /// SSLRequest (F)
         case sslRequest
 
-        /// StartupMessage (F)
-        case startupMessage
+        /// Startup (F)
+        case startup
 
         /// Sync (F)
         case sync // 'S'
@@ -196,7 +196,7 @@ extension Message {
                 return 0x50
             case .parseComplete:
                 return 0x31
-            case .passwordMessage:
+            case .password:
                 return 0x70
             case .portalSuspended:
                 return 0x73
@@ -211,7 +211,7 @@ extension Message {
             case .saslResponse:
                 return 0x70
             case .sslRequest,
-                 .startupMessage:
+                 .startup:
                 return nil
             case .sync:
                 return 0x53
@@ -289,7 +289,7 @@ extension Message {
             case 0x54:
                 self = .rowDescription
             case 0x70:
-                self = .gssResponse // Other options: .passwordMessage, .saslInitialResponse, .saslResponse
+                self = .gssResponse // Other options: .password, .saslInitialResponse, .saslResponse
             case 0x58:
                 self = .terminate
             default:
