@@ -1,31 +1,12 @@
-# PostgreSQL client
-[![Swift](https://img.shields.io/badge/swift-5.5+-brightgreen.svg)](https://swift.org/download/#releases) [![MIT License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/tuproq/postgresql/blob/master/LICENSE/) [![Actions Status](https://github.com/tuproq/postgresql/workflows/ci/badge.svg)](https://github.com/tuproq/postgresql/actions) [![Contributing](https://img.shields.io/badge/contributing-guide-brightgreen.svg)](https://github.com/tuproq/postgresql/blob/master/CONTRIBUTING.md)
-
-### Swift
-Download and install [Swift](https://swift.org/download)
-
-### Swift Package
-#### Shell
-```shell
-mkdir MyApp
-cd MyApp
-swift package init --type executable // Creates an executable app named "MyApp"
-```
-
-#### Package.swift
-```swift
-// swift-tools-version:5.5
-
-import PackageDescription
-
-let package = Package(
-    name: "MyApp",
-    dependencies: [
-        .package(url: "https://github.com/tuproq/postgresql.git", .branch("master"))
-    ],
-    targets: [
-        .executableTarget(name: "MyApp", dependencies: ["PostgreSQL"]),
-        .testTarget(name: "MyAppTests", dependencies: ["MyApp"])
-    ]
-)
-```
+<div align="center">
+    <h1>PostgreSQL</h1>
+    <p>
+        <a href="https://swift.org/download/#releases"><img src="https://img.shields.io/badge/swift-5.5+-brightgreen.svg" /></a>
+        <a href="https://github.com/tuproq/postgresql/blob/master/LICENSE/"><img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" /></a>
+        <a href="https://github.com/tuproq/postgresql/actions"><img src="https://github.com/tuproq/postgresql/workflows/ci/badge.svg" /></a>
+        <a href="https://codecov.io/gh/tuproq/postgresql"><img src="https://codecov.io/gh/tuproq/postgresql/branch/master/graph/badge.svg?token=AK2GQDVX6T" /></a>
+        <a href="https://tuproq.dev/postgresql/"><img src="https://github.com/tuproq/postgresql/raw/gh-pages/badge.svg" /></a>
+        <a href="https://github.com/tuproq/postgresql/blob/master/CONTRIBUTING.md"><img src="https://img.shields.io/badge/contributing-guide-brightgreen.svg" /></a>
+    </p>
+    <p>A non-blocking PostgreSQL client written in <a href="https://swift.org">Swift</a> language. This is one of the packages of <a href="https://tuproq.dev">Tuproq</a>. Read the <a href="https://docs.tuproq.dev">documentation</a> for more info.</p>
+</div>
