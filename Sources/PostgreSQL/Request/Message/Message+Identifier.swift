@@ -1,5 +1,5 @@
 extension Message {
-    public enum Identifier: CustomStringConvertible, Equatable, ExpressibleByIntegerLiteral {
+    enum Identifier: CustomStringConvertible, Equatable, ExpressibleByIntegerLiteral {
         /// Authentication (B)
         case authentication // 'R'
 
@@ -130,7 +130,7 @@ extension Message {
         case terminate // 'X'
 
         /// Raw value
-        public var value: UInt8? {
+        var value: UInt8? {
             switch self {
             case .authentication:
                 return 0x52
@@ -220,7 +220,7 @@ extension Message {
             }
         }
 
-        public var description: String {
+        var description: String {
             if let value = value {
                 return String(Character(Unicode.Scalar(value)))
             }
@@ -228,7 +228,7 @@ extension Message {
             return ""
         }
 
-        public init(integerLiteral value: UInt8) {
+        init(integerLiteral value: UInt8) {
             switch value {
             case 0x52:
                 self = .authentication
