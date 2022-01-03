@@ -8,10 +8,7 @@ final class MessageEncoder: MessageToByteEncoder {
 
         switch message.identifier {
         case .none: break
-        default:
-            if let value = message.identifier.value {
-                out.writeInteger(value)
-            }
+        default: if let value = message.identifier.value { out.writeInteger(value) }
         }
 
         let writerIndex = out.writerIndex

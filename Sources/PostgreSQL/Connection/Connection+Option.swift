@@ -42,10 +42,7 @@ extension Connection {
             password = urlComponents.password
             numberOfThreads = 1
             let database = urlComponents.path.droppingLeadingSlash
-
-            if !database.isEmpty {
-                self.database = database
-            }
+            if !database.isEmpty { self.database = database }
         }
     }
 }

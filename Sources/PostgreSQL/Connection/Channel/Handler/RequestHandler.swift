@@ -34,10 +34,7 @@ final class RequestHandler: ChannelDuplexHandler {
 
                 if let query = lastQuery {
                     query.rows.append(dataRow.values.map {
-                        if let value = $0 {
-                            return value.getString(at: 0, length: value.readableBytes)
-                        }
-
+                        if let value = $0 { return value.getString(at: 0, length: value.readableBytes) }
                         return nil
                     })
                 }
