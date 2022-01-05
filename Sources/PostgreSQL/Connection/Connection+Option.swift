@@ -32,15 +32,22 @@ extension Connection {
             self.numberOfThreads = numberOfThreads
         }
 
-        public init?(url: URL) {
-            guard let urlComponents = URLComponents(string: url.absoluteString),
-                  let driver = urlComponents.scheme, driver == "postgresql" else { return nil }
-            identifier = Option.defaultIdentifier
-            host = urlComponents.host ?? Option.defaultHost
+        public init?(identifier: String = Option.defaultIdentifier, url: URL, numberOfThreads: Int = 1) {
+            guard
+                let urlComponents = URLComponents(string: url.absoluteString),
+                let driver = urlComponents.scheme, (driver == "postgresql" || driver == "postgres") else { return nil }
+            self.identifier = identifier
+
+            if let host = urlComponents.host, !host.isEmpty {
+                self.host = host
+            } else {
+                host = Option.defaultHost
+            }
+
             port = urlComponents.port ?? Option.defaultPort
             username = urlComponents.user
             password = urlComponents.password
-            numberOfThreads = 1
+            self.numberOfThreads = numberOfThreads
             let database = urlComponents.path.droppingLeadingSlash
             if !database.isEmpty { self.database = database }
         }
