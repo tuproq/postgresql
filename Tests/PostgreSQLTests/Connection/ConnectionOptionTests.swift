@@ -43,4 +43,57 @@ final class ConnectionOptionTests: XCTestCase {
         XCTAssertEqual(option.database, database)
         XCTAssertEqual(option.numberOfThreads, numberOfThreads)
     }
+
+    func testInitWithURL() {
+        // Arrange
+        var url = URL(string: "postgresql://")!
+
+        // Act
+        var option = Connection.Option(identifier: identifier, url: url, numberOfThreads: numberOfThreads)!
+
+        // Assert
+        XCTAssertEqual(option.identifier, identifier)
+        XCTAssertEqual(option.host, Connection.Option.defaultHost)
+        XCTAssertEqual(option.port, Connection.Option.defaultPort)
+        XCTAssertNil(option.username)
+        XCTAssertNil(option.password)
+        XCTAssertNil(option.database)
+        XCTAssertEqual(option.numberOfThreads, numberOfThreads)
+
+        // Arrange
+        url = URL(string: "postgresql://\(username):\(password)@\(host):\(port)/\(database)")!
+
+        // Act
+        option = Connection.Option(identifier: identifier, url: url, numberOfThreads: numberOfThreads)!
+
+        // Assert
+        XCTAssertEqual(option.identifier, identifier)
+        XCTAssertEqual(option.host, host)
+        XCTAssertEqual(option.port, port)
+        XCTAssertEqual(option.username, username)
+        XCTAssertEqual(option.password, password)
+        XCTAssertEqual(option.database, database)
+        XCTAssertEqual(option.numberOfThreads, numberOfThreads)
+
+        // Arrange
+        url = URL(string: "postgres://\(username):\(password)@\(host):\(port)/\(database)")!
+
+        // Act
+        option = Connection.Option(identifier: identifier, url: url, numberOfThreads: numberOfThreads)!
+
+        // Assert
+        XCTAssertEqual(option.identifier, identifier)
+        XCTAssertEqual(option.host, host)
+        XCTAssertEqual(option.port, port)
+        XCTAssertEqual(option.username, username)
+        XCTAssertEqual(option.password, password)
+        XCTAssertEqual(option.database, database)
+        XCTAssertEqual(option.numberOfThreads, numberOfThreads)
+
+        // Arrange
+        url = URL(string: "invalid://\(username):\(password)@\(host):\(port)/\(database)")!
+
+        // Act/Assert
+        XCTAssertNil(Connection.Option(identifier: identifier, url: url, numberOfThreads: numberOfThreads))
+    }
 }
