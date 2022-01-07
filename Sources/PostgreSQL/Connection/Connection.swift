@@ -9,7 +9,7 @@ public final class Connection {
     private var group: EventLoopGroup?
     private var channel: Channel?
 
-    public init(option: Option = .init()) {
+    public init(_ option: Option = .init()) {
         self.option = option
         logger = .init(label: option.identifier)
     }
