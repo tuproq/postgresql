@@ -8,7 +8,7 @@ final class RequestHandler: ChannelDuplexHandler {
 
     let logger: Logger
     private var queue: [Request]
-    private var lastQuery: SimpleQuery?
+    private var lastFetchResult: FetchResult?
 
     init(logger: Logger) {
         self.logger = logger
@@ -23,7 +23,7 @@ final class RequestHandler: ChannelDuplexHandler {
         case .rowDescription:
             do {
                 let rowDescription = try Message.RowDescription(buffer: &message.buffer)
-                lastQuery = SimpleQuery(columns: rowDescription.columns.map { $0.name })
+                lastFetchResult = FetchResult(columns: rowDescription.columns.map { $0.name })
             } catch {
                 request.promise.fail(error)
                 return
@@ -32,11 +32,21 @@ final class RequestHandler: ChannelDuplexHandler {
             do {
                 let dataRow = try Message.DataRow(buffer: &message.buffer)
 
-                if let query = lastQuery {
-                    query.rows.append(dataRow.values.map {
-                        if let value = $0 { return value.getString(at: 0, length: value.readableBytes) }
-                        return nil
-                    })
+                if let fetchResult = lastFetchResult {
+                    var dictionary = [String: Any?]()
+
+                    for (index, value) in dataRow.values.enumerated() {
+                        let column = fetchResult.columns[index]
+
+                        if let value = value {
+                            let value = value.getString(at: 0, length: value.readableBytes)
+                            dictionary[column] = value
+                        } else {
+                            dictionary[column] = nil
+                        }
+                    }
+
+                    fetchResult.result.append(dictionary)
                 }
             } catch {
                 request.promise.fail(error)
@@ -44,6 +54,13 @@ final class RequestHandler: ChannelDuplexHandler {
             }
         case .readyForQuery:
             queue.removeFirst()
+
+            if let fetchResult = lastFetchResult {
+                let response = Response(message: message, fetchResult: fetchResult)
+                request.promise.succeed(response)
+                self.lastFetchResult = nil
+                return
+            }
         case .noticeResponse:
             let buffer = message.buffer
             let warningMessage = buffer.getString(at: 0, length: buffer.readableBytes) ?? "An unknown warning."
@@ -56,7 +73,9 @@ final class RequestHandler: ChannelDuplexHandler {
         default: break
         }
 
-        request.promise.succeed(message)
+        if lastFetchResult == nil {
+            request.promise.succeed(Response(message: message))
+        }
     }
 
     func write(context: ChannelHandlerContext, data: NIOAny, promise: EventLoopPromise<Void>?) {

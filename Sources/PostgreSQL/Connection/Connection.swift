@@ -27,10 +27,10 @@ public final class Connection {
             try await channel.pipeline.addHandler(RequestHandler(logger: logger)).get()
             self.channel = channel
 
-            let message = try await startUp()
+            let message = try await startUp(in: channel)
 
             if false { // TODO: check if password is needed to authenticate
-                let message = try await authenticate()
+                let message = try await authenticate(in: channel)
             }
         }
 
@@ -49,37 +49,39 @@ public final class Connection {
         }
     }
 
-    public func simpleQuery(_ string: String) async throws -> [String: Any?]? {
+    @discardableResult
+    public func simpleQuery(_ string: String) async throws -> [[String: Any?]] {
         let messageType = Message.Query(string)
-        let message = try await send(type: messageType)
+        let channel = channel!
+        let response = try await send(type: messageType, in: channel)
 
-        return nil
+        if let fetchResult = response.fetchResult {
+            return fetchResult.result
+        }
+
+        return .init()
     }
 }
 
 extension Connection {
-    private func startUp() async throws -> Message {
+    private func startUp(in channel: Channel) async throws -> Message {
         let messageType = Message.Startup(user: option.username ?? "", database: option.database)
-        return try await send(type: messageType)
+        return try await send(type: messageType, in: channel).message
     }
 
-    private func authenticate() async throws -> Message {
+    private func authenticate(in channel: Channel) async throws -> Message {
         let messageType = Message.Password(option.password ?? "")
-        return try await send(type: messageType)
+        return try await send(type: messageType, in: channel).message
     }
 
-    private func send(type: MessageType) async throws -> Message {
+    private func send(type: MessageType, in channel: Channel) async throws -> Response {
         var buffer = ByteBufferAllocator().buffer(capacity: 0)
         type.write(into: &buffer)
         let message = Message(identifier: type.identifier, buffer: buffer)
+        let promise = channel.eventLoop.makePromise(of: Response.self)
+        let request = Request(message: message, promise: promise)
+        try await channel.writeAndFlush(request).get()
 
-        if let channel = channel {
-            let promise = channel.eventLoop.makePromise(of: Message.self)
-            let request = Request(message: message, promise: promise)
-            try await channel.writeAndFlush(request).get()
-            return try await promise.futureResult.get()
-        }
-
-        return message
+        return try await promise.futureResult.get()
     }
 }
