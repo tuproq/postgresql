@@ -1,6 +1,6 @@
 import NIOCore
 
-final class FetchResult {
+final class FetchRequest {
     var columns: [String]
     var result: [[String: Any?]] = .init()
 

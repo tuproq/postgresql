@@ -55,8 +55,8 @@ public final class Connection {
         let channel = channel!
         let response = try await send(type: messageType, in: channel)
 
-        if let fetchResult = response.fetchResult {
-            return fetchResult.result
+        if let fetchRequest = response.fetchRequest {
+            return fetchRequest.result
         }
 
         return .init()

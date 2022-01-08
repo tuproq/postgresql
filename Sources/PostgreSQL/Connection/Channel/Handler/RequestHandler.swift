@@ -8,7 +8,7 @@ final class RequestHandler: ChannelDuplexHandler {
 
     let logger: Logger
     private var queue: [Request]
-    private var lastFetchResult: FetchResult?
+    private var lastFetchRequest: FetchRequest?
 
     init(logger: Logger) {
         self.logger = logger
@@ -23,7 +23,7 @@ final class RequestHandler: ChannelDuplexHandler {
         case .rowDescription:
             do {
                 let rowDescription = try Message.RowDescription(buffer: &message.buffer)
-                lastFetchResult = FetchResult(columns: rowDescription.columns.map { $0.name })
+                lastFetchRequest = FetchRequest(columns: rowDescription.columns.map { $0.name })
             } catch {
                 request.promise.fail(error)
                 return
@@ -32,11 +32,11 @@ final class RequestHandler: ChannelDuplexHandler {
             do {
                 let dataRow = try Message.DataRow(buffer: &message.buffer)
 
-                if let fetchResult = lastFetchResult {
+                if let fetchRequest = lastFetchRequest {
                     var dictionary = [String: Any?]()
 
                     for (index, value) in dataRow.values.enumerated() {
-                        let column = fetchResult.columns[index]
+                        let column = fetchRequest.columns[index]
 
                         if let value = value {
                             let value = value.getString(at: 0, length: value.readableBytes)
@@ -46,7 +46,7 @@ final class RequestHandler: ChannelDuplexHandler {
                         }
                     }
 
-                    fetchResult.result.append(dictionary)
+                    fetchRequest.result.append(dictionary)
                 }
             } catch {
                 request.promise.fail(error)
@@ -55,10 +55,10 @@ final class RequestHandler: ChannelDuplexHandler {
         case .readyForQuery:
             queue.removeFirst()
 
-            if let fetchResult = lastFetchResult {
-                let response = Response(message: message, fetchResult: fetchResult)
+            if let fetchRequest = lastFetchRequest {
+                let response = Response(message: message, fetchRequest: fetchRequest)
                 request.promise.succeed(response)
-                self.lastFetchResult = nil
+                self.lastFetchRequest = nil
                 return
             }
         case .noticeResponse:
@@ -73,7 +73,7 @@ final class RequestHandler: ChannelDuplexHandler {
         default: break
         }
 
-        if lastFetchResult == nil {
+        if lastFetchRequest == nil {
             request.promise.succeed(Response(message: message))
         }
     }
