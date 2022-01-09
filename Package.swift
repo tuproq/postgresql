@@ -6,7 +6,7 @@ let package = Package(
     name: "tuproq-postgresql",
     platforms: [
         .iOS(.v13),
-        .macOS(.v11),
+        .macOS(.v12),
         .tvOS(.v13),
         .watchOS(.v6)
     ],
