@@ -37,7 +37,7 @@ public final class Connection {
         return self
     }
 
-    public func disconnect() async throws {
+    public func close() async throws {
         if let channel = channel {
             try await channel.close()
             self.channel = nil
