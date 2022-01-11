@@ -11,6 +11,7 @@ final class MessagePasswordTests: XCTestCase {
         let messageType = Message.Password(value)
 
         // Assert
+        XCTAssertEqual(messageType.identifier, .password)
         XCTAssertEqual(messageType.value, value)
     }
 
