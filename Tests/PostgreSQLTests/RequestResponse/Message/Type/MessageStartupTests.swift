@@ -1,3 +1,4 @@
+import NIOCore
 @testable import PostgreSQL
 import XCTest
 
@@ -15,5 +16,24 @@ final class MessageStartupTests: XCTestCase {
         XCTAssertEqual(messageType.user, user)
         XCTAssertEqual (messageType.database, user)
         XCTAssertEqual(messageType.replication, .false)
+    }
+
+    func testWrite() {
+        // Arrange
+        let messageType = Message.Startup(user: "user")
+        var buffer = ByteBufferAllocator().buffer(capacity: 0)
+
+        // Act
+        messageType.write(into: &buffer)
+
+        // Assert
+        XCTAssertEqual(buffer.getString(at: 0, length: buffer.readableBytes), """
+        \0\u{03}\0\0\
+        user\0\(messageType.user)\0\
+        database\0\(messageType.database)\0\
+        replication\0\(messageType.replication.rawValue)\0\
+        \0
+        """
+        )
     }
 }
