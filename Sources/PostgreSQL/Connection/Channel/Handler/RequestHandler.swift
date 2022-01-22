@@ -6,12 +6,12 @@ final class RequestHandler: ChannelDuplexHandler {
     typealias OutboundIn = Request
     typealias OutboundOut = Message
 
-    let logger: Logger
+    let connection: Connection
     private var queue: [Request]
     private var lastFetchRequest: FetchRequest?
 
-    init(logger: Logger) {
-        self.logger = logger
+    init(connection: Connection) {
+        self.connection = connection
         queue = .init()
     }
 
@@ -52,6 +52,15 @@ final class RequestHandler: ChannelDuplexHandler {
                 request.promise.fail(error)
                 return
             }
+        case .parameterStatus:
+            do {
+                let parameterStatus = try Message.ParameterStatus(buffer: &message.buffer)
+                connection.serverParameters[parameterStatus.name] = parameterStatus.value
+            } catch {
+                let buffer = message.buffer
+                let errorMessage = buffer.getString(at: 0, length: buffer.readableBytes) ?? "An unknown error."
+                connection.logger.error("\(errorMessage)")
+            }
         case .readyForQuery:
             queue.removeFirst()
 
@@ -64,7 +73,7 @@ final class RequestHandler: ChannelDuplexHandler {
         case .noticeResponse:
             let buffer = message.buffer
             let warningMessage = buffer.getString(at: 0, length: buffer.readableBytes) ?? "An unknown warning."
-            logger.warning("\(warningMessage)")
+            connection.logger.warning("\(warningMessage)")
         case .errorResponse:
             let buffer = message.buffer
             let error = MessageError(buffer.getString(at: 0, length: buffer.readableBytes) ?? "An unknown error.")

@@ -5,6 +5,7 @@ import NIOPosix
 public final class Connection {
     public let option: Option
     public let logger: Logger
+    public internal(set) var serverParameters: [String: String] = .init()
 
     private var group: EventLoopGroup?
     private var channel: Channel?
@@ -24,7 +25,7 @@ public final class Connection {
             let channel = try await bootstrap.connect(host: option.host, port: option.port).get()
             try await channel.pipeline.addHandler(ByteToMessageHandler(MessageDecoder())).get()
             try await channel.pipeline.addHandler(MessageToByteHandler(MessageEncoder())).get()
-            try await channel.pipeline.addHandler(RequestHandler(logger: logger)).get()
+            try await channel.pipeline.addHandler(RequestHandler(connection: self)).get()
             self.channel = channel
 
             let message = try await startUp(in: channel)
