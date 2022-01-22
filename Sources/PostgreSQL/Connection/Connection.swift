@@ -6,7 +6,7 @@ public final class Connection {
     public let option: Option
     public let logger: Logger
     public internal(set) var serverParameters: [String: String] = .init()
-
+    var backendKeyData: Message.BackendKeyData?
     private var group: EventLoopGroup?
     private var channel: Channel?
 
