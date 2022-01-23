@@ -12,6 +12,7 @@ extension Connection {
         public var username: String?
         public var password: String?
         public var database: String?
+        public var requiresTLS: Bool
         public var numberOfThreads: Int
 
         public init(
@@ -21,6 +22,7 @@ extension Connection {
             username: String? = nil,
             password: String? = nil,
             database: String? = nil,
+            requiresTLS: Bool = false,
             numberOfThreads: Int = 1
         ) {
             self.identifier = identifier
@@ -29,10 +31,16 @@ extension Connection {
             self.username = username
             self.password = password
             self.database = database
+            self.requiresTLS = requiresTLS
             self.numberOfThreads = numberOfThreads
         }
 
-        public init?(identifier: String = Option.defaultIdentifier, url: URL, numberOfThreads: Int = 1) {
+        public init?(
+            identifier: String = Option.defaultIdentifier,
+            url: URL,
+            requiresTLS: Bool = false,
+            numberOfThreads: Int = 1
+        ) {
             guard
                 let urlComponents = URLComponents(string: url.absoluteString),
                 let driver = urlComponents.scheme, (driver == "postgresql" || driver == "postgres") else { return nil }
@@ -47,6 +55,7 @@ extension Connection {
             port = urlComponents.port ?? Option.defaultPort
             username = urlComponents.user
             password = urlComponents.password
+            self.requiresTLS = requiresTLS
             self.numberOfThreads = numberOfThreads
             let database = urlComponents.path.droppingLeadingSlash
             if !database.isEmpty { self.database = database }
