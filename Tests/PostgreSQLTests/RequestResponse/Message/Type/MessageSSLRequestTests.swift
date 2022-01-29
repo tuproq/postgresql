@@ -8,7 +8,7 @@ final class MessageSSLRequestTests: XCTestCase {
         let messageType = Message.SSLRequest()
 
         // Assert
-        XCTAssertEqual(messageType.identifier, .sslRequest)
+        XCTAssertEqual(messageType.identifier, .none)
         XCTAssertEqual(messageType.code, 80877103)
     }
 

@@ -23,7 +23,7 @@ public final class Connection {
             let bootstrap = ClientBootstrap(group: group)
                 .channelOption(ChannelOptions.socket(SocketOptionLevel(IPPROTO_TCP), TCP_NODELAY), value: 1)
             let channel = try await bootstrap.connect(host: option.host, port: option.port).get()
-            try await channel.pipeline.addHandler(ByteToMessageHandler(MessageDecoder())).get()
+            try await channel.pipeline.addHandler(ByteToMessageHandler(MessageDecoder(connection: self))).get()
             try await channel.pipeline.addHandler(MessageToByteHandler(MessageEncoder())).get()
             try await channel.pipeline.addHandler(RequestHandler(connection: self)).get()
             self.channel = channel

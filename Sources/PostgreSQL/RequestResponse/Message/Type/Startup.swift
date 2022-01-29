@@ -2,7 +2,7 @@ import NIOCore
 
 extension Message {
     struct Startup: MessageType {
-        let identifier: Identifier = .startup
+        let identifier: Identifier = .none
         var protocolVersion: Int32
         var user: String
         var database: String
