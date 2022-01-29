@@ -19,7 +19,6 @@ final class MessageDecoder: ByteToMessageDecoder {
         if isFirstMessage &&
             connection.option.requiresTLS &&
             (messageIdentifier == .sslSupported || messageIdentifier == .sslUnsupported) {
-            isFirstMessage = false
             message = Message(identifier: messageIdentifier, buffer: context.channel.allocator.buffer(capacity: 0))
         } else {
             guard let messageSize = currentBuffer
@@ -29,6 +28,7 @@ final class MessageDecoder: ByteToMessageDecoder {
             message = Message(identifier: messageIdentifier, buffer: messageBuffer)
         }
 
+        isFirstMessage = false
         buffer = currentBuffer
         context.fireChannelRead(wrapInboundOut(message))
 
