@@ -59,8 +59,7 @@ final class RequestHandler: ChannelDuplexHandler {
                 let parameterStatus = try Message.ParameterStatus(buffer: &buffer)
                 connection.serverParameters[parameterStatus.name] = parameterStatus.value
             } catch {
-                let errorMessage = buffer.getString(at: 0, length: buffer.readableBytes) ?? "An unknown error."
-                connection.logger.error("\(errorMessage)")
+                connection.logger.error("\(error)")
             }
         case .backendKeyData:
             var buffer = message.buffer
@@ -68,8 +67,7 @@ final class RequestHandler: ChannelDuplexHandler {
             do {
                 connection.backendKeyData = try Message.BackendKeyData(buffer: &buffer)
             } catch {
-                let errorMessage = buffer.getString(at: 0, length: buffer.readableBytes) ?? "An unknown error."
-                connection.logger.error("\(errorMessage)")
+                connection.logger.error("\(error)")
             }
         case .readyForQuery:
             queue.removeFirst()
