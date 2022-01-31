@@ -10,7 +10,7 @@ extension Message {
         }
 
         func write(into buffer: inout ByteBuffer) {
-            buffer.writeString(string + "\0")
+            buffer.writeNullTerminatedString(string)
         }
     }
 }

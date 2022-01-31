@@ -28,9 +28,12 @@ extension Message {
 
         func write(into buffer: inout ByteBuffer) {
             buffer.writeInteger(protocolVersion)
-            buffer.writeString("user\0\(user)\0")
-            buffer.writeString("database\0\(database)\0")
-            buffer.writeString("replication\0\(replication.rawValue)\0")
+            buffer.writeNullTerminatedString("user")
+            buffer.writeNullTerminatedString(user)
+            buffer.writeNullTerminatedString("database")
+            buffer.writeNullTerminatedString(database)
+            buffer.writeNullTerminatedString("replication")
+            buffer.writeNullTerminatedString(replication.rawValue)
             buffer.writeString("\0")
         }
     }
