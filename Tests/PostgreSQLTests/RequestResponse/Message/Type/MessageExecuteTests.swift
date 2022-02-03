@@ -21,14 +21,14 @@ final class MessageExecuteTests: XCTestCase {
         let messageType = Message.Execute(portalName: portalName, maxRows: maxRows)
         var buffer = ByteBufferAllocator().buffer(capacity: 0)
 
-        var resultBuffer = ByteBufferAllocator().buffer(capacity: 0)
-        resultBuffer.writeNullTerminatedString(portalName)
-        resultBuffer.writeInteger(maxRows)
+        var expectedBuffer = ByteBufferAllocator().buffer(capacity: 0)
+        expectedBuffer.writeNullTerminatedString(portalName)
+        expectedBuffer.writeInteger(maxRows)
 
         // Act
         messageType.write(into: &buffer)
 
         // Assert
-        XCTAssertEqual(buffer, resultBuffer)
+        XCTAssertEqual(buffer, expectedBuffer)
     }
 }

@@ -27,14 +27,14 @@ final class MessageDescribeTests: XCTestCase {
         let messageType = Message.Describe(command: command, name: portalOrStatementName)
         var buffer = ByteBufferAllocator().buffer(capacity: 0)
 
-        var resultBuffer = ByteBufferAllocator().buffer(capacity: 0)
-        resultBuffer.writeInteger(command.rawValue)
-        resultBuffer.writeNullTerminatedString(portalOrStatementName)
+        var expectedBuffer = ByteBufferAllocator().buffer(capacity: 0)
+        expectedBuffer.writeInteger(command.rawValue)
+        expectedBuffer.writeNullTerminatedString(portalOrStatementName)
 
         // Act
         messageType.write(into: &buffer)
 
         // Assert
-        XCTAssertEqual(buffer, resultBuffer)
+        XCTAssertEqual(buffer, expectedBuffer)
     }
 }

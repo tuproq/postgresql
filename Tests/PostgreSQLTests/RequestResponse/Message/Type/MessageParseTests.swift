@@ -23,16 +23,16 @@ final class MessageParseTests: XCTestCase {
         let messageType = Message.Parse(statementName: statementName, query: query, parameterTypes: parameterTypes)
         var buffer = ByteBufferAllocator().buffer(capacity: 0)
 
-        var resultBuffer = ByteBufferAllocator().buffer(capacity: 0)
-        resultBuffer.writeNullTerminatedString(statementName)
-        resultBuffer.writeNullTerminatedString(query)
-        resultBuffer.writeInteger(numericCast(parameterTypes.count), as: Int16.self)
-        for parameterType in parameterTypes { resultBuffer.writeInteger(parameterType.rawValue) }
+        var expectedBuffer = ByteBufferAllocator().buffer(capacity: 0)
+        expectedBuffer.writeNullTerminatedString(statementName)
+        expectedBuffer.writeNullTerminatedString(query)
+        expectedBuffer.writeInteger(numericCast(parameterTypes.count), as: Int16.self)
+        for parameterType in parameterTypes { expectedBuffer.writeInteger(parameterType.rawValue) }
 
         // Act
         messageType.write(into: &buffer)
 
         // Assert
-        XCTAssertEqual(buffer, resultBuffer)
+        XCTAssertEqual(buffer, expectedBuffer)
     }
 }
