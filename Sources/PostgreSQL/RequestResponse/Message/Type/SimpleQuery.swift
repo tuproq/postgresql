@@ -1,8 +1,8 @@
 import NIOCore
 
 extension Message {
-    struct Query: MessageType {
-        let identifier: Identifier = .query
+    struct SimpleQuery: MessageType {
+        let identifier: Identifier = .simpleQuery
         var string: String
 
         init(_ string: String) {

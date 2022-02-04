@@ -99,8 +99,8 @@ extension Message {
         /// PortalSuspended (B)
         static let portalSuspended: Self = 0x73 // 's'
 
-        /// Query (F)
-        static let query: Self = 0x51 // 'Q'
+        /// SimpleQuery (F)
+        static let simpleQuery: Self = 0x51 // 'Q'
 
         /// ReadyForQuery (B)
         static let readyForQuery: Self = 0x5A // 'Z'

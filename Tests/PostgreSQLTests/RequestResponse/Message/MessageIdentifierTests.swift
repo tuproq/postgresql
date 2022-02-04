@@ -37,7 +37,7 @@ final class MessageIdentifierTests: XCTestCase {
             (0x50, .parse),
             (0x31, .parseComplete),
             (0x73, .portalSuspended),
-            (0x51, .query),
+            (0x51, .simpleQuery),
             (0x5A, .readyForQuery),
             (0x54, .rowDescription),
             (0x70, .gssResponse),
