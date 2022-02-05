@@ -52,7 +52,7 @@ public final class Connection {
 
     @discardableResult
     public func simpleQuery(_ string: String) async throws -> [[String: Any?]] {
-        let messageType = Message.Query(string)
+        let messageType = Message.SimpleQuery(string)
         let channel = channel!
         let response = try await send(type: messageType, in: channel)
 
