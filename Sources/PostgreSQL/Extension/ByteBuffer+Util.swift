@@ -9,6 +9,19 @@ extension ByteBuffer {
 
         return array
     }
+
+    mutating func writeArray<T>(_ array: [T], handler: (inout ByteBuffer, T) -> ()) {
+        writeInteger(numericCast(array.count), as: Int16.self)
+        for element in array { handler(&self, element) }
+    }
+
+    mutating func writeArray<T>(_ array: [T]) where T: FixedWidthInteger {
+        writeArray(array) { buffer, element in buffer.writeInteger(element) }
+    }
+
+    mutating func writeArray<T>(_ array: [T]) where T: RawRepresentable, T.RawValue: FixedWidthInteger {
+        writeArray(array) { buffer, element in buffer.writeInteger(element.rawValue) }
+    }
 }
 
 extension ByteBuffer {
