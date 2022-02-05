@@ -2,13 +2,13 @@ import NIOCore
 @testable import PostgreSQL
 import XCTest
 
-final class MessageStartupTests: XCTestCase {
+final class MessageStartupMessageTests: XCTestCase {
     func testInit() {
         // Arrange
         let user = "user"
 
         // Act
-        let messageType = Message.Startup(user: user)
+        let messageType = Message.StartupMessage(user: user)
 
         // Assert
         XCTAssertEqual(messageType.identifier, .none)
@@ -20,7 +20,7 @@ final class MessageStartupTests: XCTestCase {
 
     func testWrite() {
         // Arrange
-        let messageType = Message.Startup(user: "user")
+        let messageType = Message.StartupMessage(user: "user")
         var buffer = ByteBufferAllocator().buffer(capacity: 0)
 
         // Act

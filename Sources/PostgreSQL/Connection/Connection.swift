@@ -66,7 +66,7 @@ public final class Connection {
 
 extension Connection {
     private func startUp(in channel: Channel) async throws -> Message {
-        let messageType = Message.Startup(user: option.username ?? "", database: option.database)
+        let messageType = Message.StartupMessage(user: option.username ?? "", database: option.database)
         return try await send(type: messageType, in: channel).message
     }
 
