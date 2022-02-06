@@ -1,13 +1,13 @@
 import NIOCore
 
-struct Column: CustomStringConvertible {
-    var name: String
-    var tableID: Int32
-    var attributeNumber: Int16
-    var dataType: DataType
-    var dataTypeSize: Int16
-    var attributeTypeModifier: Int32
-    var formatCode: FormatCode
+struct Column: CustomStringConvertible, Equatable {
+    let name: String
+    let tableID: Int32
+    let attributeNumber: Int16
+    let dataType: DataType
+    let dataTypeSize: Int16
+    let attributeTypeModifier: Int32
+    let formatCode: FormatCode
 
     var description: String {
         """
@@ -43,7 +43,6 @@ struct Column: CustomStringConvertible {
         guard let formatCode = buffer.readInteger(as: FormatCode.self) else {
             throw MessageError("An invalid column `formatCode`.")
         }
-
         self.name = name
         self.tableID = tableID
         self.attributeNumber = attributeNumber
