@@ -1,12 +1,10 @@
-import NIOCore
 @testable import PostgreSQL
 import XCTest
 
-final class MessageStartupMessageTests: XCTestCase {
-    func testInit() {
-        // Arrange
-        let user = "user"
+final class MessageStartupMessageTests: BaseTests {
+    let user = "user"
 
+    func testInit() {
         // Act
         let messageType = Message.StartupMessage(user: user)
 
@@ -20,20 +18,23 @@ final class MessageStartupMessageTests: XCTestCase {
 
     func testWrite() {
         // Arrange
-        let messageType = Message.StartupMessage(user: "user")
-        var buffer = ByteBufferAllocator().buffer(capacity: 0)
+        let messageType = Message.StartupMessage(user: user)
+        var buffer = bufferAllocator.buffer(capacity: 0)
+
+        var expectedBuffer = bufferAllocator.buffer(capacity: 0)
+        expectedBuffer.writeInteger(messageType.protocolVersion)
+        expectedBuffer.writeNullTerminatedString("user")
+        expectedBuffer.writeNullTerminatedString(messageType.user)
+        expectedBuffer.writeNullTerminatedString("database")
+        expectedBuffer.writeNullTerminatedString(messageType.database)
+        expectedBuffer.writeNullTerminatedString("replication")
+        expectedBuffer.writeNullTerminatedString(messageType.replication.rawValue)
+        expectedBuffer.writeNullTerminatedString("")
 
         // Act
         messageType.write(into: &buffer)
 
         // Assert
-        XCTAssertEqual(buffer.getString(at: 0, length: buffer.readableBytes), """
-        \0\u{03}\0\0\
-        user\0\(messageType.user)\0\
-        database\0\(messageType.database)\0\
-        replication\0\(messageType.replication.rawValue)\0\
-        \0
-        """
-        )
+        XCTAssertEqual(buffer, expectedBuffer)
     }
 }

@@ -1,7 +1,7 @@
 @testable import PostgreSQL
 import XCTest
 
-final class MessageIdentifierTests: XCTestCase {
+final class MessageIdentifierTests: BaseTests {
     func testIdentifiers() {
         // Arrange
         let identifiers: [(UInt8?, Message.Identifier)] = [

@@ -1,7 +1,7 @@
 @testable import PostgreSQL
 import XCTest
 
-final class MessageErrorTests: XCTestCase {
+final class MessageErrorTests: BaseTests {
     func testInit() {
         // Arrange
         let message = "An unknown error."

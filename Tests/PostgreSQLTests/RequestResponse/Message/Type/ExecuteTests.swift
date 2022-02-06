@@ -1,8 +1,7 @@
-import NIOCore
 @testable import PostgreSQL
 import XCTest
 
-final class MessageExecuteTests: XCTestCase {
+final class MessageExecuteTests: BaseTests {
     let portalName = "insert"
     let maxRows: Int32 = 10
 
@@ -19,9 +18,9 @@ final class MessageExecuteTests: XCTestCase {
     func testWrite() {
         // Arrange
         let messageType = Message.Execute(portalName: portalName, maxRows: maxRows)
-        var buffer = ByteBufferAllocator().buffer(capacity: 0)
+        var buffer = bufferAllocator.buffer(capacity: 0)
 
-        var expectedBuffer = ByteBufferAllocator().buffer(capacity: 0)
+        var expectedBuffer = bufferAllocator.buffer(capacity: 0)
         expectedBuffer.writeNullTerminatedString(portalName)
         expectedBuffer.writeInteger(maxRows)
 

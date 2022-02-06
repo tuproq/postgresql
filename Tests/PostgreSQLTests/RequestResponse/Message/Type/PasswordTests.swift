@@ -1,29 +1,30 @@
-import NIOCore
 @testable import PostgreSQL
 import XCTest
 
-final class MessagePasswordTests: XCTestCase {
-    func testInit() {
-        // Arrange
-        let value = "password"
+final class MessagePasswordTests: BaseTests {
+    let password = "password"
 
+    func testInit() {
         // Act
-        let messageType = Message.Password(value)
+        let messageType = Message.Password(password)
 
         // Assert
         XCTAssertEqual(messageType.identifier, .password)
-        XCTAssertEqual(messageType.value, value)
+        XCTAssertEqual(messageType.value, password)
     }
 
     func testWrite() {
         // Arrange
-        let messageType = Message.Password("password")
-        var buffer = ByteBufferAllocator().buffer(capacity: 0)
+        let messageType = Message.Password(password)
+        var buffer = bufferAllocator.buffer(capacity: 0)
+
+        var expectedBuffer = bufferAllocator.buffer(capacity: 0)
+        expectedBuffer.writeNullTerminatedString(messageType.value)
 
         // Act
         messageType.write(into: &buffer)
 
         // Assert
-        XCTAssertEqual(buffer.getString(at: 0, length: buffer.readableBytes), "\(messageType.value)\0")
+        XCTAssertEqual(buffer, expectedBuffer)
     }
 }

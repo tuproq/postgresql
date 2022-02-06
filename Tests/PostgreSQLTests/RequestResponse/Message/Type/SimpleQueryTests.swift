@@ -1,29 +1,30 @@
-import NIOCore
 @testable import PostgreSQL
 import XCTest
 
-final class MessageSimpleQueryTests: XCTestCase {
-    func testInit() {
-        // Arrange
-        let string = "SELECT version()"
+final class MessageSimpleQueryTests: BaseTests {
+    let query = "SELECT version()"
 
+    func testInit() {
         // Act
-        let messageType = Message.SimpleQuery(string)
+        let messageType = Message.SimpleQuery(query)
 
         // Assert
         XCTAssertEqual(messageType.identifier, .simpleQuery)
-        XCTAssertEqual(messageType.string, string)
+        XCTAssertEqual(messageType.string, query)
     }
 
     func testWrite() {
         // Arrange
-        let messageType = Message.SimpleQuery("SELECT version()")
-        var buffer = ByteBufferAllocator().buffer(capacity: 0)
+        let messageType = Message.SimpleQuery(query)
+        var buffer = bufferAllocator.buffer(capacity: 0)
+
+        var expectedBuffer = bufferAllocator.buffer(capacity: 0)
+        expectedBuffer.writeNullTerminatedString(messageType.string)
 
         // Act
         messageType.write(into: &buffer)
 
         // Assert
-        XCTAssertEqual(buffer.getString(at: 0, length: buffer.readableBytes), "\(messageType.string)\0")
+        XCTAssertEqual(buffer, expectedBuffer)
     }
 }

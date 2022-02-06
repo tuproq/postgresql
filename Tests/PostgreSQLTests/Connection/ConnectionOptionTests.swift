@@ -1,7 +1,7 @@
 @testable import PostgreSQL
 import XCTest
 
-final class ConnectionOptionTests: XCTestCase {
+final class ConnectionOptionTests: BaseTests {
     let identifier = "com.custom.identifier"
     let host = "localhost"
     let port = 1234

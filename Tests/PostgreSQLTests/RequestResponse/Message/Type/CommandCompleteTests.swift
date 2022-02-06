@@ -1,11 +1,9 @@
-import NIOCore
 @testable import PostgreSQL
 import XCTest
 
-final class MessageCommandCompleteTests: XCTestCase {
+final class MessageCommandCompleteTests: BaseTests {
     func testInit() {
         // Arrange
-        let bufferAllocator = ByteBufferAllocator()
         var buffer = bufferAllocator.buffer(capacity: 0)
 
         // Act/Assert

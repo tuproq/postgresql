@@ -1,11 +1,9 @@
-import NIOCore
 @testable import PostgreSQL
 import XCTest
 
-final class MessageParameterStatusTests: XCTestCase {
+final class MessageParameterStatusTests: BaseTests {
     func testInit() {
         // Arrange
-        let bufferAllocator = ByteBufferAllocator()
         var buffer = bufferAllocator.buffer(capacity: 0)
 
         // Act/Assert
@@ -16,7 +14,7 @@ final class MessageParameterStatusTests: XCTestCase {
         // Arrange
         let name = "client_encoding"
         buffer = bufferAllocator.buffer(capacity: 0)
-        buffer.writeString(name + "\0")
+        buffer.writeNullTerminatedString(name)
 
         // Act/Assert
         XCTAssertThrowsError(try Message.ParameterStatus(buffer: &buffer)) { error in
@@ -26,7 +24,8 @@ final class MessageParameterStatusTests: XCTestCase {
         // Arrange
         let value = "UTF8"
         buffer = bufferAllocator.buffer(capacity: 0)
-        buffer.writeString(name + "\0" + value + "\0")
+        buffer.writeNullTerminatedString(name)
+        buffer.writeNullTerminatedString(value)
 
         // Act
         let messageType = try! Message.ParameterStatus(buffer: &buffer)

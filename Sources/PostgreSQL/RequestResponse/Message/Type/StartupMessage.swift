@@ -34,7 +34,7 @@ extension Message {
             buffer.writeNullTerminatedString(database)
             buffer.writeNullTerminatedString("replication")
             buffer.writeNullTerminatedString(replication.rawValue)
-            buffer.writeString("\0")
+            buffer.writeNullTerminatedString("")
         }
     }
 }

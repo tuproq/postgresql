@@ -2,7 +2,7 @@ import NIOCore
 @testable import PostgreSQL
 import XCTest
 
-final class MessageBindTests: XCTestCase {
+final class MessageBindTests: BaseTests {
     let portalName = "portalName"
     let statementName = "statementName"
     let parameterFormatCodes: [Column.FormatCode] = [.text]
@@ -12,7 +12,7 @@ final class MessageBindTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        var parameter = ByteBufferAllocator().buffer(capacity: 0)
+        var parameter = bufferAllocator.buffer(capacity: 0)
         parameter.writeInteger(1)
         parameters = [parameter]
     }
@@ -45,9 +45,9 @@ final class MessageBindTests: XCTestCase {
             parameters: [nil],
             resultFormatCodes: resultFormatCodes
         )
-        var buffer = ByteBufferAllocator().buffer(capacity: 0)
+        var buffer = bufferAllocator.buffer(capacity: 0)
 
-        var expectedBuffer = ByteBufferAllocator().buffer(capacity: 0)
+        var expectedBuffer = bufferAllocator.buffer(capacity: 0)
         expectedBuffer.writeNullTerminatedString(messageType.portalName)
         expectedBuffer.writeNullTerminatedString(messageType.statementName)
         expectedBuffer.writeArray(messageType.parameterFormatCodes)
@@ -70,9 +70,9 @@ final class MessageBindTests: XCTestCase {
             parameters: parameters,
             resultFormatCodes: resultFormatCodes
         )
-        buffer = ByteBufferAllocator().buffer(capacity: 0)
+        buffer = bufferAllocator.buffer(capacity: 0)
 
-        expectedBuffer = ByteBufferAllocator().buffer(capacity: 0)
+        expectedBuffer = bufferAllocator.buffer(capacity: 0)
         expectedBuffer.writeNullTerminatedString(messageType.portalName)
         expectedBuffer.writeNullTerminatedString(messageType.statementName)
         expectedBuffer.writeArray(messageType.parameterFormatCodes)

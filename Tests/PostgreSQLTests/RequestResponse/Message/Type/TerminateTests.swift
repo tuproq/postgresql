@@ -1,7 +1,7 @@
 @testable import PostgreSQL
 import XCTest
 
-final class MessageTerminateTests: XCTestCase {
+final class MessageTerminateTests: BaseTests {
     func testInit() {
         // Act
         let messageType = Message.Terminate()

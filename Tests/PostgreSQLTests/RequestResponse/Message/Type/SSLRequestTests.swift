@@ -1,8 +1,7 @@
-import NIOCore
 @testable import PostgreSQL
 import XCTest
 
-final class MessageSSLRequestTests: XCTestCase {
+final class MessageSSLRequestTests: BaseTests {
     func testInit() {
         // Act
         let messageType = Message.SSLRequest()
@@ -15,12 +14,15 @@ final class MessageSSLRequestTests: XCTestCase {
     func testWrite() {
         // Arrange
         let messageType = Message.SSLRequest()
-        var buffer = ByteBufferAllocator().buffer(capacity: 0)
+        var buffer = bufferAllocator.buffer(capacity: 0)
+
+        var expectedBuffer = bufferAllocator.buffer(capacity: 0)
+        expectedBuffer.writeInteger(messageType.code)
 
         // Act
         messageType.write(into: &buffer)
 
         // Assert
-        XCTAssertEqual(buffer.getInteger(at: 0), messageType.code)
+        XCTAssertEqual(buffer, expectedBuffer)
     }
 }

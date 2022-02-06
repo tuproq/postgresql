@@ -1,12 +1,11 @@
-import NIOCore
 @testable import PostgreSQL
 import XCTest
 
-final class MessageTests: XCTestCase {
+final class MessageTests: BaseTests {
     func testInit() {
         // Arrange
         let messageType = Message.StartupMessage(user: "user", database: "database")
-        var buffer = ByteBufferAllocator().buffer(capacity: 0)
+        var buffer = bufferAllocator.buffer(capacity: 0)
         messageType.write(into: &buffer)
 
         // Act

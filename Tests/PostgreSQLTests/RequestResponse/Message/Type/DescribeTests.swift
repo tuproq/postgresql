@@ -1,8 +1,7 @@
-import NIOCore
 @testable import PostgreSQL
 import XCTest
 
-final class MessageDescribeTests: XCTestCase {
+final class MessageDescribeTests: BaseTests {
     let command: Message.Describe.Command = .portal
     let portalOrStatementName = "portalOrStatementName"
 
@@ -25,9 +24,9 @@ final class MessageDescribeTests: XCTestCase {
     func testWrite() {
         // Arrange
         let messageType = Message.Describe(command: command, name: portalOrStatementName)
-        var buffer = ByteBufferAllocator().buffer(capacity: 0)
+        var buffer = bufferAllocator.buffer(capacity: 0)
 
-        var expectedBuffer = ByteBufferAllocator().buffer(capacity: 0)
+        var expectedBuffer = bufferAllocator.buffer(capacity: 0)
         expectedBuffer.writeInteger(command.rawValue)
         expectedBuffer.writeNullTerminatedString(portalOrStatementName)
 

@@ -1,7 +1,7 @@
 @testable import PostgreSQL
 import XCTest
 
-final class MessageSyncTests: XCTestCase {
+final class MessageSyncTests: BaseTests {
     func testInit() {
         // Act
         let messageType = Message.Sync()

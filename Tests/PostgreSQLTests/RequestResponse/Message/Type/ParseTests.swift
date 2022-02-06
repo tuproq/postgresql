@@ -1,8 +1,7 @@
-import NIOCore
 @testable import PostgreSQL
 import XCTest
 
-final class MessageParseTests: XCTestCase {
+final class MessageParseTests: BaseTests {
     let statementName = "select"
     let query = "SELECT * FROM table WHERE id = $1"
     let parameterTypes: [Column.DataType] = [.int8]
@@ -21,9 +20,9 @@ final class MessageParseTests: XCTestCase {
     func testWrite() {
         // Arrange
         let messageType = Message.Parse(statementName: statementName, query: query, parameterTypes: parameterTypes)
-        var buffer = ByteBufferAllocator().buffer(capacity: 0)
+        var buffer = bufferAllocator.buffer(capacity: 0)
 
-        var expectedBuffer = ByteBufferAllocator().buffer(capacity: 0)
+        var expectedBuffer = bufferAllocator.buffer(capacity: 0)
         expectedBuffer.writeNullTerminatedString(statementName)
         expectedBuffer.writeNullTerminatedString(query)
         expectedBuffer.writeInteger(numericCast(parameterTypes.count), as: Int16.self)
