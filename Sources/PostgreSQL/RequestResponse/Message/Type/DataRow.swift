@@ -7,11 +7,10 @@ extension Message {
 
         init(buffer: inout ByteBuffer) throws {
             guard let values = buffer.readArray(as: ByteBuffer?.self, { buffer in
-                return buffer.readBytes()
+                buffer.readBytes()
             }) else {
-                throw MessageError("Can't parse data row columns.")
+                throw MessageError("Can't parse data row values.")
             }
-
             self.values = values
         }
     }
