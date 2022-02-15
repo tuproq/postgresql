@@ -34,6 +34,5 @@ final class MessageBackendKeyDataTests: BaseTests {
         XCTAssertEqual(messageType.identifier, .backendKeyData)
         XCTAssertEqual(messageType.processID, processID)
         XCTAssertEqual(messageType.secretKey, secretKey)
-        XCTAssertEqual(messageType.description, "\(processID):\(secretKey)")
     }
 }

@@ -1,11 +1,10 @@
 import NIOCore
 
 extension Message {
-    struct BackendKeyData: CustomStringConvertible, MessageType {
+    struct BackendKeyData: MessageType {
         let identifier: Identifier = .backendKeyData
         let processID: Int32
         let secretKey: Int32
-        var description: String { "\(processID):\(secretKey)" }
 
         init(buffer: inout ByteBuffer) throws {
             guard let processID = buffer.readInteger(as: Int32.self) else {

@@ -1,9 +1,8 @@
 import NIOCore
 
 extension Message {
-    struct ParameterStatus: CustomStringConvertible, MessageType {
+    struct ParameterStatus: MessageType {
         let identifier: Identifier = .parameterStatus
-        var description: String { "\(name): \(value)" }
         var name: String
         var value: String
 
