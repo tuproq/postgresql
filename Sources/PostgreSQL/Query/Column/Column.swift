@@ -7,7 +7,7 @@ struct Column: CustomStringConvertible, Equatable {
     let dataType: DataType
     let dataTypeSize: Int16
     let attributeTypeModifier: Int32
-    let formatCode: FormatCode
+    let dataFormat: DataFormat
 
     var description: String {
         """
@@ -17,7 +17,7 @@ struct Column: CustomStringConvertible, Equatable {
         dataType: \(dataType)
         dataTypeSize: \(dataTypeSize)
         attributeTypeModifier: \(attributeTypeModifier)
-        formatCode: \(formatCode)
+        dataFormat: \(dataFormat)
         """
     }
 
@@ -40,8 +40,8 @@ struct Column: CustomStringConvertible, Equatable {
         guard let attributeTypeModifier = buffer.readInteger(as: Int32.self) else {
             throw MessageError("An invalid column `attributeTypeModifier`.")
         }
-        guard let formatCode = buffer.readInteger(as: FormatCode.self) else {
-            throw MessageError("An invalid column `formatCode`.")
+        guard let dataFormat = buffer.readInteger(as: DataFormat.self) else {
+            throw MessageError("An invalid column `dataFormat`.")
         }
         self.name = name
         self.tableID = tableID
@@ -49,6 +49,6 @@ struct Column: CustomStringConvertible, Equatable {
         self.dataType = dataType
         self.dataTypeSize = dataTypeSize
         self.attributeTypeModifier = attributeTypeModifier
-        self.formatCode = formatCode
+        self.dataFormat = dataFormat
     }
 }

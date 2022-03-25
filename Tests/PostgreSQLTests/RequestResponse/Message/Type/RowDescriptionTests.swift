@@ -17,10 +17,10 @@ final class MessageRowDescriptionTests: BaseTests {
         columnBuffer.writeNullTerminatedString("id")
         columnBuffer.writeInteger(Int32(1))
         columnBuffer.writeInteger(Int16(2))
-        columnBuffer.writeInteger(Column.DataType.uuid.rawValue)
+        columnBuffer.writeInteger(DataType.uuid.rawValue)
         columnBuffer.writeInteger(Int16(16))
         columnBuffer.writeInteger(Int32(3))
-        columnBuffer.writeInteger(Column.FormatCode.text.rawValue)
+        columnBuffer.writeInteger(DataFormat.text.rawValue)
 
         let columns: [Column] = [try! Column(buffer: &columnBuffer)]
 
@@ -32,7 +32,7 @@ final class MessageRowDescriptionTests: BaseTests {
             columnBuffer.writeInteger(column.dataType.rawValue)
             columnBuffer.writeInteger(column.dataTypeSize)
             columnBuffer.writeInteger(column.attributeTypeModifier)
-            columnBuffer.writeInteger(column.formatCode.rawValue)
+            columnBuffer.writeInteger(column.dataFormat.rawValue)
         }
 
         // Act

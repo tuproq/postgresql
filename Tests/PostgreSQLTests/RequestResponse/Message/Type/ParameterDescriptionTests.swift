@@ -22,7 +22,7 @@ final class MessageParameterDescriptionTests: BaseTests {
         }
 
         // Arrange
-        let dataType: Column.DataType = .int8
+        let dataType: DataType = .int8
         buffer = bufferAllocator.buffer(capacity: 0)
         buffer.writeArray([dataType.rawValue])
 

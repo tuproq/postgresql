@@ -5,28 +5,28 @@ extension Message {
         let identifier: Identifier = .bind
         let portalName: String
         let statementName: String
-        let parameterFormatCodes: [Column.FormatCode]
+        let parameterDataFormats: [DataFormat]
         let parameters: [ByteBuffer?]
-        let resultFormatCodes: [Column.FormatCode]
+        let resultDataFormats: [DataFormat]
 
         init(
             portalName: String = "",
             statementName: String = "",
-            parameterFormatCodes: [Column.FormatCode] = .init(),
+            parameterDataFormats: [DataFormat] = .init(),
             parameters: [ByteBuffer?] = .init(),
-            resultFormatCodes: [Column.FormatCode] = .init()
+            resultDataFormats: [DataFormat] = .init()
         ) {
             self.portalName = portalName
             self.statementName = statementName
-            self.parameterFormatCodes = parameterFormatCodes
+            self.parameterDataFormats = parameterDataFormats
             self.parameters = parameters
-            self.resultFormatCodes = resultFormatCodes
+            self.resultDataFormats = resultDataFormats
         }
 
         func write(into buffer: inout ByteBuffer) {
             buffer.writeNullTerminatedString(portalName)
             buffer.writeNullTerminatedString(statementName)
-            buffer.writeArray(parameterFormatCodes)
+            buffer.writeArray(parameterDataFormats)
             buffer.writeArray(parameters) {
                 if var value = $1 {
                     $0.writeInteger(numericCast(value.readableBytes), as: Int32.self)
@@ -35,7 +35,7 @@ extension Message {
                     $0.writeInteger(-1, as: Int32.self)
                 }
             }
-            buffer.writeArray(resultFormatCodes)
+            buffer.writeArray(resultDataFormats)
         }
     }
 }

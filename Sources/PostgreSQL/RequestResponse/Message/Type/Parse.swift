@@ -5,9 +5,9 @@ extension Message {
         let identifier: Identifier = .parse
         let statementName: String
         let query: String
-        let parameterTypes: [Column.DataType]
+        let parameterTypes: [DataType]
 
-        init(statementName: String = "", query: String, parameterTypes: [Column.DataType] = .init()) {
+        init(statementName: String = "", query: String, parameterTypes: [DataType] = .init()) {
             self.statementName = statementName
             self.query = query
             self.parameterTypes = parameterTypes

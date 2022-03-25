@@ -4,7 +4,7 @@ import XCTest
 final class MessageParseTests: BaseTests {
     let statementName = "select"
     let query = "SELECT * FROM table WHERE id = $1"
-    let parameterTypes: [Column.DataType] = [.int8]
+    let parameterTypes: [DataType] = [.int8]
 
     func testInit() {
         // Act

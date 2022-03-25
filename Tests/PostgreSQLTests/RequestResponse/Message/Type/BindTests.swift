@@ -5,9 +5,9 @@ import XCTest
 final class MessageBindTests: BaseTests {
     let portalName = "portalName"
     let statementName = "statementName"
-    let parameterFormatCodes: [Column.FormatCode] = [.text]
+    let parameterDataFormats: [DataFormat] = [.text]
     var parameters: [ByteBuffer?]!
-    let resultFormatCodes: [Column.FormatCode] = [.binary]
+    let resultDataFormats: [DataFormat] = [.binary]
 
     override func setUp() {
         super.setUp()
@@ -22,18 +22,18 @@ final class MessageBindTests: BaseTests {
         let messageType = Message.Bind(
             portalName: portalName,
             statementName: statementName,
-            parameterFormatCodes: parameterFormatCodes,
+            parameterDataFormats: parameterDataFormats,
             parameters: parameters,
-            resultFormatCodes: resultFormatCodes
+            resultDataFormats: resultDataFormats
         )
 
         // Assert
         XCTAssertEqual(messageType.identifier, .bind)
         XCTAssertEqual(messageType.portalName, portalName)
         XCTAssertEqual(messageType.statementName, statementName)
-        XCTAssertEqual(messageType.parameterFormatCodes, parameterFormatCodes)
+        XCTAssertEqual(messageType.parameterDataFormats, parameterDataFormats)
         XCTAssertEqual(messageType.parameters, parameters)
-        XCTAssertEqual(messageType.resultFormatCodes, resultFormatCodes)
+        XCTAssertEqual(messageType.resultDataFormats, resultDataFormats)
     }
 
     func testWrite() {
@@ -41,20 +41,20 @@ final class MessageBindTests: BaseTests {
         var messageType = Message.Bind(
             portalName: portalName,
             statementName: statementName,
-            parameterFormatCodes: parameterFormatCodes,
+            parameterDataFormats: parameterDataFormats,
             parameters: [nil],
-            resultFormatCodes: resultFormatCodes
+            resultDataFormats: resultDataFormats
         )
         var buffer = bufferAllocator.buffer(capacity: 0)
 
         var expectedBuffer = bufferAllocator.buffer(capacity: 0)
         expectedBuffer.writeNullTerminatedString(messageType.portalName)
         expectedBuffer.writeNullTerminatedString(messageType.statementName)
-        expectedBuffer.writeArray(messageType.parameterFormatCodes)
+        expectedBuffer.writeArray(messageType.parameterDataFormats)
         expectedBuffer.writeArray(messageType.parameters) { expectedBuffer, _ in
             expectedBuffer.writeInteger(-1, as: Int32.self)
         }
-        expectedBuffer.writeArray(messageType.resultFormatCodes)
+        expectedBuffer.writeArray(messageType.resultDataFormats)
 
         // Act
         messageType.write(into: &buffer)
@@ -66,23 +66,23 @@ final class MessageBindTests: BaseTests {
         messageType = Message.Bind(
             portalName: portalName,
             statementName: statementName,
-            parameterFormatCodes: parameterFormatCodes,
+            parameterDataFormats: parameterDataFormats,
             parameters: parameters,
-            resultFormatCodes: resultFormatCodes
+            resultDataFormats: resultDataFormats
         )
         buffer = bufferAllocator.buffer(capacity: 0)
 
         expectedBuffer = bufferAllocator.buffer(capacity: 0)
         expectedBuffer.writeNullTerminatedString(messageType.portalName)
         expectedBuffer.writeNullTerminatedString(messageType.statementName)
-        expectedBuffer.writeArray(messageType.parameterFormatCodes)
+        expectedBuffer.writeArray(messageType.parameterDataFormats)
         expectedBuffer.writeArray(messageType.parameters) {
             if var value = $1 {
                 $0.writeInteger(numericCast(value.readableBytes), as: Int32.self)
                 $0.writeBuffer(&value)
             }
         }
-        expectedBuffer.writeArray(messageType.resultFormatCodes)
+        expectedBuffer.writeArray(messageType.resultDataFormats)
 
         // Act
         messageType.write(into: &buffer)
