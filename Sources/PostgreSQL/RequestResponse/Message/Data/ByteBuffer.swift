@@ -3,7 +3,7 @@ import NIOCore
 extension ByteBuffer {
     mutating func readArray<T>(as type: T.Type, _ handler: (inout ByteBuffer) throws -> (T)) rethrows -> [T]? {
         guard let count: Int = readInteger(as: Int16.self).flatMap(numericCast) else { return nil }
-        var array: [T] = .init()
+        var array = [T]()
         array.reserveCapacity(count)
         for _ in 0..<count { try array.append(handler(&self)) }
 
