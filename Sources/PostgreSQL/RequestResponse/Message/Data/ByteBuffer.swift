@@ -60,3 +60,18 @@ extension ByteBuffer {
         return T(rawValue: rawValue)
     }
 }
+
+extension ByteBuffer {
+    mutating func readNullTerminatedString() -> String? {
+        if let nullIndex = readableBytesView.firstIndex(of: 0) {
+            defer { moveReaderIndex(forwardBy: 1) }
+            return readString(length: nullIndex - readerIndex)
+        }
+
+        return nil
+    }
+
+    mutating func readString() -> String? {
+        readString(length: readableBytes)
+    }
+}
