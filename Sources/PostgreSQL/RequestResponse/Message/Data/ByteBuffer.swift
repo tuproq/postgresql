@@ -32,6 +32,26 @@ extension ByteBuffer {
 }
 
 extension ByteBuffer {
+    mutating func readDouble() -> Double? {
+        readInteger(as: UInt64.self).map { Double(bitPattern: $0) }
+    }
+
+    mutating func writeDouble(_ double: Double) {
+        writeInteger(double.bitPattern)
+    }
+}
+
+extension ByteBuffer {
+    mutating func readFloat() -> Float? {
+        readInteger(as: UInt32.self).map { Float(bitPattern: $0) }
+    }
+
+    mutating func writeFloat(_ float: Float) {
+        writeInteger(float.bitPattern)
+    }
+}
+
+extension ByteBuffer {
     mutating func readInteger<T>(
         endianness: Endianness = .big,
         as rawRepresentable: T.Type
