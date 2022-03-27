@@ -1,3 +1,4 @@
+import Foundation
 import NIOCore
 
 extension ByteBuffer {
@@ -73,5 +74,26 @@ extension ByteBuffer {
 
     mutating func readString() -> String? {
         readString(length: readableBytes)
+    }
+}
+
+extension ByteBuffer {
+    func getUUID(at index: Int) -> UUID? {
+        var uuid: uuid_t = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        return viewBytes(at: index, length: MemoryLayout.size(ofValue: uuid)).map { bufferBytes in
+            withUnsafeMutableBytes(of: &uuid) { target in
+                precondition(target.count <= bufferBytes.count)
+                target.copyBytes(from: bufferBytes)
+            }
+            return UUID(uuid: uuid)
+        }
+    }
+
+    mutating func readUUID() -> UUID? {
+        guard readableBytes >= MemoryLayout<UUID>.size,
+              let value: UUID = getUUID(at: readerIndex) else { return nil }
+        moveReaderIndex(forwardBy: MemoryLayout<UUID>.size)
+
+        return value
     }
 }
