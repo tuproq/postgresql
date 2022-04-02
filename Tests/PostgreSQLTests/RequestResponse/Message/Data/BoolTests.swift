@@ -9,7 +9,7 @@ final class BoolTests: BaseTests {
         XCTAssertEqual(Bool.psqlType, .bool)
     }
 
-    func testInitWithValidInputs() {
+    func testInitWithValidValues() {
         // Arrange
         let values = [false, true]
 
@@ -26,7 +26,7 @@ final class BoolTests: BaseTests {
         }
     }
 
-    func testInitWithInvalidInputs() {
+    func testInitWithInvalidValues() {
         // Arrange
         let formats = DataFormat.allCases
         let type: DataType = .bool
