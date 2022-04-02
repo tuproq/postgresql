@@ -1,10 +1,10 @@
 import NIOCore
 
 final class FetchRequest {
-    var columns: [String]
-    var result: [[String: Any?]] = .init()
+    var columns: [Column]
+    var result: [[String: Codable?]] = .init()
 
-    init(columns: [String]) {
+    init(columns: [Column]) {
         self.columns = columns
     }
 }
