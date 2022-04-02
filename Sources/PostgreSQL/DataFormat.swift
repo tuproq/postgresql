@@ -1,4 +1,4 @@
-public enum DataFormat: Int16, CustomStringConvertible {
+public enum DataFormat: Int16, CaseIterable, CustomStringConvertible {
     case binary = 1
     case text = 0
 
