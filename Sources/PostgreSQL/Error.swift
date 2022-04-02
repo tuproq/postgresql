@@ -44,3 +44,7 @@ enum ErrorType: CustomStringConvertible {
         }
     }
 }
+
+func error(_ errorType: ErrorType) -> PostgreSQLError {
+    PostgreSQLError(errorType)
+}
