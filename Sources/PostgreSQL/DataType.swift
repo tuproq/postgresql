@@ -1,4 +1,4 @@
-public enum DataType: Int32, CustomStringConvertible, Equatable {
+public enum DataType: Int32, CaseIterable, CustomStringConvertible, Equatable {
     case null = 0
     case bool = 16
     case bytea = 17
