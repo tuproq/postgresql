@@ -22,6 +22,7 @@ let package = Package(
         .target(name: "PostgreSQL", dependencies: [
             .product(name: "Logging", package: "swift-log"),
             .product(name: "NIO", package: "swift-nio"),
+            .product(name: "NIOFoundationCompat", package: "swift-nio"),
             .product(name: "NIOSSL", package: "swift-nio-ssl")
         ]),
         .testTarget(name: "PostgreSQLTests", dependencies: [
