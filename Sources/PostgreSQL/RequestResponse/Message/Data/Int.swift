@@ -66,3 +66,44 @@ extension Int32: Codable {
         }
     }
 }
+
+extension Int64: Codable {
+    public static var psqlType: DataType { .int8 }
+
+    public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
+        switch (format, type) {
+        case (.binary, .int2):
+            guard buffer.readableBytes == 2, let value = buffer.readInteger(as: Int16.self) else {
+                throw error(.invalidData(format: format, type: type))
+            }
+            self = Int64(value)
+        case (.binary, .int4):
+            guard buffer.readableBytes == 4, let value = buffer.readInteger(as: Int32.self) else {
+                throw error(.invalidData(format: format, type: type))
+            }
+            self = Int64(value)
+        case (.binary, .int8):
+            guard buffer.readableBytes == 8, let value = buffer.readInteger(as: Int64.self) else {
+                throw error(.invalidData(format: format, type: type))
+            }
+            self = value
+        case (.text, .int2), (.text, .int4), (.text, .int8):
+            guard let string = buffer.readString(), let value = Int64(string) else {
+                throw error(.invalidData(format: format, type: type))
+            }
+            self = value
+        default: throw error(.invalidDataType(type))
+        }
+    }
+
+    public init(buffer: inout ByteBuffer, format: DataFormat = Self.psqlFormat) throws {
+        try self.init(buffer: &buffer, format: format, type: Self.psqlType)
+    }
+
+    public func encode(into buffer: inout ByteBuffer, with format: DataFormat) {
+        switch format {
+        case .binary: buffer.writeInteger(self, as: Int64.self)
+        case .text: buffer.writeString(String(self))
+        }
+    }
+}
