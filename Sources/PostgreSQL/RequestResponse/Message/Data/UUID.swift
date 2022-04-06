@@ -10,11 +10,9 @@ extension UUID: Codable {
             guard let uuid = buffer.readUUID() else { throw error(.invalidData(format: format, type: type)) }
             self = uuid
         case .text, .varchar:
-            let count = 36
-            guard buffer.readableBytes == count,
-                  let uuid = buffer.readString(length: count).flatMap({ UUID(uuidString: $0) }) else {
-                      throw error(.invalidData(format: format, type: type))
-                  }
+            guard buffer.readableBytes == 36, let uuid = buffer.readString().flatMap({ UUID(uuidString: $0) }) else {
+                throw error(.invalidData(format: format, type: type))
+            }
             self = uuid
         default: throw error(.invalidDataType(type))
         }
