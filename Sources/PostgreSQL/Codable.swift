@@ -16,13 +16,21 @@ public protocol Encodable {
     static var psqlFormat: DataFormat { get }
     static var psqlType: DataType { get }
 
-    func encode(into buffer: inout ByteBuffer, with format: DataFormat)
+    func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType)
 }
 
 extension Encodable {
     public static var psqlFormat: DataFormat { .binary }
 
     public func encode(into buffer: inout ByteBuffer) {
-        encode(into: &buffer, with: Self.psqlFormat)
+        encode(into: &buffer, format: Self.psqlFormat, type: Self.psqlType)
+    }
+
+    public func encode(into buffer: inout ByteBuffer, format: DataFormat) {
+        encode(into: &buffer, format: format, type: Self.psqlType)
+    }
+
+    public func encode(into buffer: inout ByteBuffer, type: DataType) {
+        encode(into: &buffer, format: Self.psqlFormat, type: type)
     }
 }

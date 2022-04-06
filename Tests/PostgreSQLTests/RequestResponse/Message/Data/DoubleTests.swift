@@ -41,7 +41,7 @@ final class DoubleTests: BaseTests {
             let value = 2.2
             var expectedValue: Double?
             var buffer = ByteBuffer()
-            value.encode(into: &buffer, with: format)
+            value.encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertNoThrow(expectedValue = try Double(buffer: &buffer, format: format))
@@ -59,7 +59,7 @@ final class DoubleTests: BaseTests {
         for format in DataFormat.allCases {
             for (type, invalidValue) in invalidValues {
                 var buffer = ByteBuffer()
-                invalidValue.encode(into: &buffer, with: format)
+                invalidValue.encode(into: &buffer, format: format)
 
                 // Act/Assert
                 XCTAssertThrowsError(try Double(buffer: &buffer, format: format, type: type)) { error in

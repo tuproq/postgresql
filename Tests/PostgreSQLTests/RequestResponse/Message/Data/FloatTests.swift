@@ -41,7 +41,7 @@ final class FloatTests: BaseTests {
             let value: Float = 1.5
             var expectedValue: Float?
             var buffer = ByteBuffer()
-            value.encode(into: &buffer, with: format)
+            value.encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertNoThrow(expectedValue = try Float(buffer: &buffer, format: format))
@@ -59,7 +59,7 @@ final class FloatTests: BaseTests {
         for format in DataFormat.allCases {
             for (type, invalidValue) in invalidValues {
                 var buffer = ByteBuffer()
-                invalidValue.encode(into: &buffer, with: format)
+                invalidValue.encode(into: &buffer, format: format)
 
                 // Act/Assert
                 XCTAssertThrowsError(try Float(buffer: &buffer, format: format, type: type)) { error in

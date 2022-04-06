@@ -23,7 +23,7 @@ extension Int16: Codable {
         try self.init(buffer: &buffer, format: format, type: Self.psqlType)
     }
 
-    public func encode(into buffer: inout ByteBuffer, with format: DataFormat) {
+    public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) {
         switch format {
         case .binary: buffer.writeInteger(self, as: Int16.self)
         case .text: buffer.writeString(String(self))
@@ -59,7 +59,7 @@ extension Int32: Codable {
         try self.init(buffer: &buffer, format: format, type: Self.psqlType)
     }
 
-    public func encode(into buffer: inout ByteBuffer, with format: DataFormat) {
+    public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) {
         switch format {
         case .binary: buffer.writeInteger(self, as: Int32.self)
         case .text: buffer.writeString(String(self))
@@ -100,7 +100,7 @@ extension Int64: Codable {
         try self.init(buffer: &buffer, format: format, type: Self.psqlType)
     }
 
-    public func encode(into buffer: inout ByteBuffer, with format: DataFormat) {
+    public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) {
         switch format {
         case .binary: buffer.writeInteger(self, as: Int64.self)
         case .text: buffer.writeString(String(self))
@@ -147,7 +147,7 @@ extension Int: Codable {
         try self.init(buffer: &buffer, format: format, type: Self.psqlType)
     }
 
-    public func encode(into buffer: inout ByteBuffer, with format: DataFormat) {
+    public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) {
         switch format {
         case .binary: buffer.writeInteger(self, as: Int.self)
         case .text: buffer.writeString(String(self))

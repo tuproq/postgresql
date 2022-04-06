@@ -41,7 +41,7 @@ final class StringTests: BaseTests {
             let value = "text"
             var expectedValue: String?
             var buffer = ByteBuffer()
-            value.encode(into: &buffer, with: format)
+            value.encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertNoThrow(expectedValue = try String(buffer: &buffer, format: format))
@@ -58,7 +58,7 @@ final class StringTests: BaseTests {
         for format in DataFormat.allCases {
             for (type, invalidValue) in invalidValues {
                 var buffer = ByteBuffer()
-                invalidValue.encode(into: &buffer, with: format)
+                invalidValue.encode(into: &buffer, format: format)
 
                 // Act/Assert
                 XCTAssertThrowsError(try String(buffer: &buffer, format: format, type: type)) { error in

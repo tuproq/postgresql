@@ -27,7 +27,7 @@ extension Bool: Codable {
         try self.init(buffer: &buffer, format: format, type: Self.psqlType)
     }
 
-    public func encode(into buffer: inout ByteBuffer, with format: DataFormat) {
+    public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) {
         switch format {
         case .binary: buffer.writeInteger(self ? 1 : 0, as: UInt8.self)
         case .text: buffer.writeInteger(self ? UInt8(ascii: "t") : UInt8(ascii: "f"), as: UInt8.self)

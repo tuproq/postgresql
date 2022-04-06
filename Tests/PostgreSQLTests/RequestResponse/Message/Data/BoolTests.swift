@@ -17,7 +17,7 @@ final class BoolTests: BaseTests {
             for value in values {
                 var expectedValue: Bool?
                 var buffer = ByteBuffer()
-                value.encode(into: &buffer, with: format)
+                value.encode(into: &buffer, format: format)
 
                 // Act/Assert
                 XCTAssertNoThrow(expectedValue = try Bool(buffer: &buffer, format: format))
@@ -82,7 +82,7 @@ final class BoolTests: BaseTests {
                 // Act
                 let expectedValue = expectedValues[format]?[index]
                 var buffer = ByteBuffer()
-                value.encode(into: &buffer, with: format)
+                value.encode(into: &buffer, format: format)
 
                 // Assert
                 XCTAssertEqual(buffer.readableBytes, 1)

@@ -13,7 +13,7 @@ extension Data: Codable {
         try self.init(buffer: &buffer, format: format, type: Self.psqlType)
     }
 
-    public func encode(into buffer: inout ByteBuffer, with format: DataFormat) {
+    public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) {
         buffer.writeBytes(self)
     }
 }

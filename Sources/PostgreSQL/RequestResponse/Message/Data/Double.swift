@@ -28,7 +28,7 @@ extension Double: Codable {
         try self.init(buffer: &buffer, format: format, type: Self.psqlType)
     }
 
-    public func encode(into buffer: inout ByteBuffer, with format: DataFormat) {
+    public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) {
         switch format {
         case .binary: buffer.writeDouble(self)
         case .text: buffer.writeString(String(self))

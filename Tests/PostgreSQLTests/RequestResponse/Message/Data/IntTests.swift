@@ -71,7 +71,7 @@ final class IntTests: BaseTests {
         for format in DataFormat.allCases {
             // Arrange
             buffer = ByteBuffer()
-            Int16(value).encode(into: &buffer, with: format)
+            Int16(value).encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertNoThrow(expectedValue = Int(try Int16(buffer: &buffer, format: format, type: .int2)))
@@ -79,7 +79,7 @@ final class IntTests: BaseTests {
 
             // Arrange
             buffer = ByteBuffer()
-            Int16(value).encode(into: &buffer, with: format)
+            Int16(value).encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertNoThrow(expectedValue = Int(try Int16(buffer: &buffer, format: format)))
@@ -87,7 +87,7 @@ final class IntTests: BaseTests {
 
             // Arrange
             buffer = ByteBuffer()
-            Int16(value).encode(into: &buffer, with: format)
+            Int16(value).encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertNoThrow(expectedValue = Int(try Int32(buffer: &buffer, format: format, type: .int2)))
@@ -95,7 +95,7 @@ final class IntTests: BaseTests {
 
             // Arrange
             buffer = ByteBuffer()
-            Int32(value).encode(into: &buffer, with: format)
+            Int32(value).encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertNoThrow(expectedValue = Int(try Int32(buffer: &buffer, format: format, type: .int4)))
@@ -103,7 +103,7 @@ final class IntTests: BaseTests {
 
             // Arrange
             buffer = ByteBuffer()
-            Int32(value).encode(into: &buffer, with: format)
+            Int32(value).encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertNoThrow(expectedValue = Int(try Int32(buffer: &buffer, format: format)))
@@ -111,7 +111,7 @@ final class IntTests: BaseTests {
 
             // Arrange
             buffer = ByteBuffer()
-            Int16(value).encode(into: &buffer, with: format)
+            Int16(value).encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertNoThrow(expectedValue = Int(try Int64(buffer: &buffer, format: format, type: .int2)))
@@ -119,7 +119,7 @@ final class IntTests: BaseTests {
 
             // Arrange
             buffer = ByteBuffer()
-            Int32(value).encode(into: &buffer, with: format)
+            Int32(value).encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertNoThrow(expectedValue = Int(try Int64(buffer: &buffer, format: format, type: .int4)))
@@ -127,7 +127,7 @@ final class IntTests: BaseTests {
 
             // Arrange
             buffer = ByteBuffer()
-            Int64(value).encode(into: &buffer, with: format)
+            Int64(value).encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertNoThrow(expectedValue = Int(try Int64(buffer: &buffer, format: format, type: .int8)))
@@ -135,7 +135,7 @@ final class IntTests: BaseTests {
 
             // Arrange
             buffer = ByteBuffer()
-            Int64(value).encode(into: &buffer, with: format)
+            Int64(value).encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertNoThrow(expectedValue = Int(try Int64(buffer: &buffer, format: format)))
@@ -143,7 +143,7 @@ final class IntTests: BaseTests {
 
             // Arrange
             buffer = ByteBuffer()
-            Int16(value).encode(into: &buffer, with: format)
+            Int16(value).encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertNoThrow(expectedValue = try Int(buffer: &buffer, format: format, type: .int2))
@@ -151,7 +151,7 @@ final class IntTests: BaseTests {
 
             // Arrange
             buffer = ByteBuffer()
-            Int32(value).encode(into: &buffer, with: format)
+            Int32(value).encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertNoThrow(expectedValue = try Int(buffer: &buffer, format: format, type: .int4))
@@ -159,7 +159,7 @@ final class IntTests: BaseTests {
 
             // Arrange
             buffer = ByteBuffer()
-            Int64(value).encode(into: &buffer, with: format)
+            Int64(value).encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertNoThrow(expectedValue = try Int(buffer: &buffer, format: format, type: .int8))
@@ -167,7 +167,7 @@ final class IntTests: BaseTests {
 
             // Arrange
             buffer = ByteBuffer()
-            value.encode(into: &buffer, with: format)
+            value.encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertNoThrow(expectedValue = try Int(buffer: &buffer, format: format))
@@ -182,7 +182,7 @@ final class IntTests: BaseTests {
 
         for format in DataFormat.allCases {
             buffer = ByteBuffer()
-            invalidValue.encode(into: &buffer, with: format)
+            invalidValue.encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertThrowsError(try Int16(buffer: &buffer, format: format, type: .int2)) { error in
