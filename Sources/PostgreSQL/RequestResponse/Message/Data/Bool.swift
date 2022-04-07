@@ -28,7 +28,7 @@ extension Bool: Codable {
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) {
         switch format {
         case .binary: buffer.writeInteger(self ? 1 : 0, as: UInt8.self)
-        case .text: buffer.writeInteger(self ? UInt8(ascii: "t") : UInt8(ascii: "f"), as: UInt8.self)
+        case .text: buffer.writeInteger(.init(ascii: self ? "t" : "f"), as: UInt8.self)
         }
     }
 }
