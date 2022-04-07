@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Message {
     struct StartupMessage: MessageType {
         let identifier: Identifier = .none

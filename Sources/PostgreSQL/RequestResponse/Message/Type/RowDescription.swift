@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Message {
     struct RowDescription: MessageType, Equatable {
         let identifier: Identifier = .rowDescription

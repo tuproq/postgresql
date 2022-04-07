@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Message {
     struct DataRow: MessageType {
         let identifier: Identifier = .dataRow

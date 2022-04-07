@@ -1,5 +1,3 @@
-import NIOCore
-
 extension UInt8: Codable {
     public static var psqlType: DataType { .char }
 

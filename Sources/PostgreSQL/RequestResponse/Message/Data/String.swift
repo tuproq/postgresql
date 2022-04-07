@@ -1,5 +1,4 @@
 import Foundation
-import NIOCore
 
 extension String: Codable {
     public static var psqlType: DataType { .text }

@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Message {
     struct NotificationResponse: MessageType {
         let identifier: Identifier = .notificationResponse

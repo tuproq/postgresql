@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Message {
     struct Execute: MessageType {
         let identifier: Identifier = .execute

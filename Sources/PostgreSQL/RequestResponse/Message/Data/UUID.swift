@@ -1,5 +1,4 @@
 import Foundation
-import NIOCore
 
 extension UUID: Codable {
     public static var psqlType: DataType { .uuid }

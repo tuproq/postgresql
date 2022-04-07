@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Bool: Codable {
     public static var psqlType: DataType { .bool }
 

@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Message {
     struct Bind: MessageType {
         let identifier: Identifier = .bind

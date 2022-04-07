@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Message {
     struct Close: MessageType {
         let identifier: Identifier = .close

@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Message {
     struct Describe: MessageType {
         let identifier: Identifier = .describe

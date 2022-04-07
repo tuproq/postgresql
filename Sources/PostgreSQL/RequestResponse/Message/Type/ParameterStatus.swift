@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Message {
     struct ParameterStatus: MessageType {
         let identifier: Identifier = .parameterStatus

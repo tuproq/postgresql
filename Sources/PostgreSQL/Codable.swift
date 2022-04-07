@@ -1,5 +1,3 @@
-import NIOCore
-
 public typealias Codable = Decodable & Encodable
 
 public protocol Decodable {

@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Message {
     struct CommandComplete: MessageType {
         let identifier: Identifier = .commandComplete

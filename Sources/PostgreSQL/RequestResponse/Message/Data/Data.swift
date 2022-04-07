@@ -1,5 +1,4 @@
 import Foundation
-import NIOCore
 import NIOFoundationCompat
 
 extension Data: Codable {

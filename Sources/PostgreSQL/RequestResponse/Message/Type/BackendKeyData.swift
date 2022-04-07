@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Message {
     struct BackendKeyData: MessageType {
         let identifier: Identifier = .backendKeyData

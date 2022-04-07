@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Float: Codable {
     public static var psqlType: DataType { .float4 }
 

@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Int16: Codable {
     public static var psqlType: DataType { .int2 }
 

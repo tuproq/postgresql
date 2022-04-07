@@ -1,5 +1,3 @@
-import NIOCore
-
 protocol MessageType {
     var identifier: Message.Identifier { get }
 

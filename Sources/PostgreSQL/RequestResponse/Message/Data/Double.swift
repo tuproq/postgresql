@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Double: Codable {
     public static var psqlType: DataType { .float8 }
 

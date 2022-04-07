@@ -1,5 +1,4 @@
 import Foundation
-import NIOCore
 
 extension Date: Codable {
     public static var psqlType: DataType { .timestamptz }

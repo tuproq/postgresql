@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Message {
     struct Password: MessageType {
         let identifier: Identifier = .password

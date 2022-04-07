@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Message {
     struct ReadyForQuery: MessageType {
         let identifier: Identifier = .readyForQuery

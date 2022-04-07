@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Message {
     struct SimpleQuery: MessageType {
         let identifier: Identifier = .simpleQuery

@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Message {
     struct SASLResponse: MessageType {
         let identifier: Identifier = .saslResponse

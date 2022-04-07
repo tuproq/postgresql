@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Message {
     struct SSLRequest: MessageType {
         let identifier: Identifier = .none
