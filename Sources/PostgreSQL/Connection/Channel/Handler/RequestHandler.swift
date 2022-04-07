@@ -1,14 +1,16 @@
+import Foundation
 import Logging
 import NIOCore
 
 final class RequestHandler: ChannelDuplexHandler {
     typealias InboundIn = Message
-    typealias OutboundIn = Request
+    typealias OutboundIn = [Request]
     typealias OutboundOut = Message
 
     let connection: Connection
     private var queue: [Request]
     private var lastFetchRequest: FetchRequest?
+    private var isExtendedQuery = false
 
     init(connection: Connection) {
         self.connection = connection
@@ -23,7 +25,7 @@ final class RequestHandler: ChannelDuplexHandler {
         case .rowDescription:
             do {
                 let rowDescription = try Message.RowDescription(buffer: &message.buffer)
-                lastFetchRequest = FetchRequest(columns: rowDescription.columns.map { $0.name })
+                lastFetchRequest = FetchRequest(columns: rowDescription.columns)
             } catch {
                 request.promise.fail(error)
                 return
@@ -33,17 +35,12 @@ final class RequestHandler: ChannelDuplexHandler {
                 let dataRow = try Message.DataRow(buffer: &message.buffer)
 
                 if let fetchRequest = lastFetchRequest {
-                    var dictionary = [String: Any?]()
+                    var dictionary = [String: Codable?]()
 
-                    for (index, value) in dataRow.values.enumerated() {
+                    for (index, buffer) in dataRow.values.enumerated() {
+                        var buffer = buffer
                         let column = fetchRequest.columns[index]
-
-                        if let value = value {
-                            let value = value.getString(at: 0, length: value.readableBytes)
-                            dictionary[column] = value
-                        } else {
-                            dictionary[column] = nil
-                        }
+                        dictionary[column.name] = try value(from: &buffer, for: column)
                     }
 
                     fetchRequest.result.append(dictionary)
@@ -70,13 +67,28 @@ final class RequestHandler: ChannelDuplexHandler {
                 connection.logger.error("\(error)")
             }
         case .readyForQuery:
-            queue.removeFirst()
+            var buffer = message.buffer
 
-            if let fetchRequest = lastFetchRequest {
-                let response = Response(message: message, fetchRequest: fetchRequest)
-                request.promise.succeed(response)
-                self.lastFetchRequest = nil
-                return
+            do {
+                let readyForQuery = try Message.ReadyForQuery(buffer: &buffer)
+
+                switch readyForQuery.status {
+                case .idle:
+                    queue.removeFirst()
+
+                    if let fetchRequest = lastFetchRequest {
+                        let response = Response(message: message, fetchRequest: fetchRequest)
+                        request.promise.succeed(response)
+                        self.lastFetchRequest = nil
+                        return
+                    }
+                case .transaction:
+                    break // TODO: handle
+                case .transactionFailed:
+                    break // TODO: handle
+                }
+            } catch {
+                connection.logger.error("\(error)")
             }
         case .noticeResponse:
             let buffer = message.buffer
@@ -87,17 +99,63 @@ final class RequestHandler: ChannelDuplexHandler {
             let error = MessageError(buffer.getString(at: 0, length: buffer.readableBytes) ?? "An unknown error.")
             request.promise.fail(error)
             return
+        case .parseComplete:
+            isExtendedQuery = true
+        case .bindComplete:
+            isExtendedQuery = true
+        case .commandComplete:
+            isExtendedQuery = true
+            var buffer = message.buffer
+
+            do {
+                let commandComplete = try Message.CommandComplete(buffer: &buffer)
+            } catch {
+                connection.logger.error("\(error)")
+            }
         default: break
         }
 
-        if lastFetchRequest == nil {
+        if lastFetchRequest == nil && !isExtendedQuery {
             request.promise.succeed(Response(message: message))
         }
     }
 
     func write(context: ChannelHandlerContext, data: NIOAny, promise: EventLoopPromise<Void>?) {
-        let request = unwrapOutboundIn(data)
-        queue.append(request)
-        context.write(wrapOutboundOut(request.message), promise: promise)
+        let requests = unwrapOutboundIn(data)
+        
+        for request in requests {
+            queue.append(request)
+            context.write(wrapOutboundOut(request.message), promise: promise)
+        }
+    }
+
+    private func value(from buffer: inout ByteBuffer?, for column: Column) throws -> Codable? {
+        if var buffer = buffer {
+            let format = column.dataFormat
+            let type = column.dataType
+
+            switch type {
+            case .bool: return try Bool(buffer: &buffer, format: format, type: type)
+            case .bytea: return try Data(buffer: &buffer, format: format, type: type)
+            case .char: return try UInt8(buffer: &buffer, format: format, type: type)
+            case .float4: return try Float(buffer: &buffer, format: format, type: type)
+            case .float8: return try Double(buffer: &buffer, format: format, type: type)
+            case .int2: return try Int16(buffer: &buffer, format: format, type: type)
+            case .int4: return try Int32(buffer: &buffer, format: format, type: type)
+            case .int8: return try Int64(buffer: &buffer, format: format, type: type)
+            case .name: return try String(buffer: &buffer, format: format, type: type)
+            case .timestamp, .timestamptz, .date: return try Date(buffer: &buffer, format: format, type: type)
+            case .uuid: return try UUID(buffer: &buffer, format: format, type: type)
+            case .varchar, .text:
+                do {
+                    return try UUID(buffer: &buffer, format: format, type: type)
+                } catch {
+                    return try String(buffer: &buffer, format: format, type: type)
+                }
+            default: return buffer.readString()
+            }
+        }
+
+        return nil
     }
 }

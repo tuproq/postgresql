@@ -5,7 +5,7 @@ import NIOPosix
 public final class Connection {
     public let option: Option
     public let logger: Logger
-    public internal(set) var serverParameters: [String: String] = .init()
+    public internal(set) var serverParameters = [String: String]()
     var backendKeyData: Message.BackendKeyData?
     private var group: EventLoopGroup?
     private var channel: Channel?
@@ -28,14 +28,30 @@ public final class Connection {
             try await channel.pipeline.addHandler(RequestHandler(connection: self)).get()
             self.channel = channel
 
-            let message = try await startUp(in: channel)
+            if option.requiresTLS {
+                let message = try await sslRequest(in: channel)
 
-            if false { // TODO: check if password is needed to authenticate
-                let message = try await authenticate(in: channel)
+                if message.identifier == .sslSupported {
+                    // TODO: implement SSL handshake
+                } else {
+                    let message = try await _connect(in: channel)
+                }
+            } else {
+                let message = try await _connect(in: channel)
             }
         }
 
         return self
+    }
+
+    private func _connect(in channel: Channel) async throws -> Message {
+        let message = try await startupMessage(in: channel)
+
+        if false { // TODO: check if password is needed to authenticate
+            let message = try await authenticate(in: channel)
+        }
+
+        return message
     }
 
     public func close() async throws {
@@ -51,10 +67,9 @@ public final class Connection {
     }
 
     @discardableResult
-    public func simpleQuery(_ string: String) async throws -> [[String: Any?]] {
+    public func simpleQuery(_ string: String) async throws -> [[String: Codable?]] {
         let messageType = Message.SimpleQuery(string)
-        let channel = channel!
-        let response = try await send(type: messageType, in: channel)
+        let response = try await send(types: [messageType], in: channel!)
 
         if let fetchRequest = response.fetchRequest {
             return fetchRequest.result
@@ -62,26 +77,103 @@ public final class Connection {
 
         return .init()
     }
+
+    @discardableResult
+    public func query(
+        _ string: String,
+        name: String = "",
+        parameters: Codable?...
+    ) async throws -> [[String: Codable?]] {
+        try await query(string, name: name, parameters: parameters)
+    }
+
+    @discardableResult
+    public func query(
+        _ string: String,
+        name: String = "",
+        parameters: [Codable?] = .init()
+    ) async throws -> [[String: Codable?]] {
+        let formats: [DataFormat] = parameters.map {
+            if let parameter = $0 { return type(of: parameter).psqlFormat }
+            return .binary
+        }
+        let types: [DataType] = parameters.map {
+            if let parameter = $0 { return type(of: parameter).psqlType }
+            return .null
+        }
+        let parameters: [ByteBuffer?] = parameters.map {
+            var buffer = ByteBuffer()
+            $0?.encode(into: &buffer)
+
+            return buffer
+        }
+        let command: Message.Describe.Command = name.isEmpty ? .portal : .statement
+        let response = try await send(
+            types: [
+                Message.Parse(statementName: name, query: string, parameterTypes: types),
+                Message.Bind(
+                    statementName: name,
+                    parameterDataFormats: formats,
+                    parameters: parameters,
+                    resultDataFormats: formats
+                ),
+                Message.Describe(command: command),
+                Message.Execute(),
+                Message.Sync()
+            ],
+            in: channel!
+        )
+
+        if let fetchRequest = response.fetchRequest {
+            return fetchRequest.result
+        }
+
+        return .init()
+    }
+
+    public func beginTransaction() async throws {
+        try await simpleQuery("BEGIN;")
+    }
+
+    public func commitTransaction() async throws {
+        try await simpleQuery("COMMIT;")
+    }
+
+    public func rollbackTransaction() async throws {
+        try await simpleQuery("ROLLBACK;")
+    }
 }
 
 extension Connection {
-    private func startUp(in channel: Channel) async throws -> Message {
+    private func sslRequest(in channel: Channel) async throws -> Message {
+        let messageType = Message.SSLRequest()
+        return try await send(types: [messageType], in: channel).message
+    }
+
+    private func startupMessage(in channel: Channel) async throws -> Message {
         let messageType = Message.StartupMessage(user: option.username ?? "", database: option.database)
-        return try await send(type: messageType, in: channel).message
+        return try await send(types: [messageType], in: channel).message
     }
 
     private func authenticate(in channel: Channel) async throws -> Message {
         let messageType = Message.Password(option.password ?? "")
-        return try await send(type: messageType, in: channel).message
+        return try await send(types: [messageType], in: channel).message
     }
 
-    private func send(type: MessageType, in channel: Channel) async throws -> Response {
-        var buffer = ByteBufferAllocator().buffer(capacity: 0)
-        type.write(into: &buffer)
-        let message = Message(identifier: type.identifier, buffer: buffer)
+    @discardableResult
+    private func send(types: [MessageType], in channel: Channel) async throws -> Response {
+        var requests = [Request]()
         let promise = channel.eventLoop.makePromise(of: Response.self)
-        let request = Request(message: message, promise: promise)
-        try await channel.writeAndFlush(request).get()
+
+        for type in types {
+            var buffer = ByteBuffer()
+            type.write(into: &buffer)
+            let message = Message(identifier: type.identifier, buffer: buffer)
+            let request = Request(message: message, promise: promise)
+            requests.append(request)
+        }
+
+        try await channel.writeAndFlush(requests).get()
 
         return try await promise.futureResult.get()
     }
