@@ -21,7 +21,7 @@ extension Message {
             self.resultDataFormats = resultDataFormats
         }
 
-        func write(into buffer: inout ByteBuffer) {
+        func encode(into buffer: inout ByteBuffer) {
             buffer.writeNullTerminatedString(portalName)
             buffer.writeNullTerminatedString(statementName)
             buffer.writeArray(parameterDataFormats)

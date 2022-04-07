@@ -9,7 +9,7 @@ extension Message {
             self.name = name
         }
 
-        func write(into buffer: inout ByteBuffer) {
+        func encode(into buffer: inout ByteBuffer) {
             buffer.writeInteger(command.rawValue)
             buffer.writeNullTerminatedString(name)
         }

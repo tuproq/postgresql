@@ -11,7 +11,7 @@ extension Message {
             self.data = buffer.readBytes(length: buffer.readableBytes) ?? .init()
         }
 
-        func write(into buffer: inout ByteBuffer) {
+        func encode(into buffer: inout ByteBuffer) {
             buffer.writeBytes(data)
         }
     }

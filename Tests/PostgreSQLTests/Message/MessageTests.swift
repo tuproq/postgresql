@@ -6,7 +6,7 @@ final class MessageTests: BaseTests {
         // Arrange
         let messageType = Message.StartupMessage(user: "user", database: "database")
         var buffer = bufferAllocator.buffer(capacity: 0)
-        messageType.write(into: &buffer)
+        messageType.encode(into: &buffer)
 
         // Act
         let message = Message(identifier: messageType.identifier, buffer: buffer)

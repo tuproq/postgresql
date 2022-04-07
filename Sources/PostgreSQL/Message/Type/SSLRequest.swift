@@ -3,7 +3,7 @@ extension Message {
         let identifier: Identifier = .none
         var code: Int32 = 80877103
 
-        func write(into buffer: inout ByteBuffer) {
+        func encode(into buffer: inout ByteBuffer) {
             buffer.writeInteger(code)
         }
     }

@@ -32,7 +32,7 @@ final class MessageStartupMessageTests: BaseTests {
         expectedBuffer.writeNullTerminatedString("")
 
         // Act
-        messageType.write(into: &buffer)
+        messageType.encode(into: &buffer)
 
         // Assert
         XCTAssertEqual(buffer, expectedBuffer)

@@ -31,7 +31,7 @@ final class MessageCloseTests: BaseTests {
         expectedBuffer.writeNullTerminatedString(portalOrStatementName)
 
         // Act
-        messageType.write(into: &buffer)
+        messageType.encode(into: &buffer)
 
         // Assert
         XCTAssertEqual(buffer, expectedBuffer)

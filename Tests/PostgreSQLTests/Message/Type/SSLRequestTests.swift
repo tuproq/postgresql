@@ -20,7 +20,7 @@ final class MessageSSLRequestTests: BaseTests {
         expectedBuffer.writeInteger(messageType.code)
 
         // Act
-        messageType.write(into: &buffer)
+        messageType.encode(into: &buffer)
 
         // Assert
         XCTAssertEqual(buffer, expectedBuffer)

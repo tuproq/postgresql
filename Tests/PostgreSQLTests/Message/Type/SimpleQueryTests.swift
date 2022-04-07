@@ -22,7 +22,7 @@ final class MessageSimpleQueryTests: BaseTests {
         expectedBuffer.writeNullTerminatedString(messageType.string)
 
         // Act
-        messageType.write(into: &buffer)
+        messageType.encode(into: &buffer)
 
         // Assert
         XCTAssertEqual(buffer, expectedBuffer)

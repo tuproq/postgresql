@@ -25,7 +25,7 @@ final class MessageExecuteTests: BaseTests {
         expectedBuffer.writeInteger(maxRows)
 
         // Act
-        messageType.write(into: &buffer)
+        messageType.encode(into: &buffer)
 
         // Assert
         XCTAssertEqual(buffer, expectedBuffer)

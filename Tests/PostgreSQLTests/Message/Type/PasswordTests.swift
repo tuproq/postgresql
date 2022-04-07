@@ -22,7 +22,7 @@ final class MessagePasswordTests: BaseTests {
         expectedBuffer.writeNullTerminatedString(messageType.value)
 
         // Act
-        messageType.write(into: &buffer)
+        messageType.encode(into: &buffer)
 
         // Assert
         XCTAssertEqual(buffer, expectedBuffer)

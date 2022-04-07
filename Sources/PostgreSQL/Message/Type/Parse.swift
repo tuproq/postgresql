@@ -11,7 +11,7 @@ extension Message {
             self.parameterTypes = parameterTypes
         }
 
-        func write(into buffer: inout ByteBuffer) {
+        func encode(into buffer: inout ByteBuffer) {
             buffer.writeNullTerminatedString(statementName)
             buffer.writeNullTerminatedString(query)
             buffer.writeInteger(numericCast(parameterTypes.count), as: Int16.self)

@@ -7,7 +7,7 @@ extension Message {
             self.string = string
         }
 
-        func write(into buffer: inout ByteBuffer) {
+        func encode(into buffer: inout ByteBuffer) {
             buffer.writeNullTerminatedString(string)
         }
     }

@@ -24,7 +24,7 @@ extension Message {
             self.replication = replication
         }
 
-        func write(into buffer: inout ByteBuffer) {
+        func encode(into buffer: inout ByteBuffer) {
             buffer.writeInteger(protocolVersion)
             buffer.writeNullTerminatedString("user")
             buffer.writeNullTerminatedString(user)

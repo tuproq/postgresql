@@ -26,7 +26,7 @@ final class MessageSASLResponseTests: BaseTests {
         expectedBuffer.writeBytes(data)
 
         // Act
-        messageType.write(into: &buffer)
+        messageType.encode(into: &buffer)
 
         // Assert
         XCTAssertEqual(buffer, expectedBuffer)

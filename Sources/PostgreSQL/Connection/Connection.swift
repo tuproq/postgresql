@@ -167,7 +167,7 @@ extension Connection {
 
         for type in types {
             var buffer = ByteBuffer()
-            type.write(into: &buffer)
+            type.encode(into: &buffer)
             let message = Message(identifier: type.identifier, buffer: buffer)
             let request = Request(message: message, promise: promise)
             requests.append(request)

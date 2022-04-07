@@ -9,7 +9,7 @@ extension Message {
             self.maxRows = maxRows
         }
 
-        func write(into buffer: inout ByteBuffer) {
+        func encode(into buffer: inout ByteBuffer) {
             buffer.writeNullTerminatedString(portalName)
             buffer.writeInteger(maxRows)
         }

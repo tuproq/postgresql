@@ -29,7 +29,7 @@ final class MessageParseTests: BaseTests {
         for parameterType in parameterTypes { expectedBuffer.writeInteger(parameterType.rawValue) }
 
         // Act
-        messageType.write(into: &buffer)
+        messageType.encode(into: &buffer)
 
         // Assert
         XCTAssertEqual(buffer, expectedBuffer)

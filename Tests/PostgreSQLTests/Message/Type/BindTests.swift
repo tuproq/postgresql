@@ -57,7 +57,7 @@ final class MessageBindTests: BaseTests {
         expectedBuffer.writeArray(messageType.resultDataFormats)
 
         // Act
-        messageType.write(into: &buffer)
+        messageType.encode(into: &buffer)
 
         // Assert
         XCTAssertEqual(buffer, expectedBuffer)
@@ -85,7 +85,7 @@ final class MessageBindTests: BaseTests {
         expectedBuffer.writeArray(messageType.resultDataFormats)
 
         // Act
-        messageType.write(into: &buffer)
+        messageType.encode(into: &buffer)
 
         // Assert
         XCTAssertEqual(buffer, expectedBuffer)
