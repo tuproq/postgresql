@@ -19,9 +19,9 @@ final class MessageStartupMessageTests: BaseTests {
     func testWrite() {
         // Arrange
         let messageType = Message.StartupMessage(user: user)
-        var buffer = bufferAllocator.buffer(capacity: 0)
+        var buffer = ByteBuffer()
 
-        var expectedBuffer = bufferAllocator.buffer(capacity: 0)
+        var expectedBuffer = ByteBuffer()
         expectedBuffer.writeInteger(messageType.protocolVersion)
         expectedBuffer.writeNullTerminatedString("user")
         expectedBuffer.writeNullTerminatedString(messageType.user)

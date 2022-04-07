@@ -4,7 +4,7 @@ import XCTest
 final class MessageCommandCompleteTests: BaseTests {
     func testInit() {
         // Arrange
-        var buffer = bufferAllocator.buffer(capacity: 0)
+        var buffer = ByteBuffer()
 
         // Act/Assert
         XCTAssertThrowsError(try Message.CommandComplete(buffer: &buffer)) { error in
@@ -13,7 +13,7 @@ final class MessageCommandCompleteTests: BaseTests {
 
         // Arrange
         let command = "SELECT"
-        buffer = bufferAllocator.buffer(capacity: 0)
+        buffer = ByteBuffer()
         buffer.writeNullTerminatedString(command)
 
         // Act

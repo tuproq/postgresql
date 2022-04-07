@@ -24,9 +24,9 @@ final class MessageCloseTests: BaseTests {
     func testWrite() {
         // Arrange
         let messageType = Message.Close(command: command, name: portalOrStatementName)
-        var buffer = bufferAllocator.buffer(capacity: 0)
+        var buffer = ByteBuffer()
 
-        var expectedBuffer = bufferAllocator.buffer(capacity: 0)
+        var expectedBuffer = ByteBuffer()
         expectedBuffer.writeInteger(command.rawValue)
         expectedBuffer.writeNullTerminatedString(portalOrStatementName)
 

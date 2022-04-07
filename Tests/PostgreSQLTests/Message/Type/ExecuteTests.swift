@@ -18,9 +18,9 @@ final class MessageExecuteTests: BaseTests {
     func testWrite() {
         // Arrange
         let messageType = Message.Execute(portalName: portalName, maxRows: maxRows)
-        var buffer = bufferAllocator.buffer(capacity: 0)
+        var buffer = ByteBuffer()
 
-        var expectedBuffer = bufferAllocator.buffer(capacity: 0)
+        var expectedBuffer = ByteBuffer()
         expectedBuffer.writeNullTerminatedString(portalName)
         expectedBuffer.writeInteger(maxRows)
 

@@ -16,9 +16,9 @@ final class MessagePasswordTests: BaseTests {
     func testWrite() {
         // Arrange
         let messageType = Message.Password(password)
-        var buffer = bufferAllocator.buffer(capacity: 0)
+        var buffer = ByteBuffer()
 
-        var expectedBuffer = bufferAllocator.buffer(capacity: 0)
+        var expectedBuffer = ByteBuffer()
         expectedBuffer.writeNullTerminatedString(messageType.value)
 
         // Act

@@ -5,7 +5,7 @@ final class MessageTests: BaseTests {
     func testInit() {
         // Arrange
         let messageType = Message.StartupMessage(user: "user", database: "database")
-        var buffer = bufferAllocator.buffer(capacity: 0)
+        var buffer = ByteBuffer()
         messageType.encode(into: &buffer)
 
         // Act

@@ -4,7 +4,7 @@ import XCTest
 final class MessageNotificationResponseTests: BaseTests {
     func testInit() {
         // Arrange
-        var buffer = bufferAllocator.buffer(capacity: 0)
+        var buffer = ByteBuffer()
 
         // Act/Assert
         XCTAssertThrowsError(try Message.NotificationResponse(buffer: &buffer)) { error in
@@ -13,7 +13,7 @@ final class MessageNotificationResponseTests: BaseTests {
 
         // Arrange
         let processID: Int32 = 1
-        buffer = bufferAllocator.buffer(capacity: 0)
+        buffer = ByteBuffer()
         buffer.writeInteger(processID)
 
         // Act/Assert
@@ -23,7 +23,7 @@ final class MessageNotificationResponseTests: BaseTests {
 
         // Arrange
         let channel = "channel"
-        buffer = bufferAllocator.buffer(capacity: 0)
+        buffer = ByteBuffer()
         buffer.writeInteger(processID)
         buffer.writeNullTerminatedString(channel)
 
@@ -34,7 +34,7 @@ final class MessageNotificationResponseTests: BaseTests {
 
         // Arrange
         let payload = "payload"
-        buffer = bufferAllocator.buffer(capacity: 0)
+        buffer = ByteBuffer()
         buffer.writeInteger(processID)
         buffer.writeNullTerminatedString(channel)
         buffer.writeNullTerminatedString(payload)

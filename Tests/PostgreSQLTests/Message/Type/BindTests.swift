@@ -1,4 +1,3 @@
-import NIOCore
 @testable import PostgreSQL
 import XCTest
 
@@ -12,7 +11,7 @@ final class MessageBindTests: BaseTests {
     override func setUp() {
         super.setUp()
 
-        var parameter = bufferAllocator.buffer(capacity: 0)
+        var parameter = ByteBuffer()
         parameter.writeInteger(1)
         parameters = [parameter]
     }
@@ -45,9 +44,9 @@ final class MessageBindTests: BaseTests {
             parameters: [nil],
             resultDataFormats: resultDataFormats
         )
-        var buffer = bufferAllocator.buffer(capacity: 0)
+        var buffer = ByteBuffer()
 
-        var expectedBuffer = bufferAllocator.buffer(capacity: 0)
+        var expectedBuffer = ByteBuffer()
         expectedBuffer.writeNullTerminatedString(messageType.portalName)
         expectedBuffer.writeNullTerminatedString(messageType.statementName)
         expectedBuffer.writeArray(messageType.parameterDataFormats)
@@ -70,9 +69,9 @@ final class MessageBindTests: BaseTests {
             parameters: parameters,
             resultDataFormats: resultDataFormats
         )
-        buffer = bufferAllocator.buffer(capacity: 0)
+        buffer = ByteBuffer()
 
-        expectedBuffer = bufferAllocator.buffer(capacity: 0)
+        expectedBuffer = ByteBuffer()
         expectedBuffer.writeNullTerminatedString(messageType.portalName)
         expectedBuffer.writeNullTerminatedString(messageType.statementName)
         expectedBuffer.writeArray(messageType.parameterDataFormats)

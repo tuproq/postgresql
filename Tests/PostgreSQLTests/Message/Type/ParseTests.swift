@@ -20,9 +20,9 @@ final class MessageParseTests: BaseTests {
     func testWrite() {
         // Arrange
         let messageType = Message.Parse(statementName: statementName, query: query, parameterTypes: parameterTypes)
-        var buffer = bufferAllocator.buffer(capacity: 0)
+        var buffer = ByteBuffer()
 
-        var expectedBuffer = bufferAllocator.buffer(capacity: 0)
+        var expectedBuffer = ByteBuffer()
         expectedBuffer.writeNullTerminatedString(statementName)
         expectedBuffer.writeNullTerminatedString(query)
         expectedBuffer.writeInteger(numericCast(parameterTypes.count), as: Int16.self)

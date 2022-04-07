@@ -14,9 +14,9 @@ final class MessageSSLRequestTests: BaseTests {
     func testWrite() {
         // Arrange
         let messageType = Message.SSLRequest()
-        var buffer = bufferAllocator.buffer(capacity: 0)
+        var buffer = ByteBuffer()
 
-        var expectedBuffer = bufferAllocator.buffer(capacity: 0)
+        var expectedBuffer = ByteBuffer()
         expectedBuffer.writeInteger(messageType.code)
 
         // Act

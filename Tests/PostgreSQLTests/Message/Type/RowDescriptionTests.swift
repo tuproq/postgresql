@@ -1,11 +1,10 @@
-import NIOCore
 @testable import PostgreSQL
 import XCTest
 
 final class MessageRowDescriptionTests: BaseTests {
     func testInit() {
         // Arrange
-        var buffer = bufferAllocator.buffer(capacity: 0)
+        var buffer = ByteBuffer()
 
         // Act/Assert
         XCTAssertThrowsError(try Message.RowDescription(buffer: &buffer)) { error in
@@ -13,7 +12,7 @@ final class MessageRowDescriptionTests: BaseTests {
         }
 
         // Arrange
-        var columnBuffer = bufferAllocator.buffer(capacity: 0)
+        var columnBuffer = ByteBuffer()
         columnBuffer.writeNullTerminatedString("id")
         columnBuffer.writeInteger(Int32(1))
         columnBuffer.writeInteger(Int16(2))
@@ -24,7 +23,7 @@ final class MessageRowDescriptionTests: BaseTests {
 
         let columns: [Column] = [try! Column(buffer: &columnBuffer)]
 
-        buffer = bufferAllocator.buffer(capacity: 0)
+        buffer = ByteBuffer()
         buffer.writeArray(columns) { columnBuffer, column in
             columnBuffer.writeNullTerminatedString(column.name)
             columnBuffer.writeInteger(column.tableID)

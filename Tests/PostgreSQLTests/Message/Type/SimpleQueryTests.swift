@@ -16,9 +16,9 @@ final class MessageSimpleQueryTests: BaseTests {
     func testWrite() {
         // Arrange
         let messageType = Message.SimpleQuery(query)
-        var buffer = bufferAllocator.buffer(capacity: 0)
+        var buffer = ByteBuffer()
 
-        var expectedBuffer = bufferAllocator.buffer(capacity: 0)
+        var expectedBuffer = ByteBuffer()
         expectedBuffer.writeNullTerminatedString(messageType.string)
 
         // Act

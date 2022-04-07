@@ -6,7 +6,7 @@ final class MessageSASLResponseTests: BaseTests {
 
     func testInit() {
         // Arrange
-        var buffer = bufferAllocator.buffer(capacity: 0)
+        var buffer = ByteBuffer()
         buffer.writeBytes(data)
 
         // Act
@@ -20,9 +20,9 @@ final class MessageSASLResponseTests: BaseTests {
     func testWrite() {
         // Arrange
         let messageType = Message.SASLResponse(data: data)
-        var buffer = bufferAllocator.buffer(capacity: 0)
+        var buffer = ByteBuffer()
 
-        var expectedBuffer = bufferAllocator.buffer(capacity: 0)
+        var expectedBuffer = ByteBuffer()
         expectedBuffer.writeBytes(data)
 
         // Act

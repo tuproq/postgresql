@@ -4,7 +4,7 @@ import XCTest
 final class MessageBackendKeyDataTests: BaseTests {
     func testInit() {
         // Arrange
-        var buffer = bufferAllocator.buffer(capacity: 0)
+        var buffer = ByteBuffer()
 
         // Act/Assert
         XCTAssertThrowsError(try Message.BackendKeyData(buffer: &buffer)) { error in
@@ -13,7 +13,7 @@ final class MessageBackendKeyDataTests: BaseTests {
 
         // Arrange
         let processID: Int32 = 1
-        buffer = bufferAllocator.buffer(capacity: 0)
+        buffer = ByteBuffer()
         buffer.writeInteger(processID)
 
         // Act/Assert
@@ -23,7 +23,7 @@ final class MessageBackendKeyDataTests: BaseTests {
 
         // Arrange
         let secretKey: Int32 = 2
-        buffer = bufferAllocator.buffer(capacity: 0)
+        buffer = ByteBuffer()
         buffer.writeInteger(processID)
         buffer.writeInteger(secretKey)
 

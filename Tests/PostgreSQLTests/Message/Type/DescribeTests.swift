@@ -24,9 +24,9 @@ final class MessageDescribeTests: BaseTests {
     func testWrite() {
         // Arrange
         let messageType = Message.Describe(command: command, name: portalOrStatementName)
-        var buffer = bufferAllocator.buffer(capacity: 0)
+        var buffer = ByteBuffer()
 
-        var expectedBuffer = bufferAllocator.buffer(capacity: 0)
+        var expectedBuffer = ByteBuffer()
         expectedBuffer.writeInteger(command.rawValue)
         expectedBuffer.writeNullTerminatedString(portalOrStatementName)
 

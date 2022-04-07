@@ -4,7 +4,7 @@ import XCTest
 final class MessageParameterStatusTests: BaseTests {
     func testInit() {
         // Arrange
-        var buffer = bufferAllocator.buffer(capacity: 0)
+        var buffer = ByteBuffer()
 
         // Act/Assert
         XCTAssertThrowsError(try Message.ParameterStatus(buffer: &buffer)) { error in
@@ -13,7 +13,7 @@ final class MessageParameterStatusTests: BaseTests {
 
         // Arrange
         let name = "client_encoding"
-        buffer = bufferAllocator.buffer(capacity: 0)
+        buffer = ByteBuffer()
         buffer.writeNullTerminatedString(name)
 
         // Act/Assert
@@ -23,7 +23,7 @@ final class MessageParameterStatusTests: BaseTests {
 
         // Arrange
         let value = "UTF8"
-        buffer = bufferAllocator.buffer(capacity: 0)
+        buffer = ByteBuffer()
         buffer.writeNullTerminatedString(name)
         buffer.writeNullTerminatedString(value)
 

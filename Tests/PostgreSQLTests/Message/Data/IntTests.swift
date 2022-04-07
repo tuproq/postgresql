@@ -1,4 +1,3 @@
-import NIOCore
 @testable import PostgreSQL
 import XCTest
 

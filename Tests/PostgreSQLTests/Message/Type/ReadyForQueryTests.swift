@@ -4,7 +4,7 @@ import XCTest
 final class MessageReadyForQueryTests: BaseTests {
     func testInit() {
         // Arrange
-        var buffer = bufferAllocator.buffer(capacity: 0)
+        var buffer = ByteBuffer()
 
         // Act/Assert
         XCTAssertThrowsError(try Message.ReadyForQuery(buffer: &buffer)) { error in
@@ -13,7 +13,7 @@ final class MessageReadyForQueryTests: BaseTests {
 
         // Arrange
         let status: Message.ReadyForQuery.Status = .idle
-        buffer = bufferAllocator.buffer(capacity: 0)
+        buffer = ByteBuffer()
         buffer.writeInteger(status.rawValue)
 
         // Act

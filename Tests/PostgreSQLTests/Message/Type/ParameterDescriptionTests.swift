@@ -4,7 +4,7 @@ import XCTest
 final class MessageParameterDescriptionTests: BaseTests {
     func testInit() {
         // Arrange
-        var buffer = bufferAllocator.buffer(capacity: 0)
+        var buffer = ByteBuffer()
 
         // Act/Assert
         XCTAssertThrowsError(try Message.ParameterDescription(buffer: &buffer)) { error in
@@ -13,7 +13,7 @@ final class MessageParameterDescriptionTests: BaseTests {
 
         // Arrange
         let invalidDataType = -1
-        buffer = bufferAllocator.buffer(capacity: 0)
+        buffer = ByteBuffer()
         buffer.writeArray([invalidDataType])
 
         // Act/Assert
@@ -23,7 +23,7 @@ final class MessageParameterDescriptionTests: BaseTests {
 
         // Arrange
         let dataType: DataType = .int8
-        buffer = bufferAllocator.buffer(capacity: 0)
+        buffer = ByteBuffer()
         buffer.writeArray([dataType.rawValue])
 
         // Act
