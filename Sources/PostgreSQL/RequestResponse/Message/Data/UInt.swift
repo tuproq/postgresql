@@ -6,7 +6,7 @@ extension UInt8: Codable {
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
         switch type {
         case .bpchar, .char:
-            guard buffer.readableBytes == 1, let value = buffer.readInteger(as: UInt8.self) else {
+            guard buffer.readableBytes == 1, let value = buffer.readInteger(as: Self.self) else {
                 throw error(.invalidData(format: format, type: type))
             }
             self = value
@@ -19,6 +19,6 @@ extension UInt8: Codable {
     }
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) {
-        buffer.writeInteger(self, as: UInt8.self)
+        buffer.writeInteger(self, as: Self.self)
     }
 }

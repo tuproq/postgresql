@@ -9,14 +9,14 @@ extension Double: Codable {
             guard buffer.readableBytes == 4, let float = buffer.readFloat() else {
                 throw error(.invalidData(format: format, type: type))
             }
-            self = Double(float)
+            self = Self(float)
         case (.binary, .float8):
             guard buffer.readableBytes == 8, let double = buffer.readDouble() else {
                 throw error(.invalidData(format: format, type: type))
             }
             self = double
         case (.text, .float4), (.text, .float8):
-            guard let string = buffer.readString(), let value = Double(string) else {
+            guard let string = buffer.readString(), let value = Self(string) else {
                 throw error(.invalidData(format: format, type: type))
             }
             self = value

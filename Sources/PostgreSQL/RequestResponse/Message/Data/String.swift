@@ -28,5 +28,5 @@ extension String: Codable {
 }
 
 extension String {
-    var droppingLeadingSlash: String { first == "/" ? String(dropFirst()) : self }
+    var droppingLeadingSlash: String { first == "/" ? Self(dropFirst()) : self }
 }

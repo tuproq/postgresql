@@ -14,9 +14,9 @@ extension Float: Codable {
             guard buffer.readableBytes == 8, let double = buffer.readDouble() else {
                 throw error(.invalidData(format: format, type: type))
             }
-            self = Float(double)
+            self = Self(double)
         case (.text, .float4), (.text, .float8):
-            guard let string = buffer.readString(), let value = Float(string) else {
+            guard let string = buffer.readString(), let value = Self(string) else {
                 throw error(.invalidData(format: format, type: type))
             }
             self = value
