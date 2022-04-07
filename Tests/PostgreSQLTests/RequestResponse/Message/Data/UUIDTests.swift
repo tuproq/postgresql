@@ -38,8 +38,8 @@ final class UUIDTests: BaseTests {
 
         // Arrange
         let values: [DataType: String] = [
-            .varchar: UUID().uuidString,
-            .text: UUID().uuidString
+            .varchar: value.uuidString,
+            .text: value.uuidString
         ]
 
         for format in DataFormat.allCases {
