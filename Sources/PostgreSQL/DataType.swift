@@ -44,5 +44,52 @@ public enum DataType: Int32, CaseIterable, CustomStringConvertible, Equatable {
     case jsonb = 3802
     case jsonbArray = 3807
 
-    public var description: String { String(rawValue) }
+    public var description: String {
+        switch self {
+        case .null: return "null"
+        case .bool: return "bool"
+        case .bytea: return "bytea"
+        case .char: return "char"
+        case .name: return "name"
+        case .int8: return "int8"
+        case .int2: return "int2"
+        case .int4: return "int4"
+        case .regproc: return "regproc"
+        case .text: return "text"
+        case .oid: return "oid"
+        case .json: return "json"
+        case .pgNodeTree: return "pgNodeTree"
+        case .point: return "point"
+        case .float4: return "float4"
+        case .float8: return "float8"
+        case .money: return "money"
+        case .boolArray: return "boolArray"
+        case .byteaArray: return "byteaArray"
+        case .charArray: return "charArray"
+        case .nameArray: return "nameArray"
+        case .int2Array: return "int2Array"
+        case .int4Array: return "int4Array"
+        case .textArray: return "textArray"
+        case .varcharArray: return "varcharArray"
+        case .int8Array: return "int8Array"
+        case .pointArray: return "pointArray"
+        case .float4Array: return "float4Array"
+        case .float8Array: return "float8Array"
+        case .aclitemArray: return "aclitemArray"
+        case .bpchar: return "bpchar"
+        case .varchar: return "varchar"
+        case .date: return "date"
+        case .time: return "time"
+        case .timestamp: return "timestamp"
+        case .timestampArray: return "timestampArray"
+        case .timestamptz: return "timestamptz"
+        case .timetz: return "timetz"
+        case .numeric: return "numeric"
+        case .void: return "void"
+        case .uuid: return "uuid"
+        case .uuidArray: return "uuidArray"
+        case .jsonb: return "jsonb"
+        case .jsonbArray: return "jsonbArray"
+        }
+    }
 }
