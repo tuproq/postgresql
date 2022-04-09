@@ -71,8 +71,8 @@ public final class Connection {
         let messageType = Message.SimpleQuery(string)
         let response = try await send(types: [messageType], in: channel!)
 
-        if let fetchRequest = response.fetchRequest {
-            return fetchRequest.result
+        if let result = response.result {
+            return result.data
         }
 
         return .init()
@@ -124,8 +124,8 @@ public final class Connection {
             in: channel!
         )
 
-        if let fetchRequest = response.fetchRequest {
-            return fetchRequest.result
+        if let result = response.result {
+            return result.data
         }
 
         return .init()

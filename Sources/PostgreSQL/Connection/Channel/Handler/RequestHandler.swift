@@ -9,7 +9,7 @@ final class RequestHandler: ChannelDuplexHandler {
 
     let connection: Connection
     private var queue: [Request]
-    private var lastFetchRequest: FetchRequest?
+    private var lastResult: Result?
     private var isExtendedQuery = false
 
     init(connection: Connection) {
@@ -25,7 +25,7 @@ final class RequestHandler: ChannelDuplexHandler {
         case .rowDescription:
             do {
                 let rowDescription = try Message.RowDescription(buffer: &message.buffer)
-                lastFetchRequest = FetchRequest(columns: rowDescription.columns)
+                lastResult = Result(columns: rowDescription.columns)
             } catch {
                 request.promise.fail(error)
                 return
@@ -34,16 +34,16 @@ final class RequestHandler: ChannelDuplexHandler {
             do {
                 let dataRow = try Message.DataRow(buffer: &message.buffer)
 
-                if let fetchRequest = lastFetchRequest {
+                if let result = lastResult {
                     var dictionary = [String: Codable?]()
 
                     for (index, buffer) in dataRow.values.enumerated() {
                         var buffer = buffer
-                        let column = fetchRequest.columns[index]
+                        let column = result.columns[index]
                         dictionary[column.name] = try value(from: &buffer, for: column)
                     }
 
-                    fetchRequest.result.append(dictionary)
+                    result.data.append(dictionary)
                 }
             } catch {
                 request.promise.fail(error)
@@ -76,10 +76,10 @@ final class RequestHandler: ChannelDuplexHandler {
                 case .idle:
                     queue.removeFirst()
 
-                    if let fetchRequest = lastFetchRequest {
-                        let response = Response(message: message, fetchRequest: fetchRequest)
+                    if let result = lastResult {
+                        let response = Response(message: message, result: result)
                         request.promise.succeed(response)
-                        self.lastFetchRequest = nil
+                        self.lastResult = nil
                         return
                     }
                 case .transaction:
@@ -115,7 +115,7 @@ final class RequestHandler: ChannelDuplexHandler {
         default: break
         }
 
-        if lastFetchRequest == nil && !isExtendedQuery {
+        if lastResult == nil && !isExtendedQuery {
             request.promise.succeed(Response(message: message))
         }
     }

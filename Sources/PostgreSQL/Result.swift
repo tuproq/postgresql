@@ -1,6 +1,6 @@
-final class FetchRequest {
+final class Result {
     var columns: [Column]
-    var result: [[String: Codable?]] = .init()
+    var data = [[String: Codable?]]()
 
     init(columns: [Column]) {
         self.columns = columns
