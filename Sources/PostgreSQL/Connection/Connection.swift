@@ -115,7 +115,7 @@ public final class Connection {
                     statementName: name,
                     parameterDataFormats: formats,
                     parameters: parameters,
-                    resultDataFormats: formats
+                    resultDataFormats: [.binary]
                 ),
                 Message.Describe(command: command),
                 Message.Execute(),
