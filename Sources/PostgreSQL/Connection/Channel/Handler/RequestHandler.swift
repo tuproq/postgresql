@@ -144,6 +144,7 @@ final class RequestHandler: ChannelDuplexHandler {
             case .int4: return try Int32(buffer: &buffer, format: format, type: type)
             case .int8: return try Int64(buffer: &buffer, format: format, type: type)
             case .name: return try String(buffer: &buffer, format: format, type: type)
+            case .numeric: return try Decimal(buffer: &buffer, format: format, type: type)
             case .timestamp, .timestamptz, .date: return try Date(buffer: &buffer, format: format, type: type)
             case .uuid: return try UUID(buffer: &buffer, format: format, type: type)
             case .varchar, .text:
