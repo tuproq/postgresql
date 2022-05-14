@@ -1,5 +1,5 @@
 final class Result {
-    var columns: [Column]
+    let columns: [Column]
     var data = [[String: Codable?]]()
 
     init(columns: [Column]) {
