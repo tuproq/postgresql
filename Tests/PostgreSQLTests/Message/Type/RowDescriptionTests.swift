@@ -28,7 +28,7 @@ final class MessageRowDescriptionTests: BaseTests {
             columnBuffer.writeNullTerminatedString(column.name)
             columnBuffer.writeInteger(column.tableID)
             columnBuffer.writeInteger(column.attributeNumber)
-            columnBuffer.writeInteger(column.dataType.rawValue)
+            columnBuffer.writeInteger(column.dataTypeID.rawValue)
             columnBuffer.writeInteger(column.dataTypeSize)
             columnBuffer.writeInteger(column.attributeTypeModifier)
             columnBuffer.writeInteger(column.dataFormat.rawValue)

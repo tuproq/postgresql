@@ -12,9 +12,9 @@ final class MessageParameterDescriptionTests: BaseTests {
         }
 
         // Arrange
-        let invalidDataType = -1
+        let invalidDataTypeID = -1
         buffer = ByteBuffer()
-        buffer.writeArray([invalidDataType])
+        buffer.writeArray([invalidDataTypeID])
 
         // Act/Assert
         XCTAssertThrowsError(try Message.ParameterDescription(buffer: &buffer)) { error in
@@ -22,15 +22,15 @@ final class MessageParameterDescriptionTests: BaseTests {
         }
 
         // Arrange
-        let dataType: DataType = .int8
+        let dataTypeID: DataType = .int8
         buffer = ByteBuffer()
-        buffer.writeArray([dataType.rawValue])
+        buffer.writeArray([dataTypeID.rawValue])
 
         // Act
         let messageType = try! Message.ParameterDescription(buffer: &buffer)
 
         // Assert
         XCTAssertEqual(messageType.identifier, .parameterDescription)
-        XCTAssertEqual(messageType.dataTypes, [dataType])
+        XCTAssertEqual(messageType.dataTypeIDs, [dataTypeID])
     }
 }

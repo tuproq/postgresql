@@ -1,18 +1,18 @@
 extension Message {
     struct ParameterDescription: MessageType {
         let identifier: Identifier = .parameterDescription
-        let dataTypes: [DataType]
+        let dataTypeIDs: [DataType]
 
         init(buffer: inout ByteBuffer) throws {
-            guard let dataTypes = try buffer.readArray(as: DataType.self, { buffer in
-                guard let dataType = buffer.readInteger(as: DataType.self) else {
+            guard let dataTypeIDs = try buffer.readArray(as: DataType.self, { buffer in
+                guard let dataTypeID = buffer.readInteger(as: DataType.self) else {
                     throw MessageError("Can't parse parameter data type.")
                 }
-                return dataType
+                return dataTypeID
             }) else {
                 throw MessageError("Can't parse parameter data types.")
             }
-            self.dataTypes = dataTypes
+            self.dataTypeIDs = dataTypeIDs
         }
     }
 }

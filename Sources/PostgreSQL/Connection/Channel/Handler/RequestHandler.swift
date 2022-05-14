@@ -132,7 +132,7 @@ final class RequestHandler: ChannelDuplexHandler {
     private func value(from buffer: inout ByteBuffer?, for column: Column) throws -> Codable? {
         if var buffer = buffer {
             let format = column.dataFormat
-            let type = column.dataType
+            let type = column.dataTypeID
 
             switch type {
             case .bool: return try Bool(buffer: &buffer, format: format, type: type)
