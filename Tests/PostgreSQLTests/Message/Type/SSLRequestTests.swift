@@ -11,7 +11,7 @@ final class MessageSSLRequestTests: BaseTests {
         XCTAssertEqual(messageType.code, 80877103)
     }
 
-    func testWrite() {
+    func testEncode() {
         // Arrange
         let messageType = Message.SSLRequest()
         var buffer = ByteBuffer()

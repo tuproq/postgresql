@@ -13,7 +13,7 @@ final class MessageSimpleQueryTests: BaseTests {
         XCTAssertEqual(messageType.string, query)
     }
 
-    func testWrite() {
+    func testEncode() {
         // Arrange
         let messageType = Message.SimpleQuery(query)
         var buffer = ByteBuffer()

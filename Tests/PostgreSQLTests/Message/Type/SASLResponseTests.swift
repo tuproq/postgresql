@@ -17,7 +17,7 @@ final class MessageSASLResponseTests: BaseTests {
         XCTAssertEqual(messageType.data, data)
     }
 
-    func testWrite() {
+    func testEncode() {
         // Arrange
         let messageType = Message.SASLResponse(data: data)
         var buffer = ByteBuffer()

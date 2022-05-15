@@ -17,7 +17,7 @@ final class MessageParseTests: BaseTests {
         XCTAssertEqual(messageType.parameterTypes, parameterTypes)
     }
 
-    func testWrite() {
+    func testEncode() {
         // Arrange
         let messageType = Message.Parse(statementName: statementName, query: query, parameterTypes: parameterTypes)
         var buffer = ByteBuffer()

@@ -16,7 +16,7 @@ final class MessageStartupMessageTests: BaseTests {
         XCTAssertEqual(messageType.replication, .false)
     }
 
-    func testWrite() {
+    func testEncode() {
         // Arrange
         let messageType = Message.StartupMessage(user: user)
         var buffer = ByteBuffer()

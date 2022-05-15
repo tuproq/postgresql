@@ -13,7 +13,7 @@ final class MessagePasswordTests: BaseTests {
         XCTAssertEqual(messageType.value, password)
     }
 
-    func testWrite() {
+    func testEncode() {
         // Arrange
         let messageType = Message.Password(password)
         var buffer = ByteBuffer()

@@ -21,7 +21,7 @@ final class MessageDescribeTests: BaseTests {
         XCTAssertEqual(Message.Describe.Command.statement.rawValue, 0x53)
     }
 
-    func testWrite() {
+    func testEncode() {
         // Arrange
         let messageType = Message.Describe(command: command, name: portalOrStatementName)
         var buffer = ByteBuffer()

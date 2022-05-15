@@ -15,7 +15,7 @@ final class MessageExecuteTests: BaseTests {
         XCTAssertEqual(messageType.maxRows, maxRows)
     }
 
-    func testWrite() {
+    func testEncode() {
         // Arrange
         let messageType = Message.Execute(portalName: portalName, maxRows: maxRows)
         var buffer = ByteBuffer()

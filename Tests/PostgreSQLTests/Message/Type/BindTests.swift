@@ -35,7 +35,7 @@ final class MessageBindTests: BaseTests {
         XCTAssertEqual(messageType.resultDataFormats, resultDataFormats)
     }
 
-    func testWrite() {
+    func testEncode() {
         // Arrange
         var messageType = Message.Bind(
             portalName: portalName,
