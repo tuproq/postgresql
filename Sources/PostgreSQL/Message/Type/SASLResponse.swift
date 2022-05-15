@@ -8,7 +8,7 @@ extension Message {
         }
 
         init(buffer: inout ByteBuffer) {
-            self.data = buffer.readBytes(length: buffer.readableBytes) ?? .init()
+            self.data = buffer.readBytes(length: buffer.readableBytes)!
         }
 
         func encode(into buffer: inout ByteBuffer) {
