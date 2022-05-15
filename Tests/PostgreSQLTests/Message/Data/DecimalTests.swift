@@ -13,7 +13,7 @@ final class DecimalTests: BaseTests {
         let type: DataType = .bool
         let value: Decimal = .pi
         var buffer = ByteBuffer()
-        value.encode(into: &buffer)
+        try? value.encode(into: &buffer)
 
         // Act/Assert
         XCTAssertThrowsError(try Decimal(buffer: &buffer, type: type)) { error in
@@ -32,7 +32,7 @@ final class DecimalTests: BaseTests {
             let format: DataFormat = .binary
             var expectedValue: Decimal?
             var buffer = ByteBuffer()
-            value.encode(into: &buffer, format: format)
+            try? value.encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertNoThrow(expectedValue = try Decimal(buffer: &buffer, format: format))
@@ -43,7 +43,7 @@ final class DecimalTests: BaseTests {
             let format: DataFormat = .text
             var expectedValue: Decimal?
             var buffer = ByteBuffer()
-            value.encode(into: &buffer, format: format)
+            try? value.encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertNoThrow(expectedValue = try Decimal(buffer: &buffer, format: format))
@@ -59,7 +59,7 @@ final class DecimalTests: BaseTests {
         for format in DataFormat.allCases {
             for invalidValue in invalidValues {
                 var buffer = ByteBuffer()
-                invalidValue.encode(into: &buffer, format: format)
+                try? invalidValue.encode(into: &buffer, format: format)
 
                 // Act/Assert
                 XCTAssertThrowsError(try Decimal(buffer: &buffer, format: format, type: type)) { error in

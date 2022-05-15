@@ -21,7 +21,7 @@ extension UUID: Codable {
         try self.init(buffer: &buffer, format: format, type: Self.psqlType)
     }
 
-    public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) {
+    public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
         buffer.writeBytes([
             uuid.0, uuid.1, uuid.2, uuid.3,
             uuid.4, uuid.5, uuid.6, uuid.7,

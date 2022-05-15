@@ -26,7 +26,7 @@ extension Float: Codable {
         try self.init(buffer: &buffer, format: format, type: Self.psqlType)
     }
 
-    public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) {
+    public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
         switch format {
         case .binary: buffer.writeFloat(self)
         case .text: buffer.writeString(String(self))

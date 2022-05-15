@@ -13,7 +13,7 @@ final class UUIDTests: BaseTests {
         let type: DataType = .bool
         let value = UUID()
         var buffer = ByteBuffer()
-        value.encode(into: &buffer)
+        try? value.encode(into: &buffer)
 
         // Act/Assert
         XCTAssertThrowsError(try UUID(buffer: &buffer, type: type)) { error in
@@ -29,7 +29,7 @@ final class UUIDTests: BaseTests {
         let value = UUID()
         var expectedValue: UUID?
         var buffer = ByteBuffer()
-        value.encode(into: &buffer)
+        try? value.encode(into: &buffer)
 
         // Act/Assert
         XCTAssertNoThrow(expectedValue = try UUID(buffer: &buffer))
@@ -45,7 +45,7 @@ final class UUIDTests: BaseTests {
             for (type, value) in values {
                 var expectedValue: UUID?
                 var buffer = ByteBuffer()
-                value.encode(into: &buffer, format: format)
+                try? value.encode(into: &buffer, format: format)
 
                 // Act/Assert
                 XCTAssertNoThrow(expectedValue = try UUID(buffer: &buffer, format: format, type: type))
@@ -65,7 +65,7 @@ final class UUIDTests: BaseTests {
         for format in DataFormat.allCases {
             for (type, invalidValue) in invalidValues {
                 var buffer = ByteBuffer()
-                invalidValue.encode(into: &buffer, format: format)
+                try? invalidValue.encode(into: &buffer, format: format)
 
                 // Act/Assert
                 XCTAssertThrowsError(try UUID(buffer: &buffer, format: format, type: type)) { error in

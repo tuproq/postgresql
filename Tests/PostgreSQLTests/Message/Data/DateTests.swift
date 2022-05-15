@@ -13,7 +13,7 @@ final class DateTests: BaseTests {
         let type: DataType = .bool
         let value = Date()
         var buffer = ByteBuffer()
-        value.encode(into: &buffer)
+        try? value.encode(into: &buffer)
 
         // Act/Assert
         XCTAssertThrowsError(try Date(buffer: &buffer, type: type)) { error in
@@ -31,7 +31,7 @@ final class DateTests: BaseTests {
         let type: DataType = .date
         var expectedValue: Date?
         var buffer = ByteBuffer()
-        value.encode(into: &buffer)
+        try? value.encode(into: &buffer)
 
         // Act/Assert
         XCTAssertNoThrow(expectedValue = try Date(buffer: &buffer))
@@ -39,7 +39,7 @@ final class DateTests: BaseTests {
 
         // Arrange
         buffer = ByteBuffer()
-        value.encode(into: &buffer, type: type)
+        try? value.encode(into: &buffer, type: type)
 
         // Act/Assert
         XCTAssertNoThrow(expectedValue = try Date(buffer: &buffer, type: type))
@@ -58,7 +58,7 @@ final class DateTests: BaseTests {
             for (type, value) in values {
                 var expectedValue: Date?
                 var buffer = ByteBuffer()
-                value.encode(into: &buffer, type: type)
+                try? value.encode(into: &buffer, type: type)
 
                 // Act/Assert
                 XCTAssertNoThrow(expectedValue = try Date(buffer: &buffer, format: format, type: type))
@@ -78,7 +78,7 @@ final class DateTests: BaseTests {
         for format in DataFormat.allCases {
             for (type, invalidValue) in invalidValues {
                 var buffer = ByteBuffer()
-                invalidValue.encode(into: &buffer, format: format)
+                try? invalidValue.encode(into: &buffer, format: format)
 
                 // Act/Assert
                 XCTAssertThrowsError(try Date(buffer: &buffer, format: format, type: type)) { error in

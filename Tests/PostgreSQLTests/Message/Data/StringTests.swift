@@ -13,7 +13,7 @@ final class StringTests: BaseTests {
         let type: DataType = .bool
         let value = "text"
         var buffer = ByteBuffer()
-        value.encode(into: &buffer)
+        try? value.encode(into: &buffer)
 
         // Act/Assert
         XCTAssertThrowsError(try String(buffer: &buffer, type: type)) { error in
@@ -29,7 +29,7 @@ final class StringTests: BaseTests {
         let value = UUID()
         var expectedValue: String?
         var buffer = ByteBuffer()
-        value.encode(into: &buffer)
+        try? value.encode(into: &buffer)
 
         // Act/Assert
         XCTAssertNoThrow(expectedValue = try String(buffer: &buffer, type: .uuid))
@@ -40,7 +40,7 @@ final class StringTests: BaseTests {
             let value = "text"
             var expectedValue: String?
             var buffer = ByteBuffer()
-            value.encode(into: &buffer, format: format)
+            try? value.encode(into: &buffer, format: format)
 
             // Act/Assert
             XCTAssertNoThrow(expectedValue = try String(buffer: &buffer, format: format))
@@ -57,7 +57,7 @@ final class StringTests: BaseTests {
         for format in DataFormat.allCases {
             for (type, invalidValue) in invalidValues {
                 var buffer = ByteBuffer()
-                invalidValue.encode(into: &buffer, format: format)
+                try? invalidValue.encode(into: &buffer, format: format)
 
                 // Act/Assert
                 XCTAssertThrowsError(try String(buffer: &buffer, format: format, type: type)) { error in

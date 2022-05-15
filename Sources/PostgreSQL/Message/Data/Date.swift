@@ -30,7 +30,7 @@ extension Date: Codable {
         try self.init(buffer: &buffer, format: format, type: Self.psqlType)
     }
 
-    public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) {
+    public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
         switch type {
         case .date:
             let calendar = Calendar.current

@@ -101,9 +101,9 @@ public final class Connection {
             if let parameter = $0 { return type(of: parameter).psqlType }
             return .null
         }
-        let parameters: [ByteBuffer?] = parameters.map {
+        let parameters: [ByteBuffer?] = try parameters.map {
             var buffer = ByteBuffer()
-            $0?.encode(into: &buffer)
+            try $0?.encode(into: &buffer)
 
             return buffer
         }

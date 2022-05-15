@@ -13,7 +13,7 @@ final class UInt8Tests: BaseTests {
         let type: DataType = .uuid
         let value: UInt8 = 1
         var buffer = ByteBuffer()
-        value.encode(into: &buffer)
+        try? value.encode(into: &buffer)
 
         // Act/Assert
         XCTAssertThrowsError(try UInt8(buffer: &buffer, type: type)) { error in
@@ -32,7 +32,7 @@ final class UInt8Tests: BaseTests {
             for value in values {
                 var expectedValue: UInt8?
                 var buffer = ByteBuffer()
-                value.encode(into: &buffer, format: format)
+                try? value.encode(into: &buffer, format: format)
 
                 // Act/Assert
                 XCTAssertNoThrow(expectedValue = try UInt8(buffer: &buffer, format: format))
@@ -51,7 +51,7 @@ final class UInt8Tests: BaseTests {
         for format in DataFormat.allCases {
             for (type, invalidValue) in invalidValues {
                 var buffer = ByteBuffer()
-                invalidValue.encode(into: &buffer, format: format)
+                try? invalidValue.encode(into: &buffer, format: format)
 
                 // Act/Assert
                 XCTAssertThrowsError(try UInt8(buffer: &buffer, format: format, type: type)) { error in

@@ -16,7 +16,7 @@ final class BoolTests: BaseTests {
             for value in values {
                 var expectedValue: Bool?
                 var buffer = ByteBuffer()
-                value.encode(into: &buffer, format: format)
+                try? value.encode(into: &buffer, format: format)
 
                 // Act/Assert
                 XCTAssertNoThrow(expectedValue = try Bool(buffer: &buffer, format: format))
@@ -33,7 +33,7 @@ final class BoolTests: BaseTests {
         let text = "text"
         let int: UInt8 = 2
         var buffer = ByteBuffer()
-        int.encode(into: &buffer)
+        try? int.encode(into: &buffer)
 
         // Act/Assert
         XCTAssertThrowsError(try Bool(buffer: &buffer, type: invalidType)) { error in
@@ -45,7 +45,7 @@ final class BoolTests: BaseTests {
 
         for format in formats {
             var buffer = ByteBuffer()
-            text.encode(into: &buffer)
+            try? text.encode(into: &buffer)
 
             XCTAssertThrowsError(try Bool(buffer: &buffer, format: format, type: type)) { error in
                 XCTAssertEqual(
@@ -57,7 +57,7 @@ final class BoolTests: BaseTests {
 
         for format in formats {
             var buffer = ByteBuffer()
-            int.encode(into: &buffer)
+            try? int.encode(into: &buffer)
 
             XCTAssertThrowsError(try Bool(buffer: &buffer, format: format, type: type)) { error in
                 XCTAssertEqual(
@@ -81,7 +81,7 @@ final class BoolTests: BaseTests {
                 // Act
                 let expectedValue = expectedValues[format]?[index]
                 var buffer = ByteBuffer()
-                value.encode(into: &buffer, format: format)
+                try? value.encode(into: &buffer, format: format)
 
                 // Assert
                 XCTAssertEqual(buffer.readableBytes, 1)

@@ -16,7 +16,7 @@ final class MessageDataRowTests: BaseTests {
         var messageType: Message.DataRow?
         buffer = ByteBuffer()
         buffer.writeArray(values) { buffer, value in
-            value.encode(into: &buffer)
+            try? value.encode(into: &buffer)
         }
 
         // Act/Assert

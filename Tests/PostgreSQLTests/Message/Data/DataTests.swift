@@ -14,7 +14,7 @@ final class DataTests: BaseTests {
         let value = Data("text".utf8)
         var expectedValue: Data?
         var buffer = ByteBuffer()
-        value.encode(into: &buffer, format: format)
+        try? value.encode(into: &buffer, format: format)
 
         // Act/Assert
         XCTAssertNoThrow(expectedValue = try Data(buffer: &buffer, format: format))
