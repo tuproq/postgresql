@@ -17,6 +17,6 @@ extension UInt8: Codable {
     }
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) {
-        buffer.writeInteger(self, as: Self.self)
+        buffer.writeInteger(self)
     }
 }

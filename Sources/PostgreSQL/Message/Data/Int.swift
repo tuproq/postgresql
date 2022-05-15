@@ -23,7 +23,7 @@ extension Int16: Codable {
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) {
         switch format {
-        case .binary: buffer.writeInteger(self, as: Self.self)
+        case .binary: buffer.writeInteger(self)
         case .text: buffer.writeString(String(self))
         }
     }
@@ -59,7 +59,7 @@ extension Int32: Codable {
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) {
         switch format {
-        case .binary: buffer.writeInteger(self, as: Int32.self)
+        case .binary: buffer.writeInteger(self)
         case .text: buffer.writeString(String(self))
         }
     }
@@ -100,7 +100,7 @@ extension Int64: Codable {
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) {
         switch format {
-        case .binary: buffer.writeInteger(self, as: Int64.self)
+        case .binary: buffer.writeInteger(self)
         case .text: buffer.writeString(String(self))
         }
     }
@@ -147,7 +147,7 @@ extension Int: Codable {
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) {
         switch format {
-        case .binary: buffer.writeInteger(self, as: Int.self)
+        case .binary: buffer.writeInteger(self)
         case .text: buffer.writeString(String(self))
         }
     }
