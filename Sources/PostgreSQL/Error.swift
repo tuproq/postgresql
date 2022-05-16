@@ -8,6 +8,10 @@ public struct PostgreSQLError: LocalizedError {
         self.init(errorType.message)
     }
 
+    init(_ errorType: ErrorType.Column) {
+        self.init(errorType.rawValue)
+    }
+
     init(_ message: String? = nil) {
         let errorType = String(describing: type(of: self))
 
@@ -45,6 +49,24 @@ enum ErrorType: CustomStringConvertible {
     }
 }
 
+extension ErrorType {
+    enum Column: String, CustomStringConvertible {
+        case invalidColumnAttributeNumber = "An invalid column `attributeNumber`."
+        case invalidColumnAttributeTypeModifier = "An invalid column `attributeTypeModifier`."
+        case invalidColumnDataFormat = "An invalid column `dataFormat`."
+        case invalidColumnDataTypeID = "An invalid column `dataTypeID`."
+        case invalidColumnDataTypeSize = "An invalid column `dataTypeSize`."
+        case invalidColumnName = "An invalid column `name`."
+        case invalidColumnTableID = "An invalid column `tableID`."
+
+        var description: String { rawValue }
+    }
+}
+
 func error(_ errorType: ErrorType) -> PostgreSQLError {
+    PostgreSQLError(errorType)
+}
+
+func error(_ errorType: ErrorType.Column) -> PostgreSQLError {
     PostgreSQLError(errorType)
 }

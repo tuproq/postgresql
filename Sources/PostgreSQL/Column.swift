@@ -22,27 +22,17 @@ struct Column: CustomStringConvertible, Equatable {
     }
 
     init(buffer: inout ByteBuffer) throws {
-        guard let name = buffer.readNullTerminatedString() else {
-            throw MessageError("An invalid column `name`.")
-        }
-        guard let tableID = buffer.readInteger(as: Int32.self) else {
-            throw MessageError("An invalid column `tableID`.")
-        }
+        guard let name = buffer.readNullTerminatedString() else { throw error(.invalidColumnName) }
+        guard let tableID = buffer.readInteger(as: Int32.self) else { throw error(.invalidColumnTableID) }
         guard let attributeNumber = buffer.readInteger(as: Int16.self) else {
-            throw MessageError("An invalid column `attributeNumber`.")
+            throw error(.invalidColumnAttributeNumber)
         }
-        guard let dataTypeID = buffer.readInteger(as: DataType.self) else {
-            throw MessageError("An invalid column `dataTypeID`.")
-        }
-        guard let dataTypeSize = buffer.readInteger(as: Int16.self) else {
-            throw MessageError("An invalid column `dataTypeSize`.")
-        }
+        guard let dataTypeID = buffer.readInteger(as: DataType.self) else { throw error(.invalidColumnDataTypeID) }
+        guard let dataTypeSize = buffer.readInteger(as: Int16.self) else { throw error(.invalidColumnDataTypeSize) }
         guard let attributeTypeModifier = buffer.readInteger(as: Int32.self) else {
-            throw MessageError("An invalid column `attributeTypeModifier`.")
+            throw error(.invalidColumnAttributeTypeModifier)
         }
-        guard let dataFormat = buffer.readInteger(as: DataFormat.self) else {
-            throw MessageError("An invalid column `dataFormat`.")
-        }
+        guard let dataFormat = buffer.readInteger(as: DataFormat.self) else { throw error(.invalidColumnDataFormat) }
         self.name = name
         self.tableID = tableID
         self.attributeNumber = attributeNumber

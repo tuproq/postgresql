@@ -16,8 +16,8 @@ final class ColumnTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(column = try Column(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? MessageError)
-            XCTAssertEqual(error.localizedDescription, "An invalid column `name`.")
+            XCTAssertNotNil(error as? PostgreSQLError)
+            XCTAssertEqual(error.localizedDescription, PostgreSQL.error(.invalidColumnName).localizedDescription)
         }
 
         // Arrange
@@ -26,8 +26,8 @@ final class ColumnTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(column = try Column(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? MessageError)
-            XCTAssertEqual(error.localizedDescription, "An invalid column `tableID`.")
+            XCTAssertNotNil(error as? PostgreSQLError)
+            XCTAssertEqual(error.localizedDescription, PostgreSQL.error(.invalidColumnTableID).localizedDescription)
         }
 
         // Arrange
@@ -37,8 +37,11 @@ final class ColumnTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(column = try Column(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? MessageError)
-            XCTAssertEqual(error.localizedDescription, "An invalid column `attributeNumber`.")
+            XCTAssertNotNil(error as? PostgreSQLError)
+            XCTAssertEqual(
+                error.localizedDescription,
+                PostgreSQL.error(.invalidColumnAttributeNumber).localizedDescription
+            )
         }
 
         // Arrange
@@ -49,8 +52,11 @@ final class ColumnTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(column = try Column(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? MessageError)
-            XCTAssertEqual(error.localizedDescription, "An invalid column `dataTypeID`.")
+            XCTAssertNotNil(error as? PostgreSQLError)
+            XCTAssertEqual(
+                error.localizedDescription,
+                PostgreSQL.error(.invalidColumnDataTypeID).localizedDescription
+            )
         }
 
         // Arrange
@@ -62,8 +68,11 @@ final class ColumnTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(column = try Column(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? MessageError)
-            XCTAssertEqual(error.localizedDescription, "An invalid column `dataTypeSize`.")
+            XCTAssertNotNil(error as? PostgreSQLError)
+            XCTAssertEqual(
+                error.localizedDescription,
+                PostgreSQL.error(.invalidColumnDataTypeSize).localizedDescription
+            )
         }
 
         // Arrange
@@ -76,8 +85,11 @@ final class ColumnTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(column = try Column(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? MessageError)
-            XCTAssertEqual(error.localizedDescription, "An invalid column `attributeTypeModifier`.")
+            XCTAssertNotNil(error as? PostgreSQLError)
+            XCTAssertEqual(
+                error.localizedDescription,
+                PostgreSQL.error(.invalidColumnAttributeTypeModifier).localizedDescription
+            )
         }
 
         // Arrange
@@ -91,8 +103,11 @@ final class ColumnTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(column = try Column(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? MessageError)
-            XCTAssertEqual(error.localizedDescription, "An invalid column `dataFormat`.")
+            XCTAssertNotNil(error as? PostgreSQLError)
+            XCTAssertEqual(
+                error.localizedDescription,
+                PostgreSQL.error(.invalidColumnDataFormat).localizedDescription
+            )
         }
 
         // Arrange
