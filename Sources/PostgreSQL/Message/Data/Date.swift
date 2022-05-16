@@ -34,12 +34,12 @@ extension Date: Codable {
         switch type {
         case .date:
             let calendar = Calendar.current
-            guard let days = calendar.dateComponents([.day], from: Self.startDate, to: self).day else { return }
+            let days = calendar.dateComponents([.day], from: Self.startDate, to: self).day!
             buffer.writeInteger(Int32(days))
         case .timestamp, .timestamptz:
             let seconds = timeIntervalSince(Self.startDate) * Self.microsecondsInSecond
             buffer.writeInteger(Int64(seconds))
-        default: break
+        default: throw error(.invalidDataType(type))
         }
     }
 }
