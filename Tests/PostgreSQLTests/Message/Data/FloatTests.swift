@@ -17,6 +17,7 @@ final class FloatTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Float(buffer: &buffer, type: type)) { error in
+            XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(
                 error.localizedDescription,
                 PostgreSQL.error(.invalidDataType(type)).localizedDescription
@@ -62,6 +63,7 @@ final class FloatTests: BaseTests {
 
                 // Act/Assert
                 XCTAssertThrowsError(try Float(buffer: &buffer, format: format, type: type)) { error in
+                    XCTAssertNotNil(error as? PostgreSQLError)
                     XCTAssertEqual(
                         error.localizedDescription,
                         PostgreSQL.error(.invalidData(format: format, type: type)).localizedDescription

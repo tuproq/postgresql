@@ -17,6 +17,7 @@ final class UInt8Tests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try UInt8(buffer: &buffer, type: type)) { error in
+            XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(
                 error.localizedDescription,
                 PostgreSQL.error(.invalidDataType(type)).localizedDescription
@@ -55,6 +56,7 @@ final class UInt8Tests: BaseTests {
 
                 // Act/Assert
                 XCTAssertThrowsError(try UInt8(buffer: &buffer, format: format, type: type)) { error in
+                    XCTAssertNotNil(error as? PostgreSQLError)
                     XCTAssertEqual(
                         error.localizedDescription,
                         PostgreSQL.error(.invalidData(format: format, type: type)).localizedDescription
