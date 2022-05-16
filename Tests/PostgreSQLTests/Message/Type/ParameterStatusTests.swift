@@ -8,6 +8,7 @@ final class MessageParameterStatusTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.ParameterStatus(buffer: &buffer)) { error in
+            XCTAssertNotNil(error as? MessageError)
             XCTAssertEqual(error.localizedDescription, "Can't parse parameter status name.")
         }
 
@@ -18,6 +19,7 @@ final class MessageParameterStatusTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.ParameterStatus(buffer: &buffer)) { error in
+            XCTAssertNotNil(error as? MessageError)
             XCTAssertEqual(error.localizedDescription, "Can't parse parameter status value for \(name).")
         }
 

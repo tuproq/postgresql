@@ -8,6 +8,7 @@ final class MessageNotificationResponseTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.NotificationResponse(buffer: &buffer)) { error in
+            XCTAssertNotNil(error as? MessageError)
             XCTAssertEqual(error.localizedDescription, "Can't parse process ID.")
         }
 
@@ -18,6 +19,7 @@ final class MessageNotificationResponseTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.NotificationResponse(buffer: &buffer)) { error in
+            XCTAssertNotNil(error as? MessageError)
             XCTAssertEqual(error.localizedDescription, "Can't parse channel.")
         }
 
@@ -29,6 +31,7 @@ final class MessageNotificationResponseTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.NotificationResponse(buffer: &buffer)) { error in
+            XCTAssertNotNil(error as? MessageError)
             XCTAssertEqual(error.localizedDescription, "Can't parse payload.")
         }
 

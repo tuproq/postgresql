@@ -8,6 +8,7 @@ final class MessageRowDescriptionTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.RowDescription(buffer: &buffer)) { error in
+            XCTAssertNotNil(error as? MessageError)
             XCTAssertEqual(error.localizedDescription, "Can't parse row description columns.")
         }
 
