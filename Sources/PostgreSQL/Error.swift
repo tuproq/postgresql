@@ -42,7 +42,7 @@ enum ErrorType: CustomStringConvertible {
     var message: String {
         switch self {
         case .invalidData(let format, let type):
-            return "An invalid data for data format `\(format)` and data type `\(type)`."
+            return "An invalid data type `\(type)` for data format `\(format)`."
         case .invalidDataType(let type): return "An invalid data type `\(type)`."
         case .unknown: return "An unknown error."
         }

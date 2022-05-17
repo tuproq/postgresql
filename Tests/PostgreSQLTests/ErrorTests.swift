@@ -23,7 +23,7 @@ final class ErrorTypeTests: BaseTests {
         // Assert
         XCTAssertEqual(
             ErrorType.invalidData(format: dataFormat, type: dataTypeID).message,
-            "An invalid data for data format `\(dataFormat)` and data type `\(dataTypeID)`."
+            "An invalid data type `\(dataTypeID)` for data format `\(dataFormat)`."
         )
         XCTAssertEqual(
             ErrorType.invalidData(format: dataFormat, type: dataTypeID).message,
