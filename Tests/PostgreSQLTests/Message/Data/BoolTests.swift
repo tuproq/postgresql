@@ -37,7 +37,7 @@ final class BoolTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Bool(buffer: &buffer, type: invalidType)) { error in
-            XCTAssertNotNil(error as? PostgreSQLError)
+            XCTAssertNotNil(error as? ClientError)
             XCTAssertEqual(
                 error.localizedDescription,
                 PostgreSQL.error(.invalidDataType(invalidType)).localizedDescription
@@ -49,7 +49,7 @@ final class BoolTests: BaseTests {
             try? text.encode(into: &buffer)
 
             XCTAssertThrowsError(try Bool(buffer: &buffer, format: format, type: type)) { error in
-                XCTAssertNotNil(error as? PostgreSQLError)
+                XCTAssertNotNil(error as? ClientError)
                 XCTAssertEqual(
                     error.localizedDescription,
                     PostgreSQL.error(.invalidData(format: format, type: type)).localizedDescription
@@ -62,7 +62,7 @@ final class BoolTests: BaseTests {
             try? int.encode(into: &buffer)
 
             XCTAssertThrowsError(try Bool(buffer: &buffer, format: format, type: type)) { error in
-                XCTAssertNotNil(error as? PostgreSQLError)
+                XCTAssertNotNil(error as? ClientError)
                 XCTAssertEqual(
                     error.localizedDescription,
                     PostgreSQL.error(.invalidData(format: format, type: type)).localizedDescription

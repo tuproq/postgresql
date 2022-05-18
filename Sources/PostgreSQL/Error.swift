@@ -1,6 +1,6 @@
 import Foundation
 
-public struct PostgreSQLError: LocalizedError {
+public struct ClientError: LocalizedError {
     let message: String
     public var errorDescription: String? { message }
 
@@ -63,10 +63,10 @@ extension ErrorType {
     }
 }
 
-func error(_ errorType: ErrorType) -> PostgreSQLError {
-    PostgreSQLError(errorType)
+func error(_ errorType: ErrorType) -> ClientError {
+    ClientError(errorType)
 }
 
-func error(_ errorType: ErrorType.Column) -> PostgreSQLError {
-    PostgreSQLError(errorType)
+func error(_ errorType: ErrorType.Column) -> ClientError {
+    ClientError(errorType)
 }
