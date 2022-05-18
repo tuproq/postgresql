@@ -22,7 +22,11 @@ extension String: Codable {
     }
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
-        buffer.writeString(self)
+        if type == .name || type == .text || type == .varchar || type == .uuid {
+            buffer.writeString(self)
+        } else {
+            throw error(.invalidDataType(type))
+        }
     }
 }
 

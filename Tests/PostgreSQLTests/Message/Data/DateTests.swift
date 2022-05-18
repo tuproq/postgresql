@@ -92,20 +92,4 @@ final class DateTests: BaseTests {
             }
         }
     }
-
-    func testEncodeWithInvalidType() {
-        // Arrange
-        let date = Date()
-        let dataType: DataType = .bool
-        var buffer = ByteBuffer()
-
-        // Act/Assert
-        XCTAssertThrowsError(try date.encode(into: &buffer, type: dataType)) { error in
-            XCTAssertNotNil(error as? PostgreSQLError)
-            XCTAssertEqual(
-                error.localizedDescription,
-                PostgreSQL.error(.invalidDataType(dataType)).localizedDescription
-            )
-        }
-    }
 }

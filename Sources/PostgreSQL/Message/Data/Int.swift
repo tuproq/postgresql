@@ -22,9 +22,13 @@ extension Int16: Codable {
     }
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
-        switch format {
-        case .binary: buffer.writeInteger(self)
-        case .text: buffer.writeString(String(self))
+        if type == .int2 {
+            switch format {
+            case .binary: buffer.writeInteger(self)
+            case .text: buffer.writeString(String(self))
+            }
+        } else {
+            throw error(.invalidDataType(type))
         }
     }
 }
@@ -58,9 +62,13 @@ extension Int32: Codable {
     }
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
-        switch format {
-        case .binary: buffer.writeInteger(self)
-        case .text: buffer.writeString(String(self))
+        if type == .int2 || type == .int4 {
+            switch format {
+            case .binary: buffer.writeInteger(self)
+            case .text: buffer.writeString(String(self))
+            }
+        } else {
+            throw error(.invalidDataType(type))
         }
     }
 }
@@ -99,9 +107,13 @@ extension Int64: Codable {
     }
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
-        switch format {
-        case .binary: buffer.writeInteger(self)
-        case .text: buffer.writeString(String(self))
+        if type == .int2 || type == .int4 || type == .int8 {
+            switch format {
+            case .binary: buffer.writeInteger(self)
+            case .text: buffer.writeString(String(self))
+            }
+        } else {
+            throw error(.invalidDataType(type))
         }
     }
 }
@@ -146,9 +158,13 @@ extension Int: Codable {
     }
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
-        switch format {
-        case .binary: buffer.writeInteger(self)
-        case .text: buffer.writeString(String(self))
+        if type == .int2 || type == .int4 || type == .int8 {
+            switch format {
+            case .binary: buffer.writeInteger(self)
+            case .text: buffer.writeString(String(self))
+            }
+        } else {
+            throw error(.invalidDataType(type))
         }
     }
 }

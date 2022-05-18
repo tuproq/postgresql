@@ -27,9 +27,13 @@ extension Double: Codable {
     }
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
-        switch format {
-        case .binary: buffer.writeDouble(self)
-        case .text: buffer.writeString(String(self))
+        if type == .float4 || type == .float8 {
+            switch format {
+            case .binary: buffer.writeDouble(self)
+            case .text: buffer.writeString(String(self))
+            }
+        } else {
+            throw error(.invalidDataType(type))
         }
     }
 }

@@ -31,15 +31,15 @@ extension Date: Codable {
     }
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
-        switch type {
-        case .date:
+        if type == .date {
             let calendar = Calendar.current
             let days = calendar.dateComponents([.day], from: Self.startDate, to: self).day!
             buffer.writeInteger(Int32(days))
-        case .timestamp, .timestamptz:
+        } else if type == .timestamp || type == .timestamptz {
             let seconds = timeIntervalSince(Self.startDate) * Self.microsecondsInSecond
             buffer.writeInteger(Int64(seconds))
-        default: throw error(.invalidDataType(type))
+        } else {
+            throw error(.invalidDataType(type))
         }
     }
 }

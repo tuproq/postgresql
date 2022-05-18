@@ -17,6 +17,10 @@ extension UInt8: Codable {
     }
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
-        buffer.writeInteger(self)
+        if type == .bpchar || type == .char {
+            buffer.writeInteger(self)
+        } else {
+            throw error(.invalidDataType(type))
+        }
     }
 }

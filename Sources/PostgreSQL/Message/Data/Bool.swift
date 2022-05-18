@@ -26,9 +26,13 @@ extension Bool: Codable {
     }
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
-        switch format {
-        case .binary: buffer.writeInteger(self ? 1 : 0, as: UInt8.self)
-        case .text: buffer.writeInteger(.init(ascii: self ? "t" : "f"), as: UInt8.self)
+        if type == .bool {
+            switch format {
+            case .binary: buffer.writeInteger(UInt8(self ? 1 : 0))
+            case .text: buffer.writeInteger(UInt8(ascii: self ? "t" : "f"))
+            }
+        } else {
+            throw error(.invalidDataType(type))
         }
     }
 }

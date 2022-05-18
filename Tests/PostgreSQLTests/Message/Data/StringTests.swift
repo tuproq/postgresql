@@ -72,7 +72,7 @@ final class StringTests: BaseTests {
         }
     }
 
-    func testdroppingLeadingSlash() {
+    func testDroppingLeadingSlash() {
         // Arrange
         let rootPath = "/"
         let path = "path/to/folder"

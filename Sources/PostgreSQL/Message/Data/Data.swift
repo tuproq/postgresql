@@ -13,6 +13,10 @@ extension Data: Codable {
     }
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
-        buffer.writeBytes(self)
+        if type == .bytea {
+            buffer.writeBytes(self)
+        } else {
+            throw error(.invalidDataType(type))
+        }
     }
 }

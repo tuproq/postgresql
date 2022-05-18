@@ -22,13 +22,17 @@ extension Decimal: Codable {
     }
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
-        let numeric = Numeric(decimal: self)
-        buffer.writeInteger(numeric.ndigits)
-        buffer.writeInteger(numeric.weight)
-        buffer.writeInteger(numeric.sign)
-        buffer.writeInteger(numeric.dscale)
+        if type == .numeric {
+            let numeric = Numeric(decimal: self)
+            buffer.writeInteger(numeric.ndigits)
+            buffer.writeInteger(numeric.weight)
+            buffer.writeInteger(numeric.sign)
+            buffer.writeInteger(numeric.dscale)
 
-        var value = numeric.value
-        buffer.writeBuffer(&value)
+            var value = numeric.value
+            buffer.writeBuffer(&value)
+        } else {
+            throw error(.invalidDataType(type))
+        }
     }
 }
