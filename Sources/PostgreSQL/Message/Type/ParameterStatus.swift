@@ -6,10 +6,10 @@ extension Message {
 
         init(buffer: inout ByteBuffer) throws {
             guard let name = buffer.readNullTerminatedString() else {
-                throw MessageError("Can't parse parameter status name.")
+                throw clientError(.cantParseParameterStatusName)
             }
             guard let value = buffer.readNullTerminatedString() else {
-                throw MessageError("Can't parse parameter status value for \(name).")
+                throw clientError(.cantParseParameterStatusValue(name: name))
             }
             self.name = name
             self.value = value

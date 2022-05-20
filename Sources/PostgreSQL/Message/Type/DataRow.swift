@@ -7,7 +7,7 @@ extension Message {
             guard let values = buffer.readArray(as: ByteBuffer?.self, { buffer in
                 buffer.readBytes()
             }) else {
-                throw MessageError("Can't parse data row values.")
+                throw clientError(.cantParseDataRowValues)
             }
             self.values = values
         }

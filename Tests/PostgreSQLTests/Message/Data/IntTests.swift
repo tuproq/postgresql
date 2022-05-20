@@ -38,28 +38,28 @@ final class IntTests: BaseTests {
                 XCTAssertNotNil(error as? ClientError)
                 XCTAssertEqual(
                     error.localizedDescription,
-                    PostgreSQL.error(.invalidDataType(type)).localizedDescription
+                    clientError(.invalidDataType(type)).localizedDescription
                 )
             }
             XCTAssertThrowsError(try Int32(buffer: &buffer, type: type)) { error in
                 XCTAssertNotNil(error as? ClientError)
                 XCTAssertEqual(
                     error.localizedDescription,
-                    PostgreSQL.error(.invalidDataType(type)).localizedDescription
+                    clientError(.invalidDataType(type)).localizedDescription
                 )
             }
             XCTAssertThrowsError(try Int64(buffer: &buffer, type: type)) { error in
                 XCTAssertNotNil(error as? ClientError)
                 XCTAssertEqual(
                     error.localizedDescription,
-                    PostgreSQL.error(.invalidDataType(type)).localizedDescription
+                    clientError(.invalidDataType(type)).localizedDescription
                 )
             }
             XCTAssertThrowsError(try Int(buffer: &buffer, type: type)) { error in
                 XCTAssertNotNil(error as? ClientError)
                 XCTAssertEqual(
                     error.localizedDescription,
-                    PostgreSQL.error(.invalidDataType(type)).localizedDescription
+                    clientError(.invalidDataType(type)).localizedDescription
                 )
             }
         }
@@ -192,63 +192,63 @@ final class IntTests: BaseTests {
                 XCTAssertNotNil(error as? ClientError)
                 XCTAssertEqual(
                     error.localizedDescription,
-                    PostgreSQL.error(.invalidData(format: format, type: .int2)).localizedDescription
+                    clientError(.invalidData(format: format, type: .int2)).localizedDescription
                 )
             }
             XCTAssertThrowsError(try Int32(buffer: &buffer, format: format, type: .int2)) { error in
                 XCTAssertNotNil(error as? ClientError)
                 XCTAssertEqual(
                     error.localizedDescription,
-                    PostgreSQL.error(.invalidData(format: format, type: .int2)).localizedDescription
+                    clientError(.invalidData(format: format, type: .int2)).localizedDescription
                 )
             }
             XCTAssertThrowsError(try Int32(buffer: &buffer, format: format, type: .int4)) { error in
                 XCTAssertNotNil(error as? ClientError)
                 XCTAssertEqual(
                     error.localizedDescription,
-                    PostgreSQL.error(.invalidData(format: format, type: .int4)).localizedDescription
+                    clientError(.invalidData(format: format, type: .int4)).localizedDescription
                 )
             }
             XCTAssertThrowsError(try Int64(buffer: &buffer, format: format, type: .int2)) { error in
                 XCTAssertNotNil(error as? ClientError)
                 XCTAssertEqual(
                     error.localizedDescription,
-                    PostgreSQL.error(.invalidData(format: format, type: .int2)).localizedDescription
+                    clientError(.invalidData(format: format, type: .int2)).localizedDescription
                 )
             }
             XCTAssertThrowsError(try Int64(buffer: &buffer, format: format, type: .int4)) { error in
                 XCTAssertNotNil(error as? ClientError)
                 XCTAssertEqual(
                     error.localizedDescription,
-                    PostgreSQL.error(.invalidData(format: format, type: .int4)).localizedDescription
+                    clientError(.invalidData(format: format, type: .int4)).localizedDescription
                 )
             }
             XCTAssertThrowsError(try Int64(buffer: &buffer, format: format, type: .int8)) { error in
                 XCTAssertNotNil(error as? ClientError)
                 XCTAssertEqual(
                     error.localizedDescription,
-                    PostgreSQL.error(.invalidData(format: format, type: .int8)).localizedDescription
+                    clientError(.invalidData(format: format, type: .int8)).localizedDescription
                 )
             }
             XCTAssertThrowsError(try Int(buffer: &buffer, format: format, type: .int2)) { error in
                 XCTAssertNotNil(error as? ClientError)
                 XCTAssertEqual(
                     error.localizedDescription,
-                    PostgreSQL.error(.invalidData(format: format, type: .int2)).localizedDescription
+                    clientError(.invalidData(format: format, type: .int2)).localizedDescription
                 )
             }
             XCTAssertThrowsError(try Int(buffer: &buffer, format: format, type: .int4)) { error in
                 XCTAssertNotNil(error as? ClientError)
                 XCTAssertEqual(
                     error.localizedDescription,
-                    PostgreSQL.error(.invalidData(format: format, type: .int4)).localizedDescription
+                    clientError(.invalidData(format: format, type: .int4)).localizedDescription
                 )
             }
             XCTAssertThrowsError(try Int(buffer: &buffer, format: format, type: .int8)) { error in
                 XCTAssertNotNil(error as? ClientError)
                 XCTAssertEqual(
                     error.localizedDescription,
-                    PostgreSQL.error(.invalidData(format: format, type: .int8)).localizedDescription
+                    clientError(.invalidData(format: format, type: .int8)).localizedDescription
                 )
             }
         }

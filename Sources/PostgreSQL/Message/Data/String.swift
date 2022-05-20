@@ -6,14 +6,14 @@ extension String: Codable {
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
         switch type {
         case .name, .text, .varchar:
-            guard let string = buffer.readString() else { throw error(.invalidData(format: format, type: type)) }
+            guard let string = buffer.readString() else { throw clientError(.invalidData(format: format, type: type)) }
             self = string
         case .uuid:
             guard let uuid = try? UUID(buffer: &buffer, format: format, type: type) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = uuid.uuidString
-        default: throw error(.invalidDataType(type))
+        default: throw clientError(.invalidDataType(type))
         }
     }
 
@@ -25,7 +25,7 @@ extension String: Codable {
         if type == .name || type == .text || type == .varchar || type == .uuid {
             buffer.writeString(self)
         } else {
-            throw error(.invalidDataType(type))
+            throw clientError(.invalidDataType(type))
         }
     }
 }

@@ -8,8 +8,11 @@ final class MessageParameterDescriptionTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.ParameterDescription(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? MessageError)
-            XCTAssertEqual(error.localizedDescription, "Can't parse parameter data types.")
+            XCTAssertNotNil(error as? ClientError)
+            XCTAssertEqual(
+                error.localizedDescription,
+                clientError(.cantParseParameterDataTypes).localizedDescription
+            )
         }
 
         // Arrange
@@ -19,8 +22,8 @@ final class MessageParameterDescriptionTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.ParameterDescription(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? MessageError)
-            XCTAssertEqual(error.localizedDescription, "Can't parse parameter data type.")
+            XCTAssertNotNil(error as? ClientError)
+            XCTAssertEqual(error.localizedDescription, clientError(.cantParseParameterDataType).localizedDescription)
         }
 
         // Arrange

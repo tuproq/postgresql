@@ -5,10 +5,10 @@ extension UInt8: Codable {
         switch type {
         case .bpchar, .char:
             guard buffer.readableBytes == 1, let value = buffer.readInteger(as: Self.self) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = value
-        default: throw error(.invalidDataType(type))
+        default: throw clientError(.invalidDataType(type))
         }
     }
 
@@ -20,7 +20,7 @@ extension UInt8: Codable {
         if type == .bpchar || type == .char {
             buffer.writeInteger(self)
         } else {
-            throw error(.invalidDataType(type))
+            throw clientError(.invalidDataType(type))
         }
     }
 }

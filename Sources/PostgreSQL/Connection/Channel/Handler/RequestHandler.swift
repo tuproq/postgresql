@@ -96,7 +96,7 @@ final class RequestHandler: ChannelDuplexHandler {
             connection.logger.warning("\(warningMessage)")
         case .errorResponse:
             let buffer = message.buffer
-            let error = MessageError(buffer.getString(at: 0, length: buffer.readableBytes) ?? "An unknown error.")
+            let error = ClientError(buffer.getString(at: 0, length: buffer.readableBytes) ?? "An unknown error.")
             request.promise.fail(error)
             return
         case .parseComplete:

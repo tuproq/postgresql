@@ -40,7 +40,7 @@ final class BoolTests: BaseTests {
             XCTAssertNotNil(error as? ClientError)
             XCTAssertEqual(
                 error.localizedDescription,
-                PostgreSQL.error(.invalidDataType(invalidType)).localizedDescription
+                clientError(.invalidDataType(invalidType)).localizedDescription
             )
         }
 
@@ -52,7 +52,7 @@ final class BoolTests: BaseTests {
                 XCTAssertNotNil(error as? ClientError)
                 XCTAssertEqual(
                     error.localizedDescription,
-                    PostgreSQL.error(.invalidData(format: format, type: type)).localizedDescription
+                    clientError(.invalidData(format: format, type: type)).localizedDescription
                 )
             }
         }
@@ -65,7 +65,7 @@ final class BoolTests: BaseTests {
                 XCTAssertNotNil(error as? ClientError)
                 XCTAssertEqual(
                     error.localizedDescription,
-                    PostgreSQL.error(.invalidData(format: format, type: type)).localizedDescription
+                    clientError(.invalidData(format: format, type: type)).localizedDescription
                 )
             }
         }

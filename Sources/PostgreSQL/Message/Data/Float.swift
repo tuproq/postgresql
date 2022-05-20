@@ -5,20 +5,20 @@ extension Float: Codable {
         switch (format, type) {
         case (.binary, .float4):
             guard buffer.readableBytes == 4, let float = buffer.readFloat() else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = float
         case (.binary, .float8):
             guard buffer.readableBytes == 8, let double = buffer.readDouble() else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = Self(double)
         case (.text, .float4), (.text, .float8):
             guard let string = buffer.readString(), let value = Self(string) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = value
-        default: throw error(.invalidDataType(type))
+        default: throw clientError(.invalidDataType(type))
         }
     }
 
@@ -33,7 +33,7 @@ extension Float: Codable {
             case .text: buffer.writeString(String(self))
             }
         } else {
-            throw error(.invalidDataType(type))
+            throw clientError(.invalidDataType(type))
         }
     }
 }

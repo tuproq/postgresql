@@ -26,7 +26,7 @@ final class TypeTests: BaseTests {
                 XCTAssertNotNil(error as? ClientError)
                 XCTAssertEqual(
                     error.localizedDescription,
-                    PostgreSQL.error(.invalidDataType(dateType)).localizedDescription
+                    clientError(.invalidDataType(dateType)).localizedDescription
                 )
             }
         }

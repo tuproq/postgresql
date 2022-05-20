@@ -12,6 +12,10 @@ public struct ClientError: LocalizedError {
         self.init(errorType.rawValue)
     }
 
+    init(_ errorType: ErrorType.Message) {
+        self.init(errorType.message)
+    }
+
     init(_ message: String? = nil) {
         let errorType = String(describing: type(of: self))
 
@@ -20,15 +24,6 @@ public struct ClientError: LocalizedError {
         } else {
             self.message = "\(errorType): \(ErrorType.unknown)"
         }
-    }
-}
-
-struct MessageError: LocalizedError {
-    private let message: String?
-    var errorDescription: String? { message }
-
-    init(_ message: String? = nil) {
-        self.message = message
     }
 }
 
@@ -63,10 +58,58 @@ extension ErrorType {
     }
 }
 
-func error(_ errorType: ErrorType) -> ClientError {
-    ClientError(errorType)
+extension ErrorType {
+    enum Message: CustomStringConvertible {
+        case cantParseBackendKeyDataProcessID
+        case cantParseBackendKeyDataSecretKey(processID: Int32)
+        case cantParseCommandTag
+        case cantParseDataRowValues
+        case cantParseNotificationChannel(processID: Int32)
+        case cantParseNotificationPayload(processID: Int32, channel: String)
+        case cantParseNotificationProcessID
+        case cantParseParameterDataType
+        case cantParseParameterDataTypes
+        case cantParseParameterStatusName
+        case cantParseParameterStatusValue(name: String)
+        case cantParseReadyForQueryTransactionStatus
+        case cantParseRowDescriptionColumns
+
+        var description: String { message }
+
+        var message: String {
+            switch self {
+            case .cantParseBackendKeyDataProcessID: return "Can't parse BackendKeyData processID."
+            case .cantParseBackendKeyDataSecretKey(let processID):
+                return "Can't parse BackendKeyData secretKey for processID `\(processID)`."
+            case .cantParseCommandTag: return "Can't parse CommandComplete tag."
+            case .cantParseDataRowValues: return "Can't parse DataRow values."
+            case .cantParseNotificationChannel(let processID):
+                return "Can't parse NotificationResponse channel for processID `\(processID)`."
+            case .cantParseNotificationPayload(let processID, let channel):
+                return """
+                Can't parse NotificationResponse payload for processID `\(processID)` and channel `\(channel)`.
+                """
+            case .cantParseNotificationProcessID: return "Can't parse NotificationResponse processID."
+            case .cantParseParameterDataType: return "Can't parse ParameterDescription type."
+            case .cantParseParameterDataTypes: return "Can't parse ParameterDescription types."
+            case .cantParseParameterStatusName: return "Can't parse ParameterStatus name."
+            case .cantParseParameterStatusValue(let name):
+                return "Can't parse ParameterStatus value for name `\(name)`."
+            case .cantParseReadyForQueryTransactionStatus: return "Can't parse ReadyForQuery transactionStatus."
+            case .cantParseRowDescriptionColumns: return "Can't parse RowDescription columns."
+            }
+        }
+    }
 }
 
-func error(_ errorType: ErrorType.Column) -> ClientError {
-    ClientError(errorType)
+func clientError(_ type: ErrorType) -> ClientError {
+    ClientError(type)
+}
+
+func clientError(_ type: ErrorType.Column) -> ClientError {
+    ClientError(type)
+}
+
+func clientError(_ type: ErrorType.Message) -> ClientError {
+    ClientError(type)
 }

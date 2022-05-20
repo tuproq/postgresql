@@ -8,8 +8,8 @@ final class MessageCommandCompleteTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.CommandComplete(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? MessageError)
-            XCTAssertEqual(error.localizedDescription, "Can't parse command tag.")
+            XCTAssertNotNil(error as? ClientError)
+            XCTAssertEqual(error.localizedDescription, clientError(.cantParseCommandTag).localizedDescription)
         }
 
         // Arrange

@@ -8,8 +8,8 @@ final class MessageDataRowTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.DataRow(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? MessageError)
-            XCTAssertEqual(error.localizedDescription, "Can't parse data row values.")
+            XCTAssertNotNil(error as? ClientError)
+            XCTAssertEqual(error.localizedDescription, clientError(.cantParseDataRowValues).localizedDescription)
         }
 
         // Arrange

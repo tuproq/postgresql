@@ -8,8 +8,11 @@ final class MessageNotificationResponseTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.NotificationResponse(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? MessageError)
-            XCTAssertEqual(error.localizedDescription, "Can't parse process ID.")
+            XCTAssertNotNil(error as? ClientError)
+            XCTAssertEqual(
+                error.localizedDescription,
+                clientError(.cantParseNotificationProcessID).localizedDescription
+            )
         }
 
         // Arrange
@@ -19,8 +22,11 @@ final class MessageNotificationResponseTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.NotificationResponse(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? MessageError)
-            XCTAssertEqual(error.localizedDescription, "Can't parse channel.")
+            XCTAssertNotNil(error as? ClientError)
+            XCTAssertEqual(
+                error.localizedDescription,
+                clientError(.cantParseNotificationChannel(processID: processID)).localizedDescription
+            )
         }
 
         // Arrange
@@ -31,8 +37,13 @@ final class MessageNotificationResponseTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.NotificationResponse(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? MessageError)
-            XCTAssertEqual(error.localizedDescription, "Can't parse payload.")
+            XCTAssertNotNil(error as? ClientError)
+            XCTAssertEqual(
+                error.localizedDescription,
+                clientError(
+                    .cantParseNotificationPayload(processID: processID, channel: channel)
+                ).localizedDescription
+            )
         }
 
         // Arrange

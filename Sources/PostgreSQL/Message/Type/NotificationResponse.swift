@@ -7,13 +7,13 @@ extension Message {
 
         init(buffer: inout ByteBuffer) throws {
             guard let processID: Int32 = buffer.readInteger() else {
-                throw MessageError("Can't parse process ID.")
+                throw clientError(.cantParseNotificationProcessID)
             }
             guard let channel = buffer.readNullTerminatedString() else {
-                throw MessageError("Can't parse channel.")
+                throw clientError(.cantParseNotificationChannel(processID: processID))
             }
             guard let payload = buffer.readNullTerminatedString() else {
-                throw MessageError("Can't parse payload.")
+                throw clientError(.cantParseNotificationPayload(processID: processID, channel: channel))
             }
             self.processID = processID
             self.channel = channel

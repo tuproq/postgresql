@@ -6,10 +6,10 @@ extension Message {
 
         init(buffer: inout ByteBuffer) throws {
             guard let processID = buffer.readInteger(as: Int32.self) else {
-                throw MessageError("Can't parse backend key data processID.")
+                throw clientError(.cantParseBackendKeyDataProcessID)
             }
             guard let secretKey = buffer.readInteger(as: Int32.self) else {
-                throw MessageError("Can't parse backend key data secretKey for \(processID).")
+                throw clientError(.cantParseBackendKeyDataSecretKey(processID: processID))
             }
             self.processID = processID
             self.secretKey = secretKey

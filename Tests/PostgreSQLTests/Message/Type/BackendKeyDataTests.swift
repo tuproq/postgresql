@@ -8,8 +8,11 @@ final class MessageBackendKeyDataTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.BackendKeyData(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? MessageError)
-            XCTAssertEqual(error.localizedDescription, "Can't parse backend key data processID.")
+            XCTAssertNotNil(error as? ClientError)
+            XCTAssertEqual(
+                error.localizedDescription,
+                clientError(.cantParseBackendKeyDataProcessID).localizedDescription
+            )
         }
 
         // Arrange
@@ -19,8 +22,11 @@ final class MessageBackendKeyDataTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.BackendKeyData(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? MessageError)
-            XCTAssertEqual(error.localizedDescription, "Can't parse backend key data secretKey for \(processID).")
+            XCTAssertNotNil(error as? ClientError)
+            XCTAssertEqual(
+                error.localizedDescription,
+                clientError(.cantParseBackendKeyDataSecretKey(processID: processID)).localizedDescription
+            )
         }
 
         // Arrange

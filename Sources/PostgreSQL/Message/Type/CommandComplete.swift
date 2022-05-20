@@ -5,7 +5,7 @@ extension Message {
 
         init(buffer: inout ByteBuffer) throws {
             guard let command = buffer.readNullTerminatedString() else {
-                throw MessageError("Can't parse command tag.")
+                throw clientError(.cantParseCommandTag)
             }
             self.command = command
         }

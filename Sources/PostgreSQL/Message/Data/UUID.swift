@@ -6,14 +6,14 @@ extension UUID: Codable {
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
         switch type {
         case .uuid:
-            guard let uuid = buffer.readUUID() else { throw error(.invalidData(format: format, type: type)) }
+            guard let uuid = buffer.readUUID() else { throw clientError(.invalidData(format: format, type: type)) }
             self = uuid
         case .text, .varchar:
             guard buffer.readableBytes == 36, let uuid = buffer.readString().flatMap({ Self(uuidString: $0) }) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = uuid
-        default: throw error(.invalidDataType(type))
+        default: throw clientError(.invalidDataType(type))
         }
     }
 
@@ -30,7 +30,7 @@ extension UUID: Codable {
                 uuid.12, uuid.13, uuid.14, uuid.15
             ])
         } else {
-            throw error(.invalidDataType(type))
+            throw clientError(.invalidDataType(type))
         }
     }
 }

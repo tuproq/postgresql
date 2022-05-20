@@ -20,7 +20,7 @@ final class UUIDTests: BaseTests {
             XCTAssertNotNil(error as? ClientError)
             XCTAssertEqual(
                 error.localizedDescription,
-                PostgreSQL.error(.invalidDataType(type)).localizedDescription
+                clientError(.invalidDataType(type)).localizedDescription
             )
         }
     }
@@ -73,7 +73,7 @@ final class UUIDTests: BaseTests {
                     XCTAssertNotNil(error as? ClientError)
                     XCTAssertEqual(
                         error.localizedDescription,
-                        PostgreSQL.error(.invalidData(format: format, type: type)).localizedDescription
+                        clientError(.invalidData(format: format, type: type)).localizedDescription
                     )
                 }
             }

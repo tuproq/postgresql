@@ -6,14 +6,14 @@ extension Decimal: Codable {
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
         switch (format, type) {
         case (.binary, .numeric):
-            guard let value = Numeric(buffer: &buffer) else { throw error(.invalidData(format: format, type: type)) }
+            guard let value = Numeric(buffer: &buffer) else { throw clientError(.invalidData(format: format, type: type)) }
             self = value.decimal
         case (.text, .numeric):
             guard let string = buffer.readString(), let value = Decimal(string: string) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = value
-        default: throw error(.invalidDataType(type))
+        default: throw clientError(.invalidDataType(type))
         }
     }
 
@@ -32,7 +32,7 @@ extension Decimal: Codable {
             var value = numeric.value
             buffer.writeBuffer(&value)
         } else {
-            throw error(.invalidDataType(type))
+            throw clientError(.invalidDataType(type))
         }
     }
 }

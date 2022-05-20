@@ -12,17 +12,17 @@ extension Date: Codable {
         switch type {
         case .date:
             guard buffer.readableBytes == 4, let days = buffer.readInteger(as: Int32.self) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             let seconds = TimeInterval(days) * Self.secondsInDay
             self = Date(timeInterval: seconds, since: Self.startDate)
         case .timestamp, .timestamptz:
             guard buffer.readableBytes == 8, let microseconds = buffer.readInteger(as: Int64.self) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             let seconds = TimeInterval(microseconds) / Self.microsecondsInSecond
             self = Date(timeInterval: seconds, since: Self.startDate)
-        default: throw error(.invalidDataType(type))
+        default: throw clientError(.invalidDataType(type))
         }
     }
 
@@ -39,7 +39,7 @@ extension Date: Codable {
             let seconds = timeIntervalSince(Self.startDate) * Self.microsecondsInSecond
             buffer.writeInteger(Int64(seconds))
         } else {
-            throw error(.invalidDataType(type))
+            throw clientError(.invalidDataType(type))
         }
     }
 }

@@ -7,7 +7,7 @@ extension Message {
             guard let columns = try buffer.readArray(as: Column.self, { buffer in
                 try .init(buffer: &buffer)
             }) else {
-                throw MessageError("Can't parse row description columns.")
+                throw clientError(.cantParseRowDescriptionColumns)
             }
             self.columns = columns
         }

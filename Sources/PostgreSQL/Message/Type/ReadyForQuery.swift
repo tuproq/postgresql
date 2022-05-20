@@ -5,7 +5,7 @@ extension Message {
 
         init(buffer: inout ByteBuffer) throws {
             guard let value = buffer.readInteger(as: UInt8.self), let status = Status(rawValue: value) else {
-                throw MessageError("Can't parse transaction status.")
+                throw clientError(.cantParseReadyForQueryTransactionStatus)
             }
             self.status = status
         }

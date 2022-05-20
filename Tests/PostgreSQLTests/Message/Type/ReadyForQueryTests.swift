@@ -8,8 +8,11 @@ final class MessageReadyForQueryTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.ReadyForQuery(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? MessageError)
-            XCTAssertEqual(error.localizedDescription, "Can't parse transaction status.")
+            XCTAssertNotNil(error as? ClientError)
+            XCTAssertEqual(
+                error.localizedDescription,
+                clientError(.cantParseReadyForQueryTransactionStatus).localizedDescription
+            )
         }
 
         // Arrange

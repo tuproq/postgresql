@@ -2,21 +2,21 @@ extension Bool: Codable {
     public static var psqlType: DataType { .bool }
 
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
-        guard type == .bool else { throw error(.invalidDataType(type)) }
-        guard buffer.readableBytes == 1 else { throw error(.invalidData(format: format, type: type)) }
+        guard type == .bool else { throw clientError(.invalidDataType(type)) }
+        guard buffer.readableBytes == 1 else { throw clientError(.invalidData(format: format, type: type)) }
 
         switch format {
         case .binary:
             switch buffer.readInteger(as: UInt8.self) {
             case .some(0): self = false
             case .some(1): self = true
-            default: throw error(.invalidData(format: format, type: type))
+            default: throw clientError(.invalidData(format: format, type: type))
             }
         case .text:
             switch buffer.readInteger(as: UInt8.self) {
             case .some(UInt8(ascii: "f")): self = false
             case .some(UInt8(ascii: "t")): self = true
-            default: throw error(.invalidData(format: format, type: type))
+            default: throw clientError(.invalidData(format: format, type: type))
             }
         }
     }
@@ -32,7 +32,7 @@ extension Bool: Codable {
             case .text: buffer.writeInteger(UInt8(ascii: self ? "t" : "f"))
             }
         } else {
-            throw error(.invalidDataType(type))
+            throw clientError(.invalidDataType(type))
         }
     }
 }

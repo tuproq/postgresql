@@ -8,8 +8,11 @@ final class MessageParameterStatusTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.ParameterStatus(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? MessageError)
-            XCTAssertEqual(error.localizedDescription, "Can't parse parameter status name.")
+            XCTAssertNotNil(error as? ClientError)
+            XCTAssertEqual(
+                error.localizedDescription,
+                clientError(.cantParseParameterStatusName).localizedDescription
+            )
         }
 
         // Arrange
@@ -19,8 +22,11 @@ final class MessageParameterStatusTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.ParameterStatus(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? MessageError)
-            XCTAssertEqual(error.localizedDescription, "Can't parse parameter status value for \(name).")
+            XCTAssertNotNil(error as? ClientError)
+            XCTAssertEqual(
+                error.localizedDescription,
+                clientError(.cantParseParameterStatusValue(name: name)).localizedDescription
+            )
         }
 
         // Arrange

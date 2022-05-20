@@ -5,15 +5,15 @@ extension Int16: Codable {
         switch (format, type) {
         case (.binary, .int2):
             guard buffer.readableBytes == 2, let value = buffer.readInteger(as: Self.self) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = value
         case (.text, .int2):
             guard let string = buffer.readString(), let value = Self(string) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = value
-        default: throw error(.invalidDataType(type))
+        default: throw clientError(.invalidDataType(type))
         }
     }
 
@@ -28,7 +28,7 @@ extension Int16: Codable {
             case .text: buffer.writeString(String(self))
             }
         } else {
-            throw error(.invalidDataType(type))
+            throw clientError(.invalidDataType(type))
         }
     }
 }
@@ -40,20 +40,20 @@ extension Int32: Codable {
         switch (format, type) {
         case (.binary, .int2):
             guard buffer.readableBytes == 2, let value = buffer.readInteger(as: Int16.self) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = Self(value)
         case (.binary, .int4):
             guard buffer.readableBytes == 4, let value = buffer.readInteger(as: Self.self) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = Self(value)
         case (.text, .int2), (.text, .int4):
             guard let string = buffer.readString(), let value = Self(string) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = value
-        default: throw error(.invalidDataType(type))
+        default: throw clientError(.invalidDataType(type))
         }
     }
 
@@ -68,7 +68,7 @@ extension Int32: Codable {
             case .text: buffer.writeString(String(self))
             }
         } else {
-            throw error(.invalidDataType(type))
+            throw clientError(.invalidDataType(type))
         }
     }
 }
@@ -80,25 +80,25 @@ extension Int64: Codable {
         switch (format, type) {
         case (.binary, .int2):
             guard buffer.readableBytes == 2, let value = buffer.readInteger(as: Int16.self) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = Self(value)
         case (.binary, .int4):
             guard buffer.readableBytes == 4, let value = buffer.readInteger(as: Int32.self) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = Self(value)
         case (.binary, .int8):
             guard buffer.readableBytes == 8, let value = buffer.readInteger(as: Self.self) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = value
         case (.text, .int2), (.text, .int4), (.text, .int8):
             guard let string = buffer.readString(), let value = Self(string) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = value
-        default: throw error(.invalidDataType(type))
+        default: throw clientError(.invalidDataType(type))
         }
     }
 
@@ -113,7 +113,7 @@ extension Int64: Codable {
             case .text: buffer.writeString(String(self))
             }
         } else {
-            throw error(.invalidDataType(type))
+            throw clientError(.invalidDataType(type))
         }
     }
 }
@@ -131,25 +131,25 @@ extension Int: Codable {
         switch (format, type) {
         case (.binary, .int2):
             guard buffer.readableBytes == 2, let value = buffer.readInteger(as: Int16.self) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = Self(value)
         case (.binary, .int4):
             guard buffer.readableBytes == 4, let value = buffer.readInteger(as: Int32.self) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = Self(value)
         case (.binary, .int8):
             guard buffer.readableBytes == 8, let value = buffer.readInteger(as: Int64.self) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = Self(value)
         case (.text, .int2), (.text, .int4), (.text, .int8):
             guard let string = buffer.readString(), let value = Self(string) else {
-                throw error(.invalidData(format: format, type: type))
+                throw clientError(.invalidData(format: format, type: type))
             }
             self = value
-        default: throw error(.invalidDataType(type))
+        default: throw clientError(.invalidDataType(type))
         }
     }
 
@@ -164,7 +164,7 @@ extension Int: Codable {
             case .text: buffer.writeString(String(self))
             }
         } else {
-            throw error(.invalidDataType(type))
+            throw clientError(.invalidDataType(type))
         }
     }
 }

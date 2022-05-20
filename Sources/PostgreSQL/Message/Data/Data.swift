@@ -16,7 +16,7 @@ extension Data: Codable {
         if type == .bytea {
             buffer.writeBytes(self)
         } else {
-            throw error(.invalidDataType(type))
+            throw clientError(.invalidDataType(type))
         }
     }
 }
