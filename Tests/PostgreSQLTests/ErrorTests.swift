@@ -3,11 +3,17 @@ import XCTest
 
 final class ClientErrorTests: BaseTests {
     func testInit() {
+        // Act
+        var error = ClientError()
+
+        // Assert
+        XCTAssertEqual(error.errorDescription, clientError(.unknown).errorDescription)
+
         // Arrange
-        let message = "An unknown error."
+        let message = "A custom error."
 
         // Act
-        let error = ClientError(message)
+        error = ClientError(message)
 
         // Assert
         XCTAssertEqual(error.errorDescription, "\(String(describing: ClientError.self)): \(message)")
