@@ -123,7 +123,7 @@ extension Int: Codable {
         switch MemoryLayout<Int>.size {
         case 4: return .int4
         case 8: return .int8
-        default: preconditionFailure("The `psqlType` must be either an Int32 or Int64.")
+        default: preconditionFailure("The `psqlType` property must be either an `Int32` or `Int64`.")
         }
     }
 
