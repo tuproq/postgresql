@@ -120,11 +120,7 @@ extension Int64: Codable {
 
 extension Int: Codable {
     public static var psqlType: DataType {
-        switch MemoryLayout<Int>.size {
-        case 4: return .int4
-        case 8: return .int8
-        default: preconditionFailure("The `psqlType` property must be either an `Int32` or `Int64`.")
-        }
+        MemoryLayout<Int>.size == 8 ? .int8 : .int4
     }
 
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
