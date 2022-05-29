@@ -4,13 +4,7 @@ import XCTest
 final class IntTests: BaseTests {
     func testDefaultFormatAndType() {
         // Arrange
-        var type: DataType?
-
-        switch MemoryLayout<Int>.size {
-        case 4: type = .int4
-        case 8: type = .int8
-        default: break
-        }
+        let type: DataType = MemoryLayout<Int>.size == 8 ? .int8 : .int4
 
         // Assert
         XCTAssertEqual(Int16.psqlFormat, .binary)
