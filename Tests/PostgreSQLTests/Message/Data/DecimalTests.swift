@@ -27,7 +27,17 @@ final class DecimalTests: BaseTests {
 
     func testInitWithValidValues() {
         // Arrange
-        let values: [Decimal] = [0, 1, -1, Decimal.pi, -Decimal.pi, 12345678.9, -12345678.9, 9999999999999, Decimal.greatestFiniteMagnitude]
+        let values: [Decimal] = [
+            0,
+            1,
+            -1,
+            Decimal.pi,
+            -Decimal.pi,
+            12345678.9,
+            -12345678.9,
+            9999999999999,
+            Decimal.greatestFiniteMagnitude
+        ]
 
         for value in values {
             let format: DataFormat = .binary
