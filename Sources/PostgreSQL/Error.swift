@@ -28,6 +28,7 @@ public struct ClientError: LocalizedError {
 }
 
 enum ErrorType: CustomStringConvertible {
+    case decoding(type: String)
     case invalidData(format: DataFormat, type: DataType)
     case invalidDataType(_ type: DataType)
     case unknown
@@ -36,6 +37,7 @@ enum ErrorType: CustomStringConvertible {
 
     var message: String {
         switch self {
+        case .decoding(let type): return "Can't decode an array of `\(type)`."
         case .invalidData(let format, let type):
             return "An invalid data type `\(type)` for data format `\(format)`."
         case .invalidDataType(let type): return "An invalid data type `\(type)`."

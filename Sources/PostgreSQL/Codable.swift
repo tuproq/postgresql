@@ -31,4 +31,12 @@ extension Encodable {
     public func encode(into buffer: inout ByteBuffer, type: DataType) throws {
         try encode(into: &buffer, format: Self.psqlFormat, type: type)
     }
+
+    public func encodeRaw(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
+        let lengthIndex = buffer.writerIndex
+        buffer.writeInteger(Int32(0))
+        let startIndex = buffer.writerIndex
+        try encode(into: &buffer, format: format, type: type)
+        buffer.setInteger(numericCast(buffer.writerIndex - startIndex), at: lengthIndex, as: Int32.self)
+    }
 }
