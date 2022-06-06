@@ -12,16 +12,19 @@ final class DateTests: BaseTests {
         // Arrange
         let type: DataType = .bool
         let value = Date()
-        var buffer = ByteBuffer()
-        try? value.encode(into: &buffer)
 
-        // Act/Assert
-        XCTAssertThrowsError(try Date(buffer: &buffer, type: type)) { error in
-            XCTAssertNotNil(error as? ClientError)
-            XCTAssertEqual(
-                error.localizedDescription,
-                clientError(.invalidDataType(type)).localizedDescription
-            )
+        for format in DataFormat.allCases {
+            var buffer = ByteBuffer()
+            try? value.encode(into: &buffer, format: format, type: type)
+
+            // Act/Assert
+            XCTAssertThrowsError(try Date(buffer: &buffer, format: format, type: type)) { error in
+                XCTAssertNotNil(error as? ClientError)
+                XCTAssertEqual(
+                    error.localizedDescription,
+                    clientError(.invalidDataType(type)).localizedDescription
+                )
+            }
         }
     }
 
@@ -39,15 +42,18 @@ final class DateTests: BaseTests {
         XCTAssertEqual(expectedValue, value)
 
         // Arrange
-        buffer = ByteBuffer()
-        try? value.encode(into: &buffer, type: type)
+        for format in DataFormat.allCases {
+            var expectedValue: Date?
+            var buffer = ByteBuffer()
+            try? value.encode(into: &buffer, format: format, type: type)
 
-        // Act/Assert
-        XCTAssertNoThrow(expectedValue = try Date(buffer: &buffer, type: type))
-        XCTAssertEqual(
-            calendar.dateComponents([.day, .month, .year], from: expectedValue!),
-            calendar.dateComponents([.day, .month, .year], from: value)
-        )
+            // Act/Assert
+            XCTAssertNoThrow(expectedValue = try Date(buffer: &buffer, format: format, type: type))
+            XCTAssertEqual(
+                calendar.dateComponents([.day, .month, .year], from: expectedValue!),
+                calendar.dateComponents([.day, .month, .year], from: value)
+            )
+        }
 
         // Arrange
         let values: [DataType: Date] = [
@@ -59,11 +65,14 @@ final class DateTests: BaseTests {
             for (type, value) in values {
                 var expectedValue: Date?
                 var buffer = ByteBuffer()
-                try? value.encode(into: &buffer, type: type)
+                try? value.encode(into: &buffer, format: format, type: type)
 
                 // Act/Assert
                 XCTAssertNoThrow(expectedValue = try Date(buffer: &buffer, format: format, type: type))
-                XCTAssertEqual(expectedValue, value)
+                XCTAssertEqual(
+                    calendar.dateComponents([.second, .minute, .hour, .day, .month, .year], from: expectedValue!),
+                    calendar.dateComponents([.second, .minute, .hour, .day, .month, .year], from: value)
+                )
             }
         }
     }
