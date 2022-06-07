@@ -9,8 +9,6 @@ final class RequestHandler: ChannelDuplexHandler {
 
     let connection: Connection
     private var queue: [Request]
-    private var lastResult: Result?
-    private var isExtendedQuery = false
 
     init(connection: Connection) {
         self.connection = connection
@@ -25,7 +23,7 @@ final class RequestHandler: ChannelDuplexHandler {
         case .rowDescription:
             do {
                 let rowDescription = try Message.RowDescription(buffer: &message.buffer)
-                lastResult = Result(columns: rowDescription.columns)
+                request.result = Result(columns: rowDescription.columns)
             } catch {
                 request.promise.fail(error)
                 return
@@ -34,7 +32,7 @@ final class RequestHandler: ChannelDuplexHandler {
             do {
                 let dataRow = try Message.DataRow(buffer: &message.buffer)
 
-                if let result = lastResult {
+                if let result = request.result {
                     var dictionary = [String: Codable?]()
 
                     for (index, buffer) in dataRow.values.enumerated() {
@@ -76,10 +74,9 @@ final class RequestHandler: ChannelDuplexHandler {
                 case .idle:
                     queue.removeFirst()
 
-                    if let result = lastResult {
+                    if let result = request.result {
                         let response = Response(message: message, result: result)
                         request.promise.succeed(response)
-                        self.lastResult = nil
                         return
                     }
                 case .transaction:
@@ -99,30 +96,17 @@ final class RequestHandler: ChannelDuplexHandler {
             let error = ClientError(buffer.getString(at: 0, length: buffer.readableBytes) ?? "An unknown error.")
             request.promise.fail(error)
             return
-        case .parseComplete:
-            isExtendedQuery = true
-        case .bindComplete:
-            isExtendedQuery = true
-        case .commandComplete:
-            isExtendedQuery = true
-            var buffer = message.buffer
-
-            do {
-                let commandComplete = try Message.CommandComplete(buffer: &buffer)
-            } catch {
-                connection.logger.error("\(error)")
-            }
         default: break
         }
 
-        if lastResult == nil && !isExtendedQuery {
+        if request.result == nil {
             request.promise.succeed(Response(message: message))
         }
     }
 
     func write(context: ChannelHandlerContext, data: NIOAny, promise: EventLoopPromise<Void>?) {
         let requests = unwrapOutboundIn(data)
-        
+
         for request in requests {
             queue.append(request)
             context.write(wrapOutboundOut(request.message), promise: promise)

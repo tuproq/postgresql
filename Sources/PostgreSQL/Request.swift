@@ -1,6 +1,12 @@
 import struct NIOCore.EventLoopPromise
 
-struct Request {
-    var message: Message
-    var promise: EventLoopPromise<Response>
+final class Request {
+    let message: Message
+    let promise: EventLoopPromise<Response>
+    var result: Result?
+
+    init(message: Message, promise: EventLoopPromise<Response>) {
+        self.message = message
+        self.promise = promise
+    }
 }
