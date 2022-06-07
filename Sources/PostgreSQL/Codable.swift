@@ -1,6 +1,6 @@
 public typealias Codable = Decodable & Encodable
 
-public protocol Decodable {
+public protocol Decodable: Swift.Decodable {
     init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws
 }
 
@@ -10,7 +10,7 @@ extension Decodable {
     }
 }
 
-public protocol Encodable {
+public protocol Encodable: Swift.Encodable {
     static var psqlFormat: DataFormat { get }
     static var psqlType: DataType { get }
 
