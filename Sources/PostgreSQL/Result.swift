@@ -1,6 +1,6 @@
-final class Result {
+public final class Result {
     let columns: [Column]
-    var data = [[String: Codable?]]()
+    public internal(set) var data = [[Column: Codable?]]()
 
     init(columns: [Column]) {
         self.columns = columns
