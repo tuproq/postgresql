@@ -14,7 +14,7 @@ final class ResultTests: BaseTests {
         buffer.writeInteger(DataFormat.binary.rawValue)
 
         let columns = [try! Column(buffer: &buffer)]
-        let data = [[columns.first!: UUID()]]
+        let data = [[columns.first!.name: UUID()]]
 
         // Act
         let result = Result(columns: columns)
@@ -22,6 +22,6 @@ final class ResultTests: BaseTests {
 
         // Assert
         XCTAssertEqual(result.columns, columns)
-        XCTAssertEqual(result.data as? [[Column: UUID]], data)
+        XCTAssertEqual(result.data as? [[String: UUID]], data)
     }
 }

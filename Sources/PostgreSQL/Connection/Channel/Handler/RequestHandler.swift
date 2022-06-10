@@ -33,12 +33,12 @@ final class RequestHandler: ChannelDuplexHandler {
                 let dataRow = try Message.DataRow(buffer: &message.buffer)
 
                 if let result = request.result {
-                    var dictionary = [Column: Codable?]()
+                    var dictionary = [String: Any?]()
 
                     for (index, buffer) in dataRow.values.enumerated() {
                         var buffer = buffer
                         let column = result.columns[index]
-                        dictionary[column] = try value(from: &buffer, for: column)
+                        dictionary[column.name] = try value(from: &buffer, for: column)
                     }
 
                     result.data.append(dictionary)
@@ -113,7 +113,7 @@ final class RequestHandler: ChannelDuplexHandler {
         }
     }
 
-    private func value(from buffer: inout ByteBuffer?, for column: Column) throws -> Codable? {
+    private func value(from buffer: inout ByteBuffer?, for column: Column) throws -> Any? {
         if var buffer = buffer {
             let format = column.dataFormat
             let type = column.dataTypeID
