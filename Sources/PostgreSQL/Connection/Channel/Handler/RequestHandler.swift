@@ -20,6 +20,9 @@ final class RequestHandler: ChannelDuplexHandler {
         var message = unwrapInboundIn(data)
 
         switch message.identifier {
+        case .authentication:
+            queue.removeFirst()
+            request.promise.succeed(Response(message: message))
         case .rowDescription:
             do {
                 let rowDescription = try Message.RowDescription(buffer: &message.buffer)
@@ -97,10 +100,6 @@ final class RequestHandler: ChannelDuplexHandler {
             request.promise.fail(error)
             return
         default: break
-        }
-
-        if request.result == nil {
-            request.promise.succeed(Response(message: message))
         }
     }
 
