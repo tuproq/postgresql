@@ -59,8 +59,8 @@ final class UUIDTests: BaseTests {
         // Arrange
         let invalidValues: [DataType: Codable] = [
             .uuid: "text",
-            .varchar: UUID(),
-            .text: UUID()
+            .varchar: 1,
+            .text: 2.0
         ]
 
         for format in DataFormat.allCases {
