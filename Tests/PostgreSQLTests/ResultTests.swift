@@ -14,14 +14,14 @@ final class ResultTests: BaseTests {
         buffer.writeInteger(DataFormat.binary.rawValue)
 
         let columns = [try! Column(buffer: &buffer)]
-        let data = [[columns.first!.name: UUID()]]
+        let rows = [[UUID()]]
 
         // Act
         let result = Result(columns: columns)
-        result.data = data
+        result.rows = rows
 
         // Assert
         XCTAssertEqual(result.columns, columns)
-        XCTAssertEqual(result.data as? [[String: UUID]], data)
+        XCTAssertEqual(result.rows as? [[UUID]], rows)
     }
 }

@@ -36,15 +36,15 @@ final class RequestHandler: ChannelDuplexHandler {
                 let dataRow = try Message.DataRow(buffer: &message.buffer)
 
                 if let result = request.result {
-                    var dictionary = [String: Any?]()
+                    var row = [Any?]()
 
                     for (index, buffer) in dataRow.values.enumerated() {
                         var buffer = buffer
                         let column = result.columns[index]
-                        dictionary[column.name] = try value(from: &buffer, for: column)
+                        row.append(try value(from: &buffer, for: column))
                     }
 
-                    result.data.append(dictionary)
+                    result.rows.append(row)
                 }
             } catch {
                 request.promise.fail(error)
