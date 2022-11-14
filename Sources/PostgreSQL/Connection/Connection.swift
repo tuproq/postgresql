@@ -67,11 +67,9 @@ public final class Connection {
     }
 
     @discardableResult
-    public func simpleQuery(_ string: String) async throws -> Result? {
+    public func simpleQuery(_ string: String) async throws -> Response {
         let messageType = Message.SimpleQuery(string)
-        let response = try await send(types: [messageType], in: channel!)
-
-        return response.result
+        return try await send(types: [messageType], in: channel!)
     }
 
     @discardableResult
@@ -79,7 +77,7 @@ public final class Connection {
         _ string: String,
         name: String = "",
         parameters: Codable?...
-    ) async throws -> Result? {
+    ) async throws -> Response {
         try await query(string, name: name, parameters: parameters)
     }
 
@@ -88,7 +86,7 @@ public final class Connection {
         _ string: String,
         name: String = "",
         parameters: [Codable?] = .init()
-    ) async throws -> Result? {
+    ) async throws -> Response {
         let formats: [DataFormat] = parameters.map {
             if let parameter = $0 { return type(of: parameter).psqlFormat }
             return .binary
@@ -120,7 +118,7 @@ public final class Connection {
             in: channel!
         )
 
-        return response.result
+        return response
     }
 
     public func beginTransaction() async throws {

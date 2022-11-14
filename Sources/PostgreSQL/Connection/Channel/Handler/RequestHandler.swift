@@ -26,7 +26,7 @@ final class RequestHandler: ChannelDuplexHandler {
         case .rowDescription:
             do {
                 let rowDescription = try Message.RowDescription(buffer: &message.buffer)
-                request.result = Result(columns: rowDescription.columns)
+                request.results.append(Result(columns: rowDescription.columns))
             } catch {
                 request.promise.fail(error)
                 return
@@ -35,7 +35,7 @@ final class RequestHandler: ChannelDuplexHandler {
             do {
                 let dataRow = try Message.DataRow(buffer: &message.buffer)
 
-                if let result = request.result {
+                if let result = request.results.last {
                     var row = [Any?]()
 
                     for (index, buffer) in dataRow.values.enumerated() {
@@ -77,11 +77,9 @@ final class RequestHandler: ChannelDuplexHandler {
                 case .idle:
                     queue.removeFirst()
 
-                    if let result = request.result {
-                        let response = Response(message: message, result: result)
-                        request.promise.succeed(response)
-                        return
-                    }
+                    let response = Response(message: message, results: request.results)
+                    request.promise.succeed(response)
+                    return
                 case .transaction:
                     break // TODO: handle
                 case .transactionFailed:

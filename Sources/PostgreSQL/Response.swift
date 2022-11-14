@@ -1,4 +1,4 @@
-struct Response {
+public struct Response {
     var message: Message
-    var result: Result?
+    public var results = [Result]()
 }
