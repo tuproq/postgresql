@@ -16,7 +16,7 @@ public final class Connection {
     }
 
     @discardableResult
-    public func connect() async throws -> Self {
+    public func open() async throws -> Self {
         if channel == nil {
             let group = MultiThreadedEventLoopGroup(numberOfThreads: option.numberOfThreads)
             self.group = group
