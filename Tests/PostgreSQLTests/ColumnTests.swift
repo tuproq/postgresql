@@ -15,7 +15,7 @@ final class ColumnTests: BaseTests {
         var buffer = ByteBuffer()
 
         // Act/Assert
-        XCTAssertThrowsError(column = try Column(buffer: &buffer)) { error in
+        XCTAssertThrowsError(try Column(buffer: &buffer)) { error in
             XCTAssertNotNil(error as? ClientError)
             XCTAssertEqual(error.localizedDescription, clientError(.invalidColumnName).localizedDescription)
         }
@@ -25,7 +25,7 @@ final class ColumnTests: BaseTests {
         buffer.writeNullTerminatedString(name)
 
         // Act/Assert
-        XCTAssertThrowsError(column = try Column(buffer: &buffer)) { error in
+        XCTAssertThrowsError(try Column(buffer: &buffer)) { error in
             XCTAssertNotNil(error as? ClientError)
             XCTAssertEqual(error.localizedDescription, clientError(.invalidColumnTableID).localizedDescription)
         }
@@ -36,7 +36,7 @@ final class ColumnTests: BaseTests {
         buffer.writeInteger(tableID)
 
         // Act/Assert
-        XCTAssertThrowsError(column = try Column(buffer: &buffer)) { error in
+        XCTAssertThrowsError(try Column(buffer: &buffer)) { error in
             XCTAssertNotNil(error as? ClientError)
             XCTAssertEqual(
                 error.localizedDescription,
@@ -51,7 +51,7 @@ final class ColumnTests: BaseTests {
         buffer.writeInteger(attributeNumber)
 
         // Act/Assert
-        XCTAssertThrowsError(column = try Column(buffer: &buffer)) { error in
+        XCTAssertThrowsError(try Column(buffer: &buffer)) { error in
             XCTAssertNotNil(error as? ClientError)
             XCTAssertEqual(
                 error.localizedDescription,
@@ -67,7 +67,7 @@ final class ColumnTests: BaseTests {
         buffer.writeInteger(dataTypeID.rawValue)
 
         // Act/Assert
-        XCTAssertThrowsError(column = try Column(buffer: &buffer)) { error in
+        XCTAssertThrowsError(try Column(buffer: &buffer)) { error in
             XCTAssertNotNil(error as? ClientError)
             XCTAssertEqual(
                 error.localizedDescription,
@@ -84,7 +84,7 @@ final class ColumnTests: BaseTests {
         buffer.writeInteger(dataTypeSize)
 
         // Act/Assert
-        XCTAssertThrowsError(column = try Column(buffer: &buffer)) { error in
+        XCTAssertThrowsError(try Column(buffer: &buffer)) { error in
             XCTAssertNotNil(error as? ClientError)
             XCTAssertEqual(
                 error.localizedDescription,
@@ -102,7 +102,7 @@ final class ColumnTests: BaseTests {
         buffer.writeInteger(attributeTypeModifier)
 
         // Act/Assert
-        XCTAssertThrowsError(column = try Column(buffer: &buffer)) { error in
+        XCTAssertThrowsError(try Column(buffer: &buffer)) { error in
             XCTAssertNotNil(error as? ClientError)
             XCTAssertEqual(
                 error.localizedDescription,
