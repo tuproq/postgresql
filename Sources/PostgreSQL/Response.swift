@@ -1,4 +1,4 @@
 public struct Response {
     var message: Message
-    public var results = [Result]()
+    public internal(set) var results = [Result]()
 }
