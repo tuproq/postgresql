@@ -36,7 +36,7 @@ final class RequestHandler: ChannelDuplexHandler {
                 let dataRow = try Message.DataRow(buffer: &message.buffer)
 
                 if let result = request.results.last {
-                    var row = [PostgreSQLDecodable?]()
+                    var row = [Codable?]()
 
                     for (index, buffer) in dataRow.values.enumerated() {
                         var buffer = buffer
@@ -110,7 +110,7 @@ final class RequestHandler: ChannelDuplexHandler {
         }
     }
 
-    private func value(from buffer: inout ByteBuffer?, for column: Column) throws -> PostgreSQLDecodable? {
+    private func value(from buffer: inout ByteBuffer?, for column: Column) throws -> Codable? {
         if var buffer = buffer {
             let format = column.dataFormat
             let type = column.dataTypeID
