@@ -44,7 +44,7 @@ final class UInt8Tests: BaseTests {
 
     func testInitWithInvalidValues() {
         // Arrange
-        let invalidValues: [DataType: Codable] = [
+        let invalidValues: [DataType: PostgreSQLCodable] = [
             .bpchar: UUID(),
             .char: "text"
         ]

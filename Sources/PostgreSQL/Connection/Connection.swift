@@ -76,7 +76,7 @@ public final class Connection {
     public func query(
         _ string: String,
         name: String = "",
-        parameters: Codable?...
+        parameters: PostgreSQLCodable?...
     ) async throws -> Response {
         try await query(string, name: name, parameters: parameters)
     }
@@ -85,7 +85,7 @@ public final class Connection {
     public func query(
         _ string: String,
         name: String = "",
-        parameters: [Codable?] = .init()
+        parameters: [PostgreSQLCodable?] = .init()
     ) async throws -> Response {
         let formats: [DataFormat] = parameters.map {
             if let parameter = $0 { return type(of: parameter).psqlFormat }

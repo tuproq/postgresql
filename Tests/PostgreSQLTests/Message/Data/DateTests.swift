@@ -79,7 +79,7 @@ final class DateTests: BaseTests {
 
     func testInitWithInvalidValues() {
         // Arrange
-        let invalidValues: [DataType: Codable] = [
+        let invalidValues: [DataType: PostgreSQLCodable] = [
             .date: 1,
             .timestamp: UUID(),
             .timestamptz: true

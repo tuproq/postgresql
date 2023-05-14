@@ -77,7 +77,7 @@ final class ArrayTests: BaseTests {
         testInit(values: [UUID(), UUID()])
     }
 
-    func testInit<T: Codable & Equatable>(values: [T]) {
+    func testInit<T: PostgreSQLCodable & Equatable>(values: [T]) {
         // Arrange
         let format: DataFormat = .binary
         var expectedValues: [T]?

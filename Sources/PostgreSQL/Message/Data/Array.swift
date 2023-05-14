@@ -1,6 +1,6 @@
 import Foundation
 
-extension Array: Codable where Element: Codable {
+extension Array: PostgreSQLCodable where Element: PostgreSQLCodable {
     public static var psqlType: DataType {
         let elementType = Element.Type.self
 

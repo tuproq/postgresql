@@ -20,7 +20,7 @@ final class IntTests: BaseTests {
     func testInitWithInvalidType() {
         // Arrange
         let type: DataType = .uuid
-        let values: [Codable] = [Int16(1), Int32(1), Int64(1), Int(1)]
+        let values: [PostgreSQLCodable] = [Int16(1), Int32(1), Int64(1), Int(1)]
         var buffer: ByteBuffer
 
         for value in values {

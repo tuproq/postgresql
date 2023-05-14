@@ -51,7 +51,7 @@ final class DoubleTests: BaseTests {
 
     func testInitWithInvalidValues() {
         // Arrange
-        let invalidValues: [DataType: Codable] = [
+        let invalidValues: [DataType: PostgreSQLCodable] = [
             .float4: true,
             .float8: "text"
         ]

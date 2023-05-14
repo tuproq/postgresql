@@ -1,4 +1,4 @@
-extension Float: Codable {
+extension Float: PostgreSQLCodable {
     public static var psqlType: DataType { .float4 }
 
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {

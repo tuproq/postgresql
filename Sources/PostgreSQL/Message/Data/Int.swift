@@ -1,4 +1,4 @@
-extension Int16: Codable {
+extension Int16: PostgreSQLCodable {
     public static var psqlType: DataType { .int2 }
 
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
@@ -33,7 +33,7 @@ extension Int16: Codable {
     }
 }
 
-extension Int32: Codable {
+extension Int32: PostgreSQLCodable {
     public static var psqlType: DataType { .int4 }
 
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
@@ -73,7 +73,7 @@ extension Int32: Codable {
     }
 }
 
-extension Int64: Codable {
+extension Int64: PostgreSQLCodable {
     public static var psqlType: DataType { .int8 }
 
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
@@ -118,7 +118,7 @@ extension Int64: Codable {
     }
 }
 
-extension Int: Codable {
+extension Int: PostgreSQLCodable {
     public static var psqlType: DataType {
         MemoryLayout<Int>.size == 8 ? .int8 : .int4
     }

@@ -1,4 +1,4 @@
-extension UInt8: Codable {
+extension UInt8: PostgreSQLCodable {
     public static var psqlType: DataType { .char }
 
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {

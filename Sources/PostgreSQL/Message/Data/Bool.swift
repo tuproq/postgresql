@@ -1,4 +1,4 @@
-extension Bool: Codable {
+extension Bool: PostgreSQLCodable {
     public static var psqlType: DataType { .bool }
 
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {

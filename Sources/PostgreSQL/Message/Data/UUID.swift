@@ -1,6 +1,6 @@
 import Foundation
 
-extension UUID: Codable {
+extension UUID: PostgreSQLCodable {
     public static var psqlType: DataType { .uuid }
 
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {

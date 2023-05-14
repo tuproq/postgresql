@@ -57,7 +57,7 @@ final class UUIDTests: BaseTests {
 
     func testInitWithInvalidValues() {
         // Arrange
-        let invalidValues: [DataType: Codable] = [
+        let invalidValues: [DataType: PostgreSQLCodable] = [
             .uuid: "text",
             .varchar: 1,
             .text: 2.0

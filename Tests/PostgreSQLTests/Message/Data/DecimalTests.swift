@@ -64,7 +64,7 @@ final class DecimalTests: BaseTests {
 
     func testInitWithInvalidValues() {
         // Arrange
-        let invalidValues: [Codable] = [true, "", "a"]
+        let invalidValues: [PostgreSQLCodable] = [true, "", "a"]
         let type: DataType = .numeric
 
         for format in DataFormat.allCases {

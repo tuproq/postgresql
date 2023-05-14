@@ -1,6 +1,6 @@
 import Foundation
 
-extension Date: Codable {
+extension Date: PostgreSQLCodable {
     public static var psqlType: DataType { .timestamptz }
 
     static let microsecondsInSecond: TimeInterval = 1_000_000

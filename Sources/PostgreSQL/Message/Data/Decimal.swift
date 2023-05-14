@@ -1,6 +1,6 @@
 import Foundation
 
-extension Decimal: Codable {
+extension Decimal: PostgreSQLCodable {
     public static var psqlType: DataType { .numeric }
 
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {

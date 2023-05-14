@@ -1,23 +1,23 @@
-public typealias Codable = Decodable & Encodable
+public typealias PostgreSQLCodable = PostgreSQLDecodable & PostgreSQLEncodable
 
-public protocol Decodable: Swift.Decodable {
+public protocol PostgreSQLDecodable: Decodable {
     init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws
 }
 
-extension Decodable {
+extension PostgreSQLDecodable {
     public init(buffer: inout ByteBuffer, type: DataType) throws {
         try self.init(buffer: &buffer, format: .binary, type: type)
     }
 }
 
-public protocol Encodable: Swift.Encodable {
+public protocol PostgreSQLEncodable: Encodable {
     static var psqlFormat: DataFormat { get }
     static var psqlType: DataType { get }
 
     func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws
 }
 
-extension Encodable {
+extension PostgreSQLEncodable {
     public static var psqlFormat: DataFormat { .binary }
 
     public func encode(into buffer: inout ByteBuffer) throws {

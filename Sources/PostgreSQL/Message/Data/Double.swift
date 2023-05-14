@@ -1,4 +1,4 @@
-extension Double: Codable {
+extension Double: PostgreSQLCodable {
     public static var psqlType: DataType { .float8 }
 
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {

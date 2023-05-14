@@ -1,7 +1,7 @@
 import Foundation
 import NIOFoundationCompat
 
-extension Data: Codable {
+extension Data: PostgreSQLCodable {
     public static var psqlType: DataType { .bytea }
 
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {

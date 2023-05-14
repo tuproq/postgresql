@@ -4,7 +4,7 @@ import XCTest
 final class TypeTests: BaseTests {
     func testEncodeWithInvalidType() {
         // Arrange
-        let values: [DataType: Codable] = [
+        let values: [DataType: PostgreSQLCodable] = [
             .bool: "text",
             .bpchar: true,
             .bytea: Int16(1),
