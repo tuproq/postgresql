@@ -62,6 +62,7 @@ extension ErrorType {
 
 extension ErrorType {
     enum Message: CustomStringConvertible {
+        case cantParseAuthenticationMethod
         case cantParseBackendKeyDataProcessID
         case cantParseBackendKeyDataSecretKey(processID: Int32)
         case cantParseCommandTag
@@ -80,6 +81,7 @@ extension ErrorType {
 
         var message: String {
             switch self {
+            case .cantParseAuthenticationMethod: return "Can't parse Authentication method."
             case .cantParseBackendKeyDataProcessID: return "Can't parse BackendKeyData processID."
             case .cantParseBackendKeyDataSecretKey(let processID):
                 return "Can't parse BackendKeyData secretKey for processID `\(processID)`."
