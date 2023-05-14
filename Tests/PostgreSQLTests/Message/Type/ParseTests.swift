@@ -26,7 +26,10 @@ final class MessageParseTests: BaseTests {
         expectedBuffer.writeNullTerminatedString(statementName)
         expectedBuffer.writeNullTerminatedString(query)
         expectedBuffer.writeInteger(numericCast(parameterTypes.count), as: Int16.self)
-        for parameterType in parameterTypes { expectedBuffer.writeInteger(parameterType.rawValue) }
+
+        for parameterType in parameterTypes {
+            expectedBuffer.writeInteger(parameterType.rawValue)
+        }
 
         // Act
         messageType.encode(into: &buffer)

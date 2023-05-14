@@ -15,7 +15,10 @@ extension Message {
             buffer.writeNullTerminatedString(statementName)
             buffer.writeNullTerminatedString(query)
             buffer.writeInteger(numericCast(parameterTypes.count), as: Int16.self)
-            for parameterType in parameterTypes { buffer.writeInteger(parameterType.rawValue) }
+
+            for parameterType in parameterTypes {
+                buffer.writeInteger(parameterType.rawValue)
+            }
         }
     }
 }

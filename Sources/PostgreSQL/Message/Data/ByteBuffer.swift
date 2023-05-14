@@ -6,14 +6,20 @@ extension ByteBuffer {
         guard let count: Int = readInteger(as: Int16.self).flatMap(numericCast) else { return nil }
         var array = [T]()
         array.reserveCapacity(count)
-        for _ in 0..<count { try array.append(handler(&self)) }
+
+        for _ in 0..<count {
+            try array.append(handler(&self))
+        }
 
         return array
     }
 
     mutating func writeArray<T>(_ array: [T], handler: (inout ByteBuffer, T) -> ()) {
         writeInteger(numericCast(array.count), as: Int16.self)
-        for element in array { handler(&self, element) }
+
+        for element in array {
+            handler(&self, element)
+        }
     }
 
     mutating func writeArray<T>(_ array: [T]) where T: FixedWidthInteger {
