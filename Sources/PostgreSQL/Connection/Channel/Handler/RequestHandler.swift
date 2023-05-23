@@ -41,7 +41,7 @@ final class RequestHandler: ChannelDuplexHandler {
                     for (index, buffer) in dataRow.values.enumerated() {
                         var buffer = buffer
                         let column = result.columns[index]
-                        row.append(try value(from: &buffer, for: column))
+                        row.append(try decode(from: &buffer, to: column))
                     }
 
                     result.rows.append(row)
@@ -110,7 +110,7 @@ final class RequestHandler: ChannelDuplexHandler {
         }
     }
 
-    private func value(from buffer: inout ByteBuffer?, for column: Column) throws -> Codable? {
+    private func decode(from buffer: inout ByteBuffer?, to column: Column) throws -> Codable? {
         if var buffer = buffer {
             let format = column.dataFormat
             let type = column.dataTypeID
