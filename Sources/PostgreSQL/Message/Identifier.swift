@@ -129,7 +129,7 @@ extension Message {
         let value: UInt8
 
         var description: String {
-            let name: String
+            var name: String
 
             switch self {
             case .authentication: name = "Authentication"
@@ -155,7 +155,7 @@ extension Message {
             case .functionCallResponse: name = "FunctionCallResponse"
             case .negotiateProtocolVersion: name = "NegotiateProtocolVersion"
             case .noData: name = "NoData"
-            case .none: name = "None"
+            case .none: name = "StartupMessage/SSLRequest"
             case .noticeResponse: name = "NoticeResponse"
             case .notificationResponse: name = "NotificationResponse"
             case .parameterDescription: name = "ParameterDescription"
@@ -175,7 +175,11 @@ extension Message {
             default: name = "NotYetSupported"
             }
 
-            return "\(name) (\(String(Character(Unicode.Scalar(value)))))"
+            if self != Self.none {
+                name += " (\(Character(Unicode.Scalar(value))))"
+            }
+
+            return name
         }
 
         init(integerLiteral value: UInt8) {
