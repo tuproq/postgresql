@@ -2,7 +2,7 @@
 import XCTest
 
 final class MessageDescribeTests: BaseTests {
-    let command: Message.Describe.Command = .portal
+    let command: Message.Command = .portal
     let portalOrStatementName = "portalOrStatementName"
 
     func testInit() {
@@ -17,8 +17,8 @@ final class MessageDescribeTests: BaseTests {
 
     func testCommands() {
         // Assert
-        XCTAssertEqual(Message.Describe.Command.portal.rawValue, 0x50)
-        XCTAssertEqual(Message.Describe.Command.statement.rawValue, 0x53)
+        XCTAssertEqual(Message.Command.portal.rawValue, 0x50)
+        XCTAssertEqual(Message.Command.statement.rawValue, 0x53)
     }
 
     func testEncode() {

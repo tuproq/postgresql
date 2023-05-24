@@ -104,7 +104,7 @@ public final class Connection {
 
             return buffer
         }
-        let command: Message.Describe.Command = name.isEmpty ? .portal : .statement
+        let command: Message.Command = name.isEmpty ? .portal : .statement
         let response = try await send(
             types: [
                 Message.Parse(statementName: name, query: string, parameterTypes: types),
@@ -116,6 +116,7 @@ public final class Connection {
                 ),
                 Message.Describe(command: command),
                 Message.Execute(),
+                Message.Close(command: command, name: name),
                 Message.Sync()
             ],
             in: channel!

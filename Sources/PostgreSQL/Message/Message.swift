@@ -8,6 +8,11 @@ struct Message: CustomStringConvertible, Equatable {
         case frontend
     }
 
+    enum Command: UInt8 {
+        case portal = 0x50 // 'P'
+        case statement = 0x53 // 'S'
+    }
+
     var description: String {
         var name: String
 

@@ -2,7 +2,7 @@
 import XCTest
 
 final class MessageCloseTests: BaseTests {
-    let command: Message.Close.Command = .portal
+    let command: Message.Command = .portal
     let portalOrStatementName = "portalOrStatementName"
 
     func testInit() {
@@ -17,8 +17,8 @@ final class MessageCloseTests: BaseTests {
 
     func testCommands() {
         // Assert
-        XCTAssertEqual(Message.Close.Command.portal.rawValue, 0x50)
-        XCTAssertEqual(Message.Close.Command.statement.rawValue, 0x53)
+        XCTAssertEqual(Message.Command.portal.rawValue, 0x50)
+        XCTAssertEqual(Message.Command.statement.rawValue, 0x53)
     }
 
     func testEncode() {
