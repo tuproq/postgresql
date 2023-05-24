@@ -1,5 +1,4 @@
 import Foundation
-import NIOCore
 
 struct Numeric {
     let chunkSize = 4

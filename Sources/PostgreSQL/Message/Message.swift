@@ -1,5 +1,3 @@
-import NIOCore
-
 struct Message: CustomStringConvertible, Equatable {
     var identifier: Identifier
     var buffer: ByteBuffer

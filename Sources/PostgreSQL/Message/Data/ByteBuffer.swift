@@ -1,5 +1,5 @@
 import Foundation
-import NIOCore
+import enum NIOCore.Endianness
 
 extension ByteBuffer {
     mutating func readArray<T>(as type: T.Type, _ handler: (inout ByteBuffer) throws -> (T)) rethrows -> [T]? {

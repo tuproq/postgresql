@@ -1,5 +1,3 @@
-import NIOCore
-
 extension Message {
     struct Parse: MessageType {
         let identifier: Identifier = .parse

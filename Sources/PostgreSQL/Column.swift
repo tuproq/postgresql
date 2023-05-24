@@ -1,5 +1,3 @@
-import NIOCore
-
 public struct Column: CustomStringConvertible, Hashable {
     public let name: String
     public let tableID: Int32
