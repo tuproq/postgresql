@@ -9,7 +9,7 @@ final class MessageStartupMessageTests: BaseTests {
         let messageType = Message.StartupMessage(user: user)
 
         // Assert
-        XCTAssertEqual(messageType.identifier, .none)
+        XCTAssertEqual(messageType.identifier, .startupMessage)
         XCTAssertEqual(messageType.protocolVersion, 0x00_03_00_00)
         XCTAssertEqual(messageType.user, user)
         XCTAssertEqual (messageType.database, user)

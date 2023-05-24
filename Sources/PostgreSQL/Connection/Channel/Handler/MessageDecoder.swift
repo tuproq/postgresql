@@ -19,13 +19,17 @@ final class MessageDecoder: ByteToMessageDecoder {
         if isFirstMessage &&
             connection.option.requiresTLS &&
             (messageIdentifier == .sslSupported || messageIdentifier == .sslUnsupported) {
-            message = Message(identifier: messageIdentifier, buffer: context.channel.allocator.buffer(capacity: 0))
+            message = Message(
+                identifier: messageIdentifier,
+                source: .backend,
+                buffer: context.channel.allocator.buffer(capacity: 0)
+            )
         } else {
             guard let messageSize = currentBuffer
                 .readInteger(as: Int32.self)
                 .flatMap(Int.init) else { return .needMoreData }
             guard let messageBuffer = currentBuffer.readSlice(length: messageSize - 4) else { return .needMoreData }
-            message = Message(identifier: messageIdentifier, buffer: messageBuffer)
+            message = Message(identifier: messageIdentifier, source: .backend, buffer: messageBuffer)
         }
 
         isFirstMessage = false

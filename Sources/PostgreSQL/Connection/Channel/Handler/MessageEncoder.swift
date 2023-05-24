@@ -6,7 +6,7 @@ final class MessageEncoder: MessageToByteEncoder {
     func encode(data: Message, out: inout ByteBuffer) throws {
         var message = data
 
-        if message.identifier != .none {
+        if message.identifier != .sslRequest && message.identifier != .startupMessage {
             out.writeInteger(message.identifier.value)
         }
 

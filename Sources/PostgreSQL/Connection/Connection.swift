@@ -15,8 +15,7 @@ public final class Connection {
         logger = .init(label: option.identifier)
     }
 
-    @discardableResult
-    public func open() async throws -> Self {
+    public func open() async throws {
         if channel == nil {
             let group = MultiThreadedEventLoopGroup(numberOfThreads: option.numberOfThreads)
             self.group = group
@@ -40,8 +39,6 @@ public final class Connection {
                 let message = try await _connect(in: channel)
             }
         }
-
-        return self
     }
 
     private func _connect(in channel: Channel) async throws -> Message {
@@ -76,23 +73,29 @@ public final class Connection {
     public func query(
         _ string: String,
         name: String = "",
-        parameters: PostgreSQLCodable?...
+        arguments parameters: PostgreSQLCodable?...
     ) async throws -> Response {
-        try await query(string, name: name, parameters: parameters)
+        try await query(string, name: name, arguments: parameters)
     }
 
     @discardableResult
     public func query(
         _ string: String,
         name: String = "",
-        parameters: [PostgreSQLCodable?] = .init()
+        arguments parameters: [PostgreSQLCodable?] = .init()
     ) async throws -> Response {
         let formats: [DataFormat] = parameters.map {
-            if let parameter = $0 { return type(of: parameter).psqlFormat }
+            if let parameter = $0 {
+                return type(of: parameter).psqlFormat
+            }
+
             return .binary
         }
         let types: [DataType] = parameters.map {
-            if let parameter = $0 { return type(of: parameter).psqlType }
+            if let parameter = $0 {
+                return type(of: parameter).psqlType
+            }
+
             return .null
         }
         let parameters: [ByteBuffer?] = try parameters.map {
@@ -122,15 +125,15 @@ public final class Connection {
     }
 
     public func beginTransaction() async throws {
-        try await simpleQuery("BEGIN;")
+        try await query("BEGIN;")
     }
 
     public func commitTransaction() async throws {
-        try await simpleQuery("COMMIT;")
+        try await query("COMMIT;")
     }
 
     public func rollbackTransaction() async throws {
-        try await simpleQuery("ROLLBACK;")
+        try await query("ROLLBACK;")
     }
 }
 
@@ -158,7 +161,7 @@ extension Connection {
         for type in types {
             var buffer = ByteBuffer()
             type.encode(into: &buffer)
-            let message = Message(identifier: type.identifier, buffer: buffer)
+            let message = Message(identifier: type.identifier, source: .frontend, buffer: buffer)
             let request = Request(message: message, promise: promise)
             requests.append(request)
         }
