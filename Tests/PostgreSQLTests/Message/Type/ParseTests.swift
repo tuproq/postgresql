@@ -25,7 +25,7 @@ final class MessageParseTests: BaseTests {
         var expectedBuffer = ByteBuffer()
         expectedBuffer.writeNullTerminatedString(statementName)
         expectedBuffer.writeNullTerminatedString(query)
-        expectedBuffer.writeInteger(numericCast(parameterTypes.count), as: Int16.self)
+        expectedBuffer.writeInteger(Int16(parameterTypes.count))
 
         for parameterType in parameterTypes {
             expectedBuffer.writeInteger(parameterType.rawValue)

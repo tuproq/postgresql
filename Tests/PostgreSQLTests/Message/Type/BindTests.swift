@@ -77,7 +77,7 @@ final class MessageBindTests: BaseTests {
         expectedBuffer.writeArray(messageType.parameterDataFormats)
         expectedBuffer.writeArray(messageType.parameters) {
             if var value = $1 {
-                $0.writeInteger(numericCast(value.readableBytes), as: Int32.self)
+                $0.writeInteger(Int32(value.readableBytes))
                 $0.writeBuffer(&value)
             }
         }

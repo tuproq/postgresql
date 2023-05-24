@@ -37,6 +37,6 @@ extension PostgreSQLEncodable {
         buffer.writeInteger(Int32(0))
         let startIndex = buffer.writerIndex
         try encode(into: &buffer, format: format, type: type)
-        buffer.setInteger(numericCast(buffer.writerIndex - startIndex), at: lengthIndex, as: Int32.self)
+        buffer.setInteger(Int32(buffer.writerIndex - startIndex), at: lengthIndex)
     }
 }

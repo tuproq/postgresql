@@ -15,7 +15,7 @@ extension ByteBuffer {
     }
 
     mutating func writeArray<T>(_ array: [T], handler: (inout ByteBuffer, T) -> ()) {
-        writeInteger(numericCast(array.count), as: Int16.self)
+        writeInteger(Int16(array.count))
 
         for element in array {
             handler(&self, element)

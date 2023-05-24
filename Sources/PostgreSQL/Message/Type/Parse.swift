@@ -1,3 +1,5 @@
+import NIOCore
+
 extension Message {
     struct Parse: MessageType {
         let identifier: Identifier = .parse
@@ -14,7 +16,7 @@ extension Message {
         func encode(into buffer: inout ByteBuffer) {
             buffer.writeNullTerminatedString(statementName)
             buffer.writeNullTerminatedString(query)
-            buffer.writeInteger(numericCast(parameterTypes.count), as: Int16.self)
+            buffer.writeInteger(Int16(parameterTypes.count))
 
             for parameterType in parameterTypes {
                 buffer.writeInteger(parameterType.rawValue)

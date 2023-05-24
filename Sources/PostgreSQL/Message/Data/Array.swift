@@ -97,7 +97,7 @@ extension Array: PostgreSQLCodable where Element: PostgreSQLCodable {
 
         guard !isEmpty else { return }
 
-        let size: Int32 = numericCast(count)
+        let size = Int32(count)
         let dimensions: Int32 = 1 // 1 dimensional array support only
         buffer.writeInteger(size)
         buffer.writeInteger(dimensions)

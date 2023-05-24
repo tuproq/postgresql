@@ -27,7 +27,7 @@ extension Message {
             buffer.writeArray(parameterDataFormats)
             buffer.writeArray(parameters) {
                 if var value = $1 {
-                    $0.writeInteger(numericCast(value.readableBytes), as: Int32.self)
+                    $0.writeInteger(Int32(value.readableBytes))
                     $0.writeBuffer(&value)
                 } else {
                     $0.writeInteger(-1, as: Int32.self)
