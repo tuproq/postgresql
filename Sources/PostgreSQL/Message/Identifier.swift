@@ -128,7 +128,55 @@ extension Message {
 
         let value: UInt8
 
-        var description: String { String(Character(Unicode.Scalar(value))) }
+        var description: String {
+            let name: String
+
+            switch self {
+            case .authentication: name = "Authentication"
+            case .backendKeyData: name = "BackendKeyData"
+            case .bind: name = "Bind"
+            case .bindComplete: name = "BindComplete"
+            case .close: name = "Close"
+            case .commandComplete: name = "CommandComplete"
+            case .closeComplete: name = "CloseComplete"
+            case .copyBothResponse: name = "CopyBothResponse"
+            case .copyData: name = "CopyData"
+            case .copyDone: name = "CopyDone"
+            case .copyFail: name = "CopyFail"
+            case .copyInResponse: name = "CopyInResponse"
+            case .copyOutResponse: name = "CopyOutResponse"
+            case .flush: name = "Flush"
+            case .dataRow: name = "DataRow"
+            case .describe: name = "Describe"
+            case .emptyQueryResponse: name = "EmptyQueryResponse"
+            case .errorResponse: name = "ErrorResponse"
+            case .execute: name = "Execute"
+            case .functionCall: name = "FunctionCall"
+            case .functionCallResponse: name = "FunctionCallResponse"
+            case .negotiateProtocolVersion: name = "NegotiateProtocolVersion"
+            case .noData: name = "NoData"
+            case .none: name = "None"
+            case .noticeResponse: name = "NoticeResponse"
+            case .notificationResponse: name = "NotificationResponse"
+            case .parameterDescription: name = "ParameterDescription"
+            case .parameterStatus: name = "ParameterStatus"
+            case .sync: name = "Sync"
+            case .parse: name = "Parse"
+            case .parseComplete: name = "ParseComplete"
+            case .portalSuspended: name = "PortalSuspended"
+            case .simpleQuery: name = "SimpleQuery"
+            case .readyForQuery: name = "ReadyForQuery"
+            case .rowDescription: name = "RowDescription"
+            case .gssResponse: name = "GSSResponse"
+            case .password: name = "Password"
+            case .saslInitialResponse: name = "SASLInitialResponse"
+            case .saslResponse: name = "saslResponse"
+            case .terminate: name = "Terminate"
+            default: name = "NotYetSupported"
+            }
+
+            return "\(name) (\(String(Character(Unicode.Scalar(value)))))"
+        }
 
         init(integerLiteral value: UInt8) {
             self.value = value
