@@ -52,8 +52,8 @@ final class MessageIdentifierTests: BaseTests {
             XCTAssertEqual(identifier.0, identifier.1.value)
 
             if let value = identifier.0 {
-                XCTAssertEqual(String(Character(Unicode.Scalar(value))), identifier.1.description)
                 XCTAssertEqual(Message.Identifier(integerLiteral: value).value, identifier.1.value)
+                XCTAssertEqual(Message.Identifier(integerLiteral: value).description, identifier.1.description)
             } else {
                 XCTAssertEqual("", identifier.1.description)
             }
