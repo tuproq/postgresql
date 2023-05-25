@@ -1,4 +1,4 @@
-public struct Response {
+struct Response {
     var message: Message
     public internal(set) var results = [Result]()
 }
