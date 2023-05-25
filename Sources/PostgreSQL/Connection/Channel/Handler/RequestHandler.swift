@@ -8,48 +8,21 @@ final class RequestHandler: ChannelDuplexHandler {
     typealias OutboundOut = Message
 
     let connection: Connection
-    private var queue: [Request]
+    private var request: Request?
+    private var firstError: Error?
+    private var results = [Result]()
 
     init(connection: Connection) {
         self.connection = connection
-        queue = .init()
     }
 
     func channelRead(context: ChannelHandlerContext, data: NIOAny) {
-        guard let request = queue.first else { return }
         var message = unwrapInboundIn(data)
+        print("Response: \(message)")
 
         switch message.identifier {
         case .authentication:
-            queue.removeFirst()
-            request.promise.succeed(Response(message: message))
-        case .rowDescription:
-            do {
-                let rowDescription = try Message.RowDescription(buffer: &message.buffer)
-                request.results.append(Result(columns: rowDescription.columns))
-            } catch {
-                request.promise.fail(error)
-                return
-            }
-        case .dataRow:
-            do {
-                let dataRow = try Message.DataRow(buffer: &message.buffer)
-
-                if let result = request.results.last {
-                    var row = [Codable?]()
-
-                    for (index, buffer) in dataRow.values.enumerated() {
-                        var buffer = buffer
-                        let column = result.columns[index]
-                        row.append(try decode(from: &buffer, to: column))
-                    }
-
-                    result.rows.append(row)
-                }
-            } catch {
-                request.promise.fail(error)
-                return
-            }
+            request?.promise.succeed(Response(message: message))
         case .parameterStatus:
             var buffer = message.buffer
 
@@ -67,47 +40,86 @@ final class RequestHandler: ChannelDuplexHandler {
             } catch {
                 connection.logger.error("\(error)")
             }
-        case .readyForQuery:
-            var buffer = message.buffer
-
+        case .rowDescription:
             do {
-                let readyForQuery = try Message.ReadyForQuery(buffer: &buffer)
+                let rowDescription = try Message.RowDescription(buffer: &message.buffer)
+                results.append(Result(columns: rowDescription.columns))
+            } catch {
+                connection.logger.error("\(error)")
+            }
+        case .dataRow:
+            do {
+                let dataRow = try Message.DataRow(buffer: &message.buffer)
 
-                switch readyForQuery.status {
-                case .idle:
-                    queue.removeFirst()
+                if let result = results.last {
+                    var row = [Codable?]()
 
-                    let response = Response(message: message, results: request.results)
-                    request.promise.succeed(response)
-                    return
-                case .transaction:
-                    break // TODO: handle
-                case .transactionFailed:
-                    break // TODO: handle
+                    for (index, buffer) in dataRow.values.enumerated() {
+                        var buffer = buffer
+                        let column = result.columns[index]
+                        row.append(try decode(from: &buffer, to: column))
+                    }
+
+                    result.rows.append(row)
                 }
             } catch {
                 connection.logger.error("\(error)")
             }
+        case .readyForQuery:
+            var buffer = message.buffer
+
+            if let error = firstError {
+                request?.promise.fail(error)
+            } else {
+                do {
+                    let readyForQuery = try Message.ReadyForQuery(buffer: &buffer)
+
+                    switch readyForQuery.status {
+                    case .idle:
+                        let response = Response(message: message, results: results)
+                        request?.promise.succeed(response)
+                    case .transaction:
+                        request?.promise.succeed(Response(message: message))
+                    case .transactionFailed:
+                        break // TODO: handle
+                    }
+                } catch {
+                    connection.logger.error("\(error)")
+                }
+            }
+
+            request = nil
+            firstError = nil
+            results.removeAll()
         case .noticeResponse:
-            let buffer = message.buffer
-            let warningMessage = buffer.getString(at: 0, length: buffer.readableBytes) ?? "An unknown warning."
+            let warningMessage = getString(message) ?? "An unknown warning."
             connection.logger.warning("\(warningMessage)")
         case .errorResponse:
-            let buffer = message.buffer
-            let error = ClientError(buffer.getString(at: 0, length: buffer.readableBytes) ?? "An unknown error.")
-            request.promise.fail(error)
-            return
-        default: break
+            let error = ClientError(getString(message) ?? "An unknown error.")
+            setError(error)
+        default:
+            break
         }
     }
 
     func write(context: ChannelHandlerContext, data: NIOAny, promise: EventLoopPromise<Void>?) {
         let requests = unwrapOutboundIn(data)
+        request = requests.last
 
         for request in requests {
-            queue.append(request)
+            print("Request: \(request.message)")
             context.write(wrapOutboundOut(request.message), promise: promise)
         }
+    }
+
+    private func setError(_ error: Error) {
+        if firstError == nil {
+            firstError = error
+        }
+    }
+
+    private func getString(_ message: Message) -> String? {
+        message.buffer.getString(at: 0, length: message.buffer.readableBytes)
     }
 
     private func decode(from buffer: inout ByteBuffer?, to column: Column) throws -> Codable? {
