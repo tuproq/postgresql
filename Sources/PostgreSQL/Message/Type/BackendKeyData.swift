@@ -6,10 +6,10 @@ extension Message {
 
         init(buffer: inout ByteBuffer) throws {
             guard let processID = buffer.readInteger(as: Int32.self) else {
-                throw clientError(.cantParseBackendKeyDataProcessID)
+                throw postgreSQLError(.cantParseBackendKeyDataProcessID)
             }
             guard let secretKey = buffer.readInteger(as: Int32.self) else {
-                throw clientError(.cantParseBackendKeyDataSecretKey(processID: processID))
+                throw postgreSQLError(.cantParseBackendKeyDataSecretKey(processID: processID))
             }
             self.processID = processID
             self.secretKey = secretKey

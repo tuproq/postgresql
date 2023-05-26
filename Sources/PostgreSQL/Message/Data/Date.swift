@@ -16,28 +16,28 @@ extension Date: PostgreSQLCodable {
             switch type {
             case .date:
                 guard buffer.readableBytes == 4, let days = buffer.readInteger(as: Int32.self) else {
-                    throw clientError(.invalidData(format: format, type: type))
+                    throw postgreSQLError(.invalidData(format: format, type: type))
                 }
                 let seconds = TimeInterval(days) * Self.secondsInDay
                 self = Date(timeInterval: seconds, since: Self.startDate)
             case .timestamp, .timestamptz:
                 guard buffer.readableBytes == 8, let microseconds = buffer.readInteger(as: Int64.self) else {
-                    throw clientError(.invalidData(format: format, type: type))
+                    throw postgreSQLError(.invalidData(format: format, type: type))
                 }
                 let seconds = TimeInterval(microseconds) / Self.microsecondsInSecond
                 self = Date(timeInterval: seconds, since: Self.startDate)
-            default: throw clientError(.invalidDataType(type))
+            default: throw postgreSQLError(.invalidDataType(type))
             }
         case .text:
             guard let dateString = buffer.readString() else {
-                throw clientError(.invalidData(format: format, type: type))
+                throw postgreSQLError(.invalidData(format: format, type: type))
             }
 
             switch type {
             case .date: Self.formatter.dateFormat = "yyyy-MM-dd"
             case .timestamp: Self.formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
             case .timestamptz: Self.formatter.dateFormat = "yyyy-MM-dd HH:mm:ssxxxxx"
-            default: throw clientError(.invalidDataType(type))
+            default: throw postgreSQLError(.invalidDataType(type))
             }
 
             var date = Self.formatter.date(from: dateString)
@@ -48,7 +48,7 @@ extension Date: PostgreSQLCodable {
             }
 
             guard let date = date else {
-                throw clientError(.invalidData(format: format, type: type))
+                throw postgreSQLError(.invalidData(format: format, type: type))
             }
 
             self = date
@@ -70,14 +70,14 @@ extension Date: PostgreSQLCodable {
                 let seconds = timeIntervalSince(Self.startDate) * Self.microsecondsInSecond
                 buffer.writeInteger(Int64(seconds))
             } else {
-                throw clientError(.invalidDataType(type))
+                throw postgreSQLError(.invalidDataType(type))
             }
         case .text:
             switch type {
             case .date: Self.formatter.dateFormat = "yyyy-MM-dd"
             case .timestamp: Self.formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
             case .timestamptz: Self.formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSxxxxx"
-            default: throw clientError(.invalidDataType(type))
+            default: throw postgreSQLError(.invalidDataType(type))
             }
 
             let dateString = Self.formatter.string(from: self)

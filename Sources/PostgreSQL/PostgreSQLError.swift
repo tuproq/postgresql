@@ -110,14 +110,14 @@ extension ErrorType {
     }
 }
 
-func clientError(_ type: ErrorType) -> PostgreSQLError {
+func postgreSQLError(_ type: ErrorType) -> PostgreSQLError {
     PostgreSQLError(type)
 }
 
-func clientError(_ type: ErrorType.Column) -> PostgreSQLError {
+func postgreSQLError(_ type: ErrorType.Column) -> PostgreSQLError {
     PostgreSQLError(type)
 }
 
-func clientError(_ type: ErrorType.Message) -> PostgreSQLError {
+func postgreSQLError(_ type: ErrorType.Message) -> PostgreSQLError {
     PostgreSQLError(type)
 }

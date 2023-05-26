@@ -5,7 +5,7 @@ extension Message {
 
         init(buffer: inout ByteBuffer) throws {
             guard let command = buffer.readNullTerminatedString() else {
-                throw clientError(.cantParseCommandTag)
+                throw postgreSQLError(.cantParseCommandTag)
             }
             self.command = command
         }

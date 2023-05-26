@@ -6,14 +6,14 @@ extension Decimal: PostgreSQLCodable {
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
         switch (format, type) {
         case (.binary, .numeric):
-            guard let value = Numeric(buffer: &buffer) else { throw clientError(.invalidData(format: format, type: type)) }
+            guard let value = Numeric(buffer: &buffer) else { throw postgreSQLError(.invalidData(format: format, type: type)) }
             self = value.decimal
         case (.text, .numeric):
             guard let string = buffer.readString(), let value = Decimal(string: string) else {
-                throw clientError(.invalidData(format: format, type: type))
+                throw postgreSQLError(.invalidData(format: format, type: type))
             }
             self = value
-        default: throw clientError(.invalidDataType(type))
+        default: throw postgreSQLError(.invalidDataType(type))
         }
     }
 
@@ -32,7 +32,7 @@ extension Decimal: PostgreSQLCodable {
             var value = numeric.value
             buffer.writeBuffer(&value)
         } else {
-            throw clientError(.invalidDataType(type))
+            throw postgreSQLError(.invalidDataType(type))
         }
     }
 }

@@ -5,10 +5,10 @@ extension UInt8: PostgreSQLCodable {
         switch type {
         case .bpchar, .char:
             guard buffer.readableBytes == 1, let value = buffer.readInteger(as: Self.self) else {
-                throw clientError(.invalidData(format: format, type: type))
+                throw postgreSQLError(.invalidData(format: format, type: type))
             }
             self = value
-        default: throw clientError(.invalidDataType(type))
+        default: throw postgreSQLError(.invalidDataType(type))
         }
     }
 
@@ -20,7 +20,7 @@ extension UInt8: PostgreSQLCodable {
         if type == .bpchar || type == .char {
             buffer.writeInteger(self)
         } else {
-            throw clientError(.invalidDataType(type))
+            throw postgreSQLError(.invalidDataType(type))
         }
     }
 }

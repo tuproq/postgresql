@@ -11,7 +11,7 @@ final class MessageParameterDescriptionTests: BaseTests {
             XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(
                 error.localizedDescription,
-                clientError(.cantParseParameterDataTypes).localizedDescription
+                postgreSQLError(.cantParseParameterDataTypes).localizedDescription
             )
         }
 
@@ -23,7 +23,7 @@ final class MessageParameterDescriptionTests: BaseTests {
         // Act/Assert
         XCTAssertThrowsError(try Message.ParameterDescription(buffer: &buffer)) { error in
             XCTAssertNotNil(error as? PostgreSQLError)
-            XCTAssertEqual(error.localizedDescription, clientError(.cantParseParameterDataType).localizedDescription)
+            XCTAssertEqual(error.localizedDescription, postgreSQLError(.cantParseParameterDataType).localizedDescription)
         }
 
         // Arrange

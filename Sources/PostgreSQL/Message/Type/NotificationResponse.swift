@@ -7,13 +7,13 @@ extension Message {
 
         init(buffer: inout ByteBuffer) throws {
             guard let processID: Int32 = buffer.readInteger() else {
-                throw clientError(.cantParseNotificationProcessID)
+                throw postgreSQLError(.cantParseNotificationProcessID)
             }
             guard let channel = buffer.readNullTerminatedString() else {
-                throw clientError(.cantParseNotificationChannel(processID: processID))
+                throw postgreSQLError(.cantParseNotificationChannel(processID: processID))
             }
             guard let payload = buffer.readNullTerminatedString() else {
-                throw clientError(.cantParseNotificationPayload(processID: processID, channel: channel))
+                throw postgreSQLError(.cantParseNotificationPayload(processID: processID, channel: channel))
             }
             self.processID = processID
             self.channel = channel

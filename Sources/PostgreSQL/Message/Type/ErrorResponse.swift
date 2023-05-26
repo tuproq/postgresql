@@ -9,7 +9,7 @@ extension Message {
                     break
                 }
                 guard let field = Field(rawValue: value), let string = buffer.readNullTerminatedString() else {
-                    throw clientError(.cantParseErrorResponseFields)
+                    throw postgreSQLError(.cantParseErrorResponseFields)
                 }
                 fields[field] = string
             }

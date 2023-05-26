@@ -20,22 +20,22 @@ public struct Column: CustomStringConvertible, Hashable {
     }
 
     public init(buffer: inout ByteBuffer) throws {
-        guard let name = buffer.readNullTerminatedString() else { throw clientError(.invalidColumnName) }
-        guard let tableID = buffer.readInteger(as: Int32.self) else { throw clientError(.invalidColumnTableID) }
+        guard let name = buffer.readNullTerminatedString() else { throw postgreSQLError(.invalidColumnName) }
+        guard let tableID = buffer.readInteger(as: Int32.self) else { throw postgreSQLError(.invalidColumnTableID) }
         guard let attributeNumber = buffer.readInteger(as: Int16.self) else {
-            throw clientError(.invalidColumnAttributeNumber)
+            throw postgreSQLError(.invalidColumnAttributeNumber)
         }
         guard let dataTypeID = buffer.readInteger(as: DataType.self) else {
-            throw clientError(.invalidColumnDataTypeID)
+            throw postgreSQLError(.invalidColumnDataTypeID)
         }
         guard let dataTypeSize = buffer.readInteger(as: Int16.self) else {
-            throw clientError(.invalidColumnDataTypeSize)
+            throw postgreSQLError(.invalidColumnDataTypeSize)
         }
         guard let attributeTypeModifier = buffer.readInteger(as: Int32.self) else {
-            throw clientError(.invalidColumnAttributeTypeModifier)
+            throw postgreSQLError(.invalidColumnAttributeTypeModifier)
         }
         guard let dataFormat = buffer.readInteger(as: DataFormat.self) else {
-            throw clientError(.invalidColumnDataFormat)
+            throw postgreSQLError(.invalidColumnDataFormat)
         }
         self.name = name
         self.tableID = tableID

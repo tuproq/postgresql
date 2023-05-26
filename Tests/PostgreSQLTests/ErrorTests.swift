@@ -7,7 +7,7 @@ final class ClientErrorTests: BaseTests {
         var error = PostgreSQLError()
 
         // Assert
-        XCTAssertEqual(error.errorDescription, clientError(.unknown).errorDescription)
+        XCTAssertEqual(error.errorDescription, postgreSQLError(.unknown).errorDescription)
 
         // Arrange
         let message = "A custom error."

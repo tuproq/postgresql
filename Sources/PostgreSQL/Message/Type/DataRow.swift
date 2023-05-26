@@ -7,7 +7,7 @@ extension Message {
             guard let values = buffer.readArray(as: ByteBuffer?.self, { buffer in
                 buffer.readBytes()
             }) else {
-                throw clientError(.cantParseDataRowValues)
+                throw postgreSQLError(.cantParseDataRowValues)
             }
             self.values = values
         }

@@ -35,7 +35,7 @@ extension Array: PostgreSQLCodable where Element: PostgreSQLCodable {
         let elementType = String(describing: Element.Type.self)
 
         guard case .binary = format else {
-            throw clientError(.decoding(type: elementType)) // A binary format support only
+            throw postgreSQLError(.decoding(type: elementType)) // A binary format support only
         }
 
         guard let (isNotEmpty, elementFormatValue, elementTypeValue) = buffer.readMultipleIntegers(
@@ -45,7 +45,7 @@ extension Array: PostgreSQLCodable where Element: PostgreSQLCodable {
               isNotEmpty <= 1,
               elementFormatValue == format.rawValue
         else {
-            throw clientError(.decoding(type: elementType))
+            throw postgreSQLError(.decoding(type: elementType))
         }
 
         guard isNotEmpty == 1 else {
@@ -54,14 +54,14 @@ extension Array: PostgreSQLCodable where Element: PostgreSQLCodable {
         }
 
         guard let elementDataType = DataType(rawValue: elementTypeValue) else {
-            throw clientError(.decoding(type: elementType))
+            throw postgreSQLError(.decoding(type: elementType))
         }
 
         guard let (elementsCount, dimensions) = buffer.readMultipleIntegers(as: (Int32, Int32).self),
               elementsCount > 0,
               dimensions == 1
         else {
-            throw clientError(.decoding(type: elementType))
+            throw postgreSQLError(.decoding(type: elementType))
         }
 
         var result = Array<Element>()
@@ -69,11 +69,11 @@ extension Array: PostgreSQLCodable where Element: PostgreSQLCodable {
 
         for _ in 0..<elementsCount {
             guard let elementLength = buffer.readInteger(as: Int32.self), elementLength >= 0 else {
-                throw clientError(.decoding(type: elementType))
+                throw postgreSQLError(.decoding(type: elementType))
             }
 
             guard var elementBuffer = buffer.readSlice(length: numericCast(elementLength)) else {
-                throw clientError(.decoding(type: elementType))
+                throw postgreSQLError(.decoding(type: elementType))
             }
 
             let element = try Element(buffer: &elementBuffer, format: format, type: elementDataType)

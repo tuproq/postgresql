@@ -19,7 +19,7 @@ extension Message {
 
         init(buffer: inout ByteBuffer) throws {
             guard let rawValue = buffer.readInteger(as: Int32.self), let kind = Kind(rawValue: rawValue) else {
-                throw clientError(.cantParseAuthenticationMethod)
+                throw postgreSQLError(.cantParseAuthenticationMethod)
             }
             self.kind = kind
         }

@@ -9,20 +9,20 @@ extension UUID: PostgreSQLCodable {
             switch type {
             case .uuid:
                 guard let uuid = buffer.readUUID() else {
-                    throw clientError(.invalidData(format: format, type: type))
+                    throw postgreSQLError(.invalidData(format: format, type: type))
                 }
                 self = uuid
             case .text, .varchar:
                 guard buffer.readableBytes == 36,
                       let uuid = buffer.readString().flatMap({ Self(uuidString: $0) }) else {
-                    throw clientError(.invalidData(format: format, type: type))
+                    throw postgreSQLError(.invalidData(format: format, type: type))
                 }
                 self = uuid
-            default: throw clientError(.invalidDataType(type))
+            default: throw postgreSQLError(.invalidDataType(type))
             }
         case .text:
             guard buffer.readableBytes == 36, let uuid = buffer.readString().flatMap({ Self(uuidString: $0) }) else {
-                throw clientError(.invalidData(format: format, type: type))
+                throw postgreSQLError(.invalidData(format: format, type: type))
             }
             self = uuid
         }
@@ -46,7 +46,7 @@ extension UUID: PostgreSQLCodable {
                 buffer.writeString(uuidString)
             }
         } else {
-            throw clientError(.invalidDataType(type))
+            throw postgreSQLError(.invalidDataType(type))
         }
     }
 }

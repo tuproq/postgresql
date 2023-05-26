@@ -20,7 +20,7 @@ final class StringTests: BaseTests {
             XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(
                 error.localizedDescription,
-                clientError(.invalidDataType(type)).localizedDescription
+                postgreSQLError(.invalidDataType(type)).localizedDescription
             )
         }
     }
@@ -65,7 +65,7 @@ final class StringTests: BaseTests {
                     XCTAssertNotNil(error as? PostgreSQLError)
                     XCTAssertEqual(
                         error.localizedDescription,
-                        clientError(.invalidData(format: format, type: type)).localizedDescription
+                        postgreSQLError(.invalidData(format: format, type: type)).localizedDescription
                     )
                 }
             }

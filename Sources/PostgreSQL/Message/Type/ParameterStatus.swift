@@ -6,10 +6,10 @@ extension Message {
 
         init(buffer: inout ByteBuffer) throws {
             guard let name = buffer.readNullTerminatedString() else {
-                throw clientError(.cantParseParameterStatusName)
+                throw postgreSQLError(.cantParseParameterStatusName)
             }
             guard let value = buffer.readNullTerminatedString() else {
-                throw clientError(.cantParseParameterStatusValue(name: name))
+                throw postgreSQLError(.cantParseParameterStatusValue(name: name))
             }
             self.name = name
             self.value = value

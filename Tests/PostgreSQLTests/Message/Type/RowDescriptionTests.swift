@@ -11,7 +11,7 @@ final class MessageRowDescriptionTests: BaseTests {
             XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(
                 error.localizedDescription,
-                clientError(.cantParseRowDescriptionColumns).localizedDescription
+                postgreSQLError(.cantParseRowDescriptionColumns).localizedDescription
             )
         }
 

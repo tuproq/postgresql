@@ -7,7 +7,7 @@ extension Message {
             guard let columns = try buffer.readArray(as: Column.self, { buffer in
                 try .init(buffer: &buffer)
             }) else {
-                throw clientError(.cantParseRowDescriptionColumns)
+                throw postgreSQLError(.cantParseRowDescriptionColumns)
             }
             self.columns = columns
         }

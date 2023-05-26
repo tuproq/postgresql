@@ -11,7 +11,7 @@ final class MessageBackendKeyDataTests: BaseTests {
             XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(
                 error.localizedDescription,
-                clientError(.cantParseBackendKeyDataProcessID).localizedDescription
+                postgreSQLError(.cantParseBackendKeyDataProcessID).localizedDescription
             )
         }
 
@@ -25,7 +25,7 @@ final class MessageBackendKeyDataTests: BaseTests {
             XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(
                 error.localizedDescription,
-                clientError(.cantParseBackendKeyDataSecretKey(processID: processID)).localizedDescription
+                postgreSQLError(.cantParseBackendKeyDataSecretKey(processID: processID)).localizedDescription
             )
         }
 

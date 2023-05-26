@@ -11,7 +11,7 @@ final class MessageNotificationResponseTests: BaseTests {
             XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(
                 error.localizedDescription,
-                clientError(.cantParseNotificationProcessID).localizedDescription
+                postgreSQLError(.cantParseNotificationProcessID).localizedDescription
             )
         }
 
@@ -25,7 +25,7 @@ final class MessageNotificationResponseTests: BaseTests {
             XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(
                 error.localizedDescription,
-                clientError(.cantParseNotificationChannel(processID: processID)).localizedDescription
+                postgreSQLError(.cantParseNotificationChannel(processID: processID)).localizedDescription
             )
         }
 
@@ -40,7 +40,7 @@ final class MessageNotificationResponseTests: BaseTests {
             XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(
                 error.localizedDescription,
-                clientError(
+                postgreSQLError(
                     .cantParseNotificationPayload(processID: processID, channel: channel)
                 ).localizedDescription
             )

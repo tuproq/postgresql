@@ -6,7 +6,7 @@ extension Message {
 
         init(buffer: inout ByteBuffer) throws {
             guard let value = buffer.readInteger(as: UInt8.self), let status = Status(rawValue: value) else {
-                throw clientError(.cantParseReadyForQueryTransactionStatus)
+                throw postgreSQLError(.cantParseReadyForQueryTransactionStatus)
             }
             self.status = status
         }

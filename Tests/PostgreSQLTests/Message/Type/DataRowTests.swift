@@ -9,7 +9,7 @@ final class MessageDataRowTests: BaseTests {
         // Act/Assert
         XCTAssertThrowsError(try Message.DataRow(buffer: &buffer)) { error in
             XCTAssertNotNil(error as? PostgreSQLError)
-            XCTAssertEqual(error.localizedDescription, clientError(.cantParseDataRowValues).localizedDescription)
+            XCTAssertEqual(error.localizedDescription, postgreSQLError(.cantParseDataRowValues).localizedDescription)
         }
 
         // Arrange

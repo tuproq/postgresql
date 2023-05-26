@@ -16,7 +16,7 @@ extension Data: PostgreSQLCodable {
         if type == .bytea {
             buffer.writeBytes(self)
         } else {
-            throw clientError(.invalidDataType(type))
+            throw postgreSQLError(.invalidDataType(type))
         }
     }
 }

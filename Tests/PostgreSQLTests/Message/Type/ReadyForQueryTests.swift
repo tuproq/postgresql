@@ -11,7 +11,7 @@ final class MessageReadyForQueryTests: BaseTests {
             XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(
                 error.localizedDescription,
-                clientError(.cantParseReadyForQueryTransactionStatus).localizedDescription
+                postgreSQLError(.cantParseReadyForQueryTransactionStatus).localizedDescription
             )
         }
 
