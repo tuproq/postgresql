@@ -126,15 +126,15 @@ public final class PostgreSQL {
     }
 
     public func beginTransaction() async throws {
-        try await query("BEGIN;")
+        try await simpleQuery("BEGIN;")
     }
 
     public func commitTransaction() async throws {
-        try await query("COMMIT;")
+        try await simpleQuery("COMMIT;")
     }
 
     public func rollbackTransaction() async throws {
-        try await query("ROLLBACK;")
+        try await simpleQuery("ROLLBACK;")
     }
 }
 
