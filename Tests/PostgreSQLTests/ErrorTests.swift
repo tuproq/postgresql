@@ -4,7 +4,7 @@ import XCTest
 final class ClientErrorTests: BaseTests {
     func testInit() {
         // Act
-        var error = ClientError()
+        var error = PostgreSQLError()
 
         // Assert
         XCTAssertEqual(error.errorDescription, clientError(.unknown).errorDescription)
@@ -13,10 +13,10 @@ final class ClientErrorTests: BaseTests {
         let message = "A custom error."
 
         // Act
-        error = ClientError(message)
+        error = PostgreSQLError(message)
 
         // Assert
-        XCTAssertEqual(error.errorDescription, "\(String(describing: ClientError.self)): \(message)")
+        XCTAssertEqual(error.errorDescription, "\(String(describing: PostgreSQLError.self)): \(message)")
     }
 }
 

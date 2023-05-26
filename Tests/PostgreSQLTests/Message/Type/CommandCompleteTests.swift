@@ -8,7 +8,7 @@ final class MessageCommandCompleteTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.CommandComplete(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? ClientError)
+            XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(error.localizedDescription, clientError(.cantParseCommandTag).localizedDescription)
         }
 

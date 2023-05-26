@@ -16,7 +16,7 @@ final class ColumnTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Column(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? ClientError)
+            XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(error.localizedDescription, clientError(.invalidColumnName).localizedDescription)
         }
 
@@ -26,7 +26,7 @@ final class ColumnTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Column(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? ClientError)
+            XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(error.localizedDescription, clientError(.invalidColumnTableID).localizedDescription)
         }
 
@@ -37,7 +37,7 @@ final class ColumnTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Column(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? ClientError)
+            XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(
                 error.localizedDescription,
                 clientError(.invalidColumnAttributeNumber).localizedDescription
@@ -52,7 +52,7 @@ final class ColumnTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Column(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? ClientError)
+            XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(
                 error.localizedDescription,
                 clientError(.invalidColumnDataTypeID).localizedDescription
@@ -68,7 +68,7 @@ final class ColumnTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Column(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? ClientError)
+            XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(
                 error.localizedDescription,
                 clientError(.invalidColumnDataTypeSize).localizedDescription
@@ -85,7 +85,7 @@ final class ColumnTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Column(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? ClientError)
+            XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(
                 error.localizedDescription,
                 clientError(.invalidColumnAttributeTypeModifier).localizedDescription
@@ -103,7 +103,7 @@ final class ColumnTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Column(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? ClientError)
+            XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(
                 error.localizedDescription,
                 clientError(.invalidColumnDataFormat).localizedDescription

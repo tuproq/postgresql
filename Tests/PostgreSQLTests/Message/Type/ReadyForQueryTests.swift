@@ -8,7 +8,7 @@ final class MessageReadyForQueryTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.ReadyForQuery(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? ClientError)
+            XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(
                 error.localizedDescription,
                 clientError(.cantParseReadyForQueryTransactionStatus).localizedDescription

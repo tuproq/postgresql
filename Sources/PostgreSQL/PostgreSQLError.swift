@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ClientError: LocalizedError {
+public struct PostgreSQLError: LocalizedError {
     let message: String
     public var errorDescription: String? { message }
 
@@ -37,7 +37,7 @@ enum ErrorType: CustomStringConvertible {
 
     var message: String {
         switch self {
-        case .decoding(let type): return "Can't decode an array of `\(type)`."
+        case .decoding(let type): return "Can't decode the `\(type)`."
         case .invalidData(let format, let type):
             return "An invalid data type `\(type)` for data format `\(format)`."
         case .invalidDataType(let type): return "An invalid data type `\(type)`."
@@ -67,6 +67,8 @@ extension ErrorType {
         case cantParseBackendKeyDataSecretKey(processID: Int32)
         case cantParseCommandTag
         case cantParseDataRowValues
+        case cantParseErrorResponseFields
+        case cantParseNoticeResponseFields
         case cantParseNotificationChannel(processID: Int32)
         case cantParseNotificationPayload(processID: Int32, channel: String)
         case cantParseNotificationProcessID
@@ -87,6 +89,8 @@ extension ErrorType {
                 return "Can't parse BackendKeyData secretKey for processID `\(processID)`."
             case .cantParseCommandTag: return "Can't parse CommandComplete tag."
             case .cantParseDataRowValues: return "Can't parse DataRow values."
+            case .cantParseErrorResponseFields: return "Can't parse ErrorResponse fields."
+            case .cantParseNoticeResponseFields: return "Can't parse NoticeResponse fields."
             case .cantParseNotificationChannel(let processID):
                 return "Can't parse NotificationResponse channel for processID `\(processID)`."
             case .cantParseNotificationPayload(let processID, let channel):
@@ -106,14 +110,14 @@ extension ErrorType {
     }
 }
 
-func clientError(_ type: ErrorType) -> ClientError {
-    ClientError(type)
+func clientError(_ type: ErrorType) -> PostgreSQLError {
+    PostgreSQLError(type)
 }
 
-func clientError(_ type: ErrorType.Column) -> ClientError {
-    ClientError(type)
+func clientError(_ type: ErrorType.Column) -> PostgreSQLError {
+    PostgreSQLError(type)
 }
 
-func clientError(_ type: ErrorType.Message) -> ClientError {
-    ClientError(type)
+func clientError(_ type: ErrorType.Message) -> PostgreSQLError {
+    PostgreSQLError(type)
 }

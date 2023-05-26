@@ -23,7 +23,7 @@ final class TypeTests: BaseTests {
         for (dateType, value) in values {
             // Act/Assert
             XCTAssertThrowsError(try value.encode(into: &buffer, type: dateType)) { error in
-                XCTAssertNotNil(error as? ClientError)
+                XCTAssertNotNil(error as? PostgreSQLError)
                 XCTAssertEqual(
                     error.localizedDescription,
                     clientError(.invalidDataType(dateType)).localizedDescription

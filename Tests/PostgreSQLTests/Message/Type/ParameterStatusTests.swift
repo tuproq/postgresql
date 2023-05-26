@@ -8,7 +8,7 @@ final class MessageParameterStatusTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.ParameterStatus(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? ClientError)
+            XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(
                 error.localizedDescription,
                 clientError(.cantParseParameterStatusName).localizedDescription
@@ -22,7 +22,7 @@ final class MessageParameterStatusTests: BaseTests {
 
         // Act/Assert
         XCTAssertThrowsError(try Message.ParameterStatus(buffer: &buffer)) { error in
-            XCTAssertNotNil(error as? ClientError)
+            XCTAssertNotNil(error as? PostgreSQLError)
             XCTAssertEqual(
                 error.localizedDescription,
                 clientError(.cantParseParameterStatusValue(name: name)).localizedDescription

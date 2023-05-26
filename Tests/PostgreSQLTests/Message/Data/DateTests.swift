@@ -19,7 +19,7 @@ final class DateTests: BaseTests {
 
             // Act/Assert
             XCTAssertThrowsError(try Date(buffer: &buffer, format: format, type: type)) { error in
-                XCTAssertNotNil(error as? ClientError)
+                XCTAssertNotNil(error as? PostgreSQLError)
                 XCTAssertEqual(
                     error.localizedDescription,
                     clientError(.invalidDataType(type)).localizedDescription
@@ -92,7 +92,7 @@ final class DateTests: BaseTests {
 
                 // Act/Assert
                 XCTAssertThrowsError(try Date(buffer: &buffer, format: format, type: type)) { error in
-                    XCTAssertNotNil(error as? ClientError)
+                    XCTAssertNotNil(error as? PostgreSQLError)
                     XCTAssertEqual(
                         error.localizedDescription,
                         clientError(.invalidData(format: format, type: type)).localizedDescription
