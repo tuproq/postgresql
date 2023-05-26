@@ -10,7 +10,6 @@ final class RequestHandler: ChannelDuplexHandler {
     let connection: PostgreSQL
     private var request: Request?
     private var firstError: Error?
-    private var results = [Result]()
 
     init(connection: PostgreSQL) {
         self.connection = connection
@@ -39,7 +38,7 @@ final class RequestHandler: ChannelDuplexHandler {
         case .rowDescription:
             do {
                 let rowDescription = try Message.RowDescription(buffer: &message.buffer)
-                results.append(Result(columns: rowDescription.columns))
+                request?.results.append(Result(columns: rowDescription.columns))
             } catch {
                 connection.logger.error("\(error)")
             }
@@ -47,7 +46,7 @@ final class RequestHandler: ChannelDuplexHandler {
             do {
                 let dataRow = try Message.DataRow(buffer: &message.buffer)
 
-                if let result = results.last {
+                if let result = request?.results.last {
                     var row = [PostgreSQLCodable?]()
 
                     for (index, buffer) in dataRow.values.enumerated() {
@@ -70,7 +69,7 @@ final class RequestHandler: ChannelDuplexHandler {
 
                     switch readyForQuery.status {
                     case .idle:
-                        let response = Response(message: message, results: results)
+                        let response = Response(message: message, results: request?.results ?? .init())
                         request?.promise.succeed(response)
                     case .transaction:
                         request?.promise.succeed(Response(message: message))
@@ -84,7 +83,6 @@ final class RequestHandler: ChannelDuplexHandler {
 
             request = nil
             firstError = nil
-            results.removeAll()
         case .errorResponse:
             do {
                 let errorResponse = try Message.ErrorResponse(buffer: &buffer)
