@@ -4,7 +4,7 @@ import NIOCore
 
 final class RequestHandler: ChannelDuplexHandler {
     typealias InboundIn = Message
-    typealias OutboundIn = [Request]
+    typealias OutboundIn = Request
     typealias OutboundOut = Message
 
     let connection: Connection
@@ -18,7 +18,6 @@ final class RequestHandler: ChannelDuplexHandler {
 
     func channelRead(context: ChannelHandlerContext, data: NIOAny) {
         var message = unwrapInboundIn(data)
-        print("Response: \(message)")
 
         switch message.identifier {
         case .authentication:
@@ -103,12 +102,11 @@ final class RequestHandler: ChannelDuplexHandler {
     }
 
     func write(context: ChannelHandlerContext, data: NIOAny, promise: EventLoopPromise<Void>?) {
-        let requests = unwrapOutboundIn(data)
-        request = requests.last
+        let request = unwrapOutboundIn(data)
+        self.request = request
 
-        for request in requests {
-            print("Request: \(request.message)")
-            context.write(wrapOutboundOut(request.message), promise: promise)
+        for message in request.messages {
+            context.write(wrapOutboundOut(message), promise: promise)
         }
     }
 

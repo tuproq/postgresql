@@ -156,18 +156,18 @@ extension Connection {
 
     @discardableResult
     private func send(types: [MessageType], in channel: Channel) async throws -> Response {
-        var requests = [Request]()
+        var messages = [Message]()
         let promise = channel.eventLoop.makePromise(of: Response.self)
 
         for type in types {
             var buffer = ByteBuffer()
             type.encode(into: &buffer)
             let message = Message(identifier: type.identifier, source: .frontend, buffer: buffer)
-            let request = Request(message: message, promise: promise)
-            requests.append(request)
+            messages.append(message)
         }
 
-        try await channel.writeAndFlush(requests).get()
+        let request = Request(messages: messages, promise: promise)
+        try await channel.writeAndFlush(request).get()
 
         return try await promise.futureResult.get()
     }
