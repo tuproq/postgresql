@@ -82,7 +82,7 @@ public final class Connection {
     public func query(
         _ string: String,
         name: String = "",
-        arguments parameters: [PostgreSQLCodable?] = .init()
+        arguments parameters: [PostgreSQLCodable?]
     ) async throws -> Result? {
         let formats: [DataFormat] = parameters.map {
             if let parameter = $0 {
