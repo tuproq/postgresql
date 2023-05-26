@@ -18,13 +18,12 @@ final class RequestHandler: ChannelDuplexHandler {
 
     func channelRead(context: ChannelHandlerContext, data: NIOAny) {
         var message = unwrapInboundIn(data)
+        var buffer = message.buffer
 
         switch message.identifier {
         case .authentication:
             request?.promise.succeed(Response(message: message))
         case .parameterStatus:
-            var buffer = message.buffer
-
             do {
                 let parameterStatus = try Message.ParameterStatus(buffer: &buffer)
                 connection.serverParameters[parameterStatus.name] = parameterStatus.value
@@ -32,8 +31,6 @@ final class RequestHandler: ChannelDuplexHandler {
                 connection.logger.error("\(error)")
             }
         case .backendKeyData:
-            var buffer = message.buffer
-
             do {
                 connection.backendKeyData = try Message.BackendKeyData(buffer: &buffer)
             } catch {
@@ -65,8 +62,6 @@ final class RequestHandler: ChannelDuplexHandler {
                 connection.logger.error("\(error)")
             }
         case .readyForQuery:
-            var buffer = message.buffer
-
             if let error = firstError {
                 request?.promise.fail(error)
             } else {
@@ -90,12 +85,23 @@ final class RequestHandler: ChannelDuplexHandler {
             request = nil
             firstError = nil
             results.removeAll()
-        case .noticeResponse:
-            let warningMessage = getString(message) ?? "An unknown warning."
-            connection.logger.warning("\(warningMessage)")
         case .errorResponse:
-            let error = ClientError(getString(message) ?? "An unknown error.")
-            setError(error)
+            do {
+                let errorResponse = try Message.ErrorResponse(buffer: &buffer)
+                let message = errorResponse.fields[.message] ?? "An unknown error."
+                let error = PostgreSQLError(message)
+                setError(error)
+            } catch {
+                connection.logger.error("\(error)")
+            }
+        case .noticeResponse:
+            do {
+                let noticeResponse = try Message.NoticeResponse(buffer: &buffer)
+                let message = noticeResponse.fields[.message] ?? "An unknown warning."
+                connection.logger.warning("\(message)")
+            } catch {
+                connection.logger.error("\(error)")
+            }
         default:
             break
         }
@@ -108,16 +114,6 @@ final class RequestHandler: ChannelDuplexHandler {
         for message in request.messages {
             context.write(wrapOutboundOut(message), promise: promise)
         }
-    }
-
-    private func setError(_ error: Error) {
-        if firstError == nil {
-            firstError = error
-        }
-    }
-
-    private func getString(_ message: Message) -> String? {
-        message.buffer.getString(at: 0, length: message.buffer.readableBytes)
     }
 
     private func decode(from buffer: inout ByteBuffer?, to column: Column) throws -> PostgreSQLCodable? {
@@ -149,5 +145,11 @@ final class RequestHandler: ChannelDuplexHandler {
         }
 
         return nil
+    }
+
+    private func setError(_ error: Error) {
+        if firstError == nil {
+            firstError = error
+        }
     }
 }
