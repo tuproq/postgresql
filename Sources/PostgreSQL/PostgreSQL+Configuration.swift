@@ -1,7 +1,7 @@
 import Foundation
 
-extension Connection {
-    public struct Option: Equatable {
+extension PostgreSQL {
+    public struct Configuration: Equatable {
         public static let defaultIdentifier = "dev.tuproq.postgresql"
         public static let defaultHost = "127.0.0.1"
         public static let defaultPort = 5432
@@ -16,9 +16,9 @@ extension Connection {
         public var numberOfThreads: Int
 
         public init(
-            identifier: String = Option.defaultIdentifier,
-            host: String = Option.defaultHost,
-            port: Int = Option.defaultPort,
+            identifier: String = Configuration.defaultIdentifier,
+            host: String = Configuration.defaultHost,
+            port: Int = Configuration.defaultPort,
             username: String? = nil,
             password: String? = nil,
             database: String? = nil,
@@ -36,7 +36,7 @@ extension Connection {
         }
 
         public init?(
-            identifier: String = Option.defaultIdentifier,
+            identifier: String = Configuration.defaultIdentifier,
             url: URL,
             requiresTLS: Bool = false,
             numberOfThreads: Int = 1
@@ -49,16 +49,19 @@ extension Connection {
             if let host = urlComponents.host, !host.isEmpty {
                 self.host = host
             } else {
-                host = Option.defaultHost
+                host = Configuration.defaultHost
             }
 
-            port = urlComponents.port ?? Option.defaultPort
+            port = urlComponents.port ?? Configuration.defaultPort
             username = urlComponents.user
             password = urlComponents.password
             self.requiresTLS = requiresTLS
             self.numberOfThreads = numberOfThreads
             let database = urlComponents.path.droppingLeadingSlash
-            if !database.isEmpty { self.database = database }
+
+            if !database.isEmpty {
+                self.database = database
+            }
         }
     }
 }

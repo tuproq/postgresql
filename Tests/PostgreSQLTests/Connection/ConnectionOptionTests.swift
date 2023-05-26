@@ -13,20 +13,20 @@ final class ConnectionOptionTests: BaseTests {
 
     func testInit() {
         // Act
-        var option = Connection.Option()
+        var configuration = PostgreSQL.Configuration()
 
         // Assert
-        XCTAssertEqual(option.identifier, Connection.Option.defaultIdentifier)
-        XCTAssertEqual(option.host, Connection.Option.defaultHost)
-        XCTAssertEqual(option.port, Connection.Option.defaultPort)
-        XCTAssertNil(option.username)
-        XCTAssertNil(option.password)
-        XCTAssertNil(option.database)
-        XCTAssertFalse(option.requiresTLS)
-        XCTAssertEqual(option.numberOfThreads, 1)
+        XCTAssertEqual(configuration.identifier, PostgreSQL.Configuration.defaultIdentifier)
+        XCTAssertEqual(configuration.host, PostgreSQL.Configuration.defaultHost)
+        XCTAssertEqual(configuration.port, PostgreSQL.Configuration.defaultPort)
+        XCTAssertNil(configuration.username)
+        XCTAssertNil(configuration.password)
+        XCTAssertNil(configuration.database)
+        XCTAssertFalse(configuration.requiresTLS)
+        XCTAssertEqual(configuration.numberOfThreads, 1)
 
         // Act
-        option = Connection.Option(
+        configuration = PostgreSQL.Configuration(
             identifier: identifier,
             host: host,
             port: port,
@@ -38,14 +38,14 @@ final class ConnectionOptionTests: BaseTests {
         )
 
         // Assert
-        XCTAssertEqual(option.identifier, identifier)
-        XCTAssertEqual(option.host, host)
-        XCTAssertEqual(option.port, port)
-        XCTAssertEqual(option.username, username)
-        XCTAssertEqual(option.password, password)
-        XCTAssertEqual(option.database, database)
-        XCTAssertEqual(option.requiresTLS, requiresTLS)
-        XCTAssertEqual(option.numberOfThreads, numberOfThreads)
+        XCTAssertEqual(configuration.identifier, identifier)
+        XCTAssertEqual(configuration.host, host)
+        XCTAssertEqual(configuration.port, port)
+        XCTAssertEqual(configuration.username, username)
+        XCTAssertEqual(configuration.password, password)
+        XCTAssertEqual(configuration.database, database)
+        XCTAssertEqual(configuration.requiresTLS, requiresTLS)
+        XCTAssertEqual(configuration.numberOfThreads, numberOfThreads)
     }
 
     func testInitWithURL() {
@@ -53,23 +53,23 @@ final class ConnectionOptionTests: BaseTests {
         var url = URL(string: "postgresql://")!
 
         // Act
-        var option = Connection.Option(url: url)!
+        var configuration = PostgreSQL.Configuration(url: url)!
 
         // Assert
-        XCTAssertEqual(option.identifier, Connection.Option.defaultIdentifier)
-        XCTAssertEqual(option.host, Connection.Option.defaultHost)
-        XCTAssertEqual(option.port, Connection.Option.defaultPort)
-        XCTAssertNil(option.username)
-        XCTAssertNil(option.password)
-        XCTAssertNil(option.database)
-        XCTAssertFalse(option.requiresTLS)
-        XCTAssertEqual(option.numberOfThreads, 1)
+        XCTAssertEqual(configuration.identifier, PostgreSQL.Configuration.defaultIdentifier)
+        XCTAssertEqual(configuration.host, PostgreSQL.Configuration.defaultHost)
+        XCTAssertEqual(configuration.port, PostgreSQL.Configuration.defaultPort)
+        XCTAssertNil(configuration.username)
+        XCTAssertNil(configuration.password)
+        XCTAssertNil(configuration.database)
+        XCTAssertFalse(configuration.requiresTLS)
+        XCTAssertEqual(configuration.numberOfThreads, 1)
 
         // Arrange
         url = URL(string: "postgresql://\(username):\(password)@\(host):\(port)/\(database)")!
 
         // Act
-        option = Connection.Option(
+        configuration = PostgreSQL.Configuration(
             identifier: identifier,
             url: url,
             requiresTLS: requiresTLS,
@@ -77,20 +77,20 @@ final class ConnectionOptionTests: BaseTests {
         )!
 
         // Assert
-        XCTAssertEqual(option.identifier, identifier)
-        XCTAssertEqual(option.host, host)
-        XCTAssertEqual(option.port, port)
-        XCTAssertEqual(option.username, username)
-        XCTAssertEqual(option.password, password)
-        XCTAssertEqual(option.database, database)
-        XCTAssertEqual(option.requiresTLS, requiresTLS)
-        XCTAssertEqual(option.numberOfThreads, numberOfThreads)
+        XCTAssertEqual(configuration.identifier, identifier)
+        XCTAssertEqual(configuration.host, host)
+        XCTAssertEqual(configuration.port, port)
+        XCTAssertEqual(configuration.username, username)
+        XCTAssertEqual(configuration.password, password)
+        XCTAssertEqual(configuration.database, database)
+        XCTAssertEqual(configuration.requiresTLS, requiresTLS)
+        XCTAssertEqual(configuration.numberOfThreads, numberOfThreads)
 
         // Arrange
         url = URL(string: "postgres://\(username):\(password)@\(host):\(port)/\(database)")!
 
         // Act
-        option = Connection.Option(
+        configuration = PostgreSQL.Configuration(
             identifier: identifier,
             url: url,
             requiresTLS: requiresTLS,
@@ -98,19 +98,19 @@ final class ConnectionOptionTests: BaseTests {
         )!
 
         // Assert
-        XCTAssertEqual(option.identifier, identifier)
-        XCTAssertEqual(option.host, host)
-        XCTAssertEqual(option.port, port)
-        XCTAssertEqual(option.username, username)
-        XCTAssertEqual(option.password, password)
-        XCTAssertEqual(option.database, database)
-        XCTAssertEqual(option.requiresTLS, requiresTLS)
-        XCTAssertEqual(option.numberOfThreads, numberOfThreads)
+        XCTAssertEqual(configuration.identifier, identifier)
+        XCTAssertEqual(configuration.host, host)
+        XCTAssertEqual(configuration.port, port)
+        XCTAssertEqual(configuration.username, username)
+        XCTAssertEqual(configuration.password, password)
+        XCTAssertEqual(configuration.database, database)
+        XCTAssertEqual(configuration.requiresTLS, requiresTLS)
+        XCTAssertEqual(configuration.numberOfThreads, numberOfThreads)
 
         // Arrange
         url = URL(string: "invalid://\(username):\(password)@\(host):\(port)/\(database)")!
 
         // Act/Assert
-        XCTAssertNil(Connection.Option(url: url))
+        XCTAssertNil(PostgreSQL.Configuration(url: url))
     }
 }

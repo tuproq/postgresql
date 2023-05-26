@@ -7,12 +7,12 @@ final class RequestHandler: ChannelDuplexHandler {
     typealias OutboundIn = Request
     typealias OutboundOut = Message
 
-    let connection: Connection
+    let connection: PostgreSQL
     private var request: Request?
     private var firstError: Error?
     private var results = [Result]()
 
-    init(connection: Connection) {
+    init(connection: PostgreSQL) {
         self.connection = connection
     }
 

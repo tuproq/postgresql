@@ -4,13 +4,13 @@ import XCTest
 final class ConnectionTests: BaseTests {
     func testInit() {
         // Arrange
-        let option = Connection.Option()
+        let configuration = PostgreSQL.Configuration()
 
         // Act
-        let connection = Connection(option)
+        let connection = PostgreSQL(configuration)
 
         // Assert
-        XCTAssertEqual(connection.option, option)
-        XCTAssertNotNil(connection.logger.label, option.identifier)
+        XCTAssertEqual(connection.configuration, configuration)
+        XCTAssertNotNil(connection.logger.label, configuration.identifier)
     }
 }

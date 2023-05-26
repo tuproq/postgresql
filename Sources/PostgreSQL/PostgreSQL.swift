@@ -2,32 +2,32 @@ import Logging
 import NIOCore
 import NIOPosix
 
-public final class Connection {
-    public let option: Option
+public final class PostgreSQL {
+    public let configuration: Configuration
     public let logger: Logger
     public internal(set) var serverParameters = [String: String]()
     var backendKeyData: Message.BackendKeyData?
     private var group: EventLoopGroup?
     private var channel: Channel?
 
-    public init(_ option: Option = .init()) {
-        self.option = option
-        logger = .init(label: option.identifier)
+    public init(_ configuration: Configuration = .init()) {
+        self.configuration = configuration
+        logger = .init(label: configuration.identifier)
     }
 
     public func open() async throws {
         if channel == nil {
-            let group = MultiThreadedEventLoopGroup(numberOfThreads: option.numberOfThreads)
+            let group = MultiThreadedEventLoopGroup(numberOfThreads: configuration.numberOfThreads)
             self.group = group
             let bootstrap = ClientBootstrap(group: group)
                 .channelOption(ChannelOptions.socket(SocketOptionLevel(IPPROTO_TCP), TCP_NODELAY), value: 1)
-            let channel = try await bootstrap.connect(host: option.host, port: option.port).get()
+            let channel = try await bootstrap.connect(host: configuration.host, port: configuration.port).get()
             try await channel.pipeline.addHandler(ByteToMessageHandler(MessageDecoder(connection: self))).get()
             try await channel.pipeline.addHandler(MessageToByteHandler(MessageEncoder())).get()
             try await channel.pipeline.addHandler(RequestHandler(connection: self)).get()
             self.channel = channel
 
-            if option.requiresTLS {
+            if configuration.requiresTLS {
                 let message = try await sslRequest(in: channel)
 
                 if message.identifier == .sslSupported {
@@ -138,19 +138,19 @@ public final class Connection {
     }
 }
 
-extension Connection {
+extension PostgreSQL {
     private func sslRequest(in channel: Channel) async throws -> Message {
         let messageType = Message.SSLRequest()
         return try await send(types: [messageType], in: channel).message
     }
 
     private func startupMessage(in channel: Channel) async throws -> Message {
-        let messageType = Message.StartupMessage(user: option.username ?? "", database: option.database)
+        let messageType = Message.StartupMessage(user: configuration.username ?? "", database: configuration.database)
         return try await send(types: [messageType], in: channel).message
     }
 
     private func authenticate(in channel: Channel) async throws -> Message {
-        let messageType = Message.Password(option.password ?? "")
+        let messageType = Message.Password(configuration.password ?? "")
         return try await send(types: [messageType], in: channel).message
     }
 

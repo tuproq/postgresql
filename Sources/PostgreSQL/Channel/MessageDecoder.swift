@@ -2,10 +2,10 @@ import NIOCore
 
 final class MessageDecoder: ByteToMessageDecoder {
     typealias InboundOut = Message
-    let connection: Connection
+    let connection: PostgreSQL
     var isFirstMessage = true
 
-    init(connection: Connection) {
+    init(connection: PostgreSQL) {
         self.connection = connection
     }
 
@@ -17,7 +17,7 @@ final class MessageDecoder: ByteToMessageDecoder {
         let message: Message
 
         if isFirstMessage &&
-            connection.option.requiresTLS &&
+            connection.configuration.requiresTLS &&
             (messageIdentifier == .sslSupported || messageIdentifier == .sslUnsupported) {
             message = Message(
                 identifier: messageIdentifier,
