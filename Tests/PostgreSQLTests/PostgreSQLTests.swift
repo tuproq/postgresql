@@ -1,7 +1,7 @@
 @testable import PostgreSQL
 import XCTest
 
-final class ConnectionTests: BaseTests {
+final class PostgreSQLTests: BaseTests {
     func testInit() {
         // Arrange
         let configuration = PostgreSQL.Configuration()
