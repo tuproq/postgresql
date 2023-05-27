@@ -72,9 +72,10 @@ final class RequestHandler: ChannelDuplexHandler {
                         let response = Response(message: message, results: request?.results ?? .init())
                         request?.promise.succeed(response)
                     case .transaction:
-                        request?.promise.succeed(Response(message: message))
+                        let response = Response(message: message, results: request?.results ?? .init())
+                        request?.promise.succeed(response)
                     case .transactionFailed:
-                        break // TODO: handle
+                        request?.promise.succeed(Response(message: message))
                     }
                 } catch {
                     connection.logger.error("\(error)")
