@@ -43,12 +43,12 @@ extension Int32: PostgreSQLCodable {
                 throw postgreSQLError(.invalidData(format: format, type: type))
             }
             self = Self(value)
-        case (.binary, .int4):
+        case (.binary, .int4), (.binary, .oid):
             guard buffer.readableBytes == 4, let value = buffer.readInteger(as: Self.self) else {
                 throw postgreSQLError(.invalidData(format: format, type: type))
             }
             self = Self(value)
-        case (.text, .int2), (.text, .int4):
+        case (.text, .int2), (.text, .int4), (.text, .oid):
             guard let string = buffer.readString(), let value = Self(string) else {
                 throw postgreSQLError(.invalidData(format: format, type: type))
             }
