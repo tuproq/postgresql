@@ -127,7 +127,7 @@ final class RequestHandler: ChannelDuplexHandler {
             case .float4: return try Float(buffer: &buffer, format: format, type: type)
             case .float8: return try Double(buffer: &buffer, format: format, type: type)
             case .int2: return try Int16(buffer: &buffer, format: format, type: type)
-            case .int4: return try Int32(buffer: &buffer, format: format, type: type)
+            case .int4, .oid: return try Int32(buffer: &buffer, format: format, type: type)
             case .int8: return try Int64(buffer: &buffer, format: format, type: type)
             case .name: return try String(buffer: &buffer, format: format, type: type)
             case .numeric: return try Decimal(buffer: &buffer, format: format, type: type)
