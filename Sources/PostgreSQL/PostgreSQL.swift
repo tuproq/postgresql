@@ -5,40 +5,37 @@ import NIOPosix
 public final class PostgreSQL {
     public let configuration: Configuration
     public let logger: Logger
+    public let channel: Channel
+    public private(set) var isOpen = false
+    private let group: EventLoopGroup
     public internal(set) var serverParameters = [String: String]()
     var backendKeyData: Message.BackendKeyData?
-    private var group: EventLoopGroup?
-    private var channel: Channel?
 
-    public init(_ configuration: Configuration = .init()) {
+    public init(configuration: Configuration = .init()) async throws {
         self.configuration = configuration
         logger = .init(label: configuration.identifier)
-    }
 
-    public func open() async throws {
-        if channel == nil {
-            let group = MultiThreadedEventLoopGroup(numberOfThreads: configuration.numberOfThreads)
-            self.group = group
-            let bootstrap = ClientBootstrap(group: group)
-                .channelOption(ChannelOptions.socket(SocketOptionLevel(IPPROTO_TCP), TCP_NODELAY), value: 1)
-            let channel = try await bootstrap.connect(host: configuration.host, port: configuration.port).get()
-            try await channel.pipeline.addHandler(ByteToMessageHandler(MessageDecoder(connection: self))).get()
-            try await channel.pipeline.addHandler(MessageToByteHandler(MessageEncoder())).get()
-            try await channel.pipeline.addHandler(RequestHandler(connection: self)).get()
-            self.channel = channel
+        group = MultiThreadedEventLoopGroup(numberOfThreads: configuration.numberOfThreads)
+        let bootstrap = ClientBootstrap(group: group)
+            .channelOption(ChannelOptions.socket(SocketOptionLevel(IPPROTO_TCP), TCP_NODELAY), value: 1)
+        channel = try await bootstrap.connect(host: configuration.host, port: configuration.port).get()
+        try await channel.pipeline.addHandler(ByteToMessageHandler(MessageDecoder(connection: self))).get()
+        try await channel.pipeline.addHandler(MessageToByteHandler(MessageEncoder())).get()
+        try await channel.pipeline.addHandler(RequestHandler(connection: self)).get()
 
-            if configuration.requiresTLS {
-                let message = try await sslRequest(in: channel)
+        if configuration.requiresTLS {
+            let message = try await sslRequest(in: channel)
 
-                if message.identifier == .sslSupported {
-                    // TODO: implement SSL handshake
-                } else {
-                    let message = try await _connect(in: channel)
-                }
+            if message.identifier == .sslSupported {
+                // TODO: implement SSL handshake
             } else {
                 let message = try await _connect(in: channel)
             }
+        } else {
+            let message = try await _connect(in: channel)
         }
+
+        isOpen = true
     }
 
     private func _connect(in channel: Channel) async throws -> Message {
@@ -52,21 +49,15 @@ public final class PostgreSQL {
     }
 
     public func close() async throws {
-        if let channel = channel {
-            try await channel.close()
-            self.channel = nil
-        }
-
-        if let group = group {
-            try await group.shutdownGracefully()
-            self.group = nil
-        }
+        isOpen = false
+        try await channel.close()
+        try await group.shutdownGracefully()
     }
 
     @discardableResult
     public func simpleQuery(_ string: String) async throws -> [Result] {
         let messageType = Message.SimpleQuery(string)
-        return try await send(types: [messageType], in: channel!).results
+        return try await send(types: [messageType], in: channel).results
     }
 
     @discardableResult
@@ -119,7 +110,7 @@ public final class PostgreSQL {
                 Message.Close(command: command, name: name),
                 Message.Sync()
             ],
-            in: channel!
+            in: channel
         )
 
         return response.results.first
