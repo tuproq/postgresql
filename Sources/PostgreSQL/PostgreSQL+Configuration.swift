@@ -16,9 +16,9 @@ extension PostgreSQL {
         public var numberOfThreads: Int
 
         public init(
-            identifier: String = Configuration.defaultIdentifier,
-            host: String = Configuration.defaultHost,
-            port: Int = Configuration.defaultPort,
+            identifier: String = defaultIdentifier,
+            host: String = defaultHost,
+            port: Int = defaultPort,
             username: String? = nil,
             password: String? = nil,
             database: String? = nil,
@@ -36,7 +36,7 @@ extension PostgreSQL {
         }
 
         public init?(
-            identifier: String = Configuration.defaultIdentifier,
+            identifier: String = defaultIdentifier,
             url: URL,
             requiresTLS: Bool = false,
             numberOfThreads: Int = 1
