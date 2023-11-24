@@ -9,7 +9,6 @@ final class PostgreSQLConfigurationTests: BaseTests {
     let password = "password"
     let database = "database"
     let requiresTLS = true
-    let numberOfThreads = 2
 
     func testInit() {
         // Act
@@ -23,7 +22,6 @@ final class PostgreSQLConfigurationTests: BaseTests {
         XCTAssertNil(configuration.password)
         XCTAssertNil(configuration.database)
         XCTAssertFalse(configuration.requiresTLS)
-        XCTAssertEqual(configuration.numberOfThreads, 1)
 
         // Act
         configuration = PostgreSQL.Configuration(
@@ -33,8 +31,7 @@ final class PostgreSQLConfigurationTests: BaseTests {
             username: username,
             password: password,
             database: database,
-            requiresTLS: requiresTLS,
-            numberOfThreads: numberOfThreads
+            requiresTLS: requiresTLS
         )
 
         // Assert
@@ -45,7 +42,6 @@ final class PostgreSQLConfigurationTests: BaseTests {
         XCTAssertEqual(configuration.password, password)
         XCTAssertEqual(configuration.database, database)
         XCTAssertEqual(configuration.requiresTLS, requiresTLS)
-        XCTAssertEqual(configuration.numberOfThreads, numberOfThreads)
     }
 
     func testInitWithURL() {
@@ -63,7 +59,6 @@ final class PostgreSQLConfigurationTests: BaseTests {
         XCTAssertNil(configuration.password)
         XCTAssertNil(configuration.database)
         XCTAssertFalse(configuration.requiresTLS)
-        XCTAssertEqual(configuration.numberOfThreads, 1)
 
         // Arrange
         url = URL(string: "postgresql://\(username):\(password)@\(host):\(port)/\(database)")!
@@ -72,8 +67,7 @@ final class PostgreSQLConfigurationTests: BaseTests {
         configuration = PostgreSQL.Configuration(
             identifier: identifier,
             url: url,
-            requiresTLS: requiresTLS,
-            numberOfThreads: numberOfThreads
+            requiresTLS: requiresTLS
         )!
 
         // Assert
@@ -84,7 +78,6 @@ final class PostgreSQLConfigurationTests: BaseTests {
         XCTAssertEqual(configuration.password, password)
         XCTAssertEqual(configuration.database, database)
         XCTAssertEqual(configuration.requiresTLS, requiresTLS)
-        XCTAssertEqual(configuration.numberOfThreads, numberOfThreads)
 
         // Arrange
         url = URL(string: "postgres://\(username):\(password)@\(host):\(port)/\(database)")!
@@ -93,8 +86,7 @@ final class PostgreSQLConfigurationTests: BaseTests {
         configuration = PostgreSQL.Configuration(
             identifier: identifier,
             url: url,
-            requiresTLS: requiresTLS,
-            numberOfThreads: numberOfThreads
+            requiresTLS: requiresTLS
         )!
 
         // Assert
@@ -105,7 +97,6 @@ final class PostgreSQLConfigurationTests: BaseTests {
         XCTAssertEqual(configuration.password, password)
         XCTAssertEqual(configuration.database, database)
         XCTAssertEqual(configuration.requiresTLS, requiresTLS)
-        XCTAssertEqual(configuration.numberOfThreads, numberOfThreads)
 
         // Arrange
         url = URL(string: "invalid://\(username):\(password)@\(host):\(port)/\(database)")!

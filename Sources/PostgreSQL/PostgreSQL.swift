@@ -3,20 +3,20 @@ import NIOCore
 import NIOPosix
 
 public final class PostgreSQL {
+    public let eventLoopGroup: EventLoopGroup
     public let configuration: Configuration
     public let logger: Logger
     public let channel: Channel
     public private(set) var isOpen = false
-    private let group: EventLoopGroup
     public internal(set) var serverParameters = [String: String]()
     var backendKeyData: Message.BackendKeyData?
 
-    public init(configuration: Configuration = .init()) async throws {
+    public init(eventLoopGroup: EventLoopGroup? = nil, configuration: Configuration = .init()) async throws {
+        self.eventLoopGroup = eventLoopGroup ?? MultiThreadedEventLoopGroup.singleton
         self.configuration = configuration
         logger = .init(label: configuration.identifier)
 
-        group = MultiThreadedEventLoopGroup(numberOfThreads: configuration.numberOfThreads)
-        let bootstrap = ClientBootstrap(group: group)
+        let bootstrap = ClientBootstrap(group: self.eventLoopGroup)
             .channelOption(ChannelOptions.socket(SocketOptionLevel(IPPROTO_TCP), TCP_NODELAY), value: 1)
         channel = try await bootstrap.connect(host: configuration.host, port: configuration.port).get()
         try await channel.pipeline.addHandler(ByteToMessageHandler(MessageDecoder(connection: self))).get()
@@ -51,7 +51,7 @@ public final class PostgreSQL {
     public func close() async throws {
         isOpen = false
         try await channel.close()
-        try await group.shutdownGracefully()
+        try await eventLoopGroup.shutdownGracefully()
     }
 
     @discardableResult

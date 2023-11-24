@@ -13,7 +13,6 @@ extension PostgreSQL {
         public var password: String?
         public var database: String?
         public var requiresTLS: Bool
-        public var numberOfThreads: Int
 
         public init(
             identifier: String = defaultIdentifier,
@@ -22,8 +21,7 @@ extension PostgreSQL {
             username: String? = nil,
             password: String? = nil,
             database: String? = nil,
-            requiresTLS: Bool = false,
-            numberOfThreads: Int = 1
+            requiresTLS: Bool = false
         ) {
             self.identifier = identifier
             self.host = host
@@ -32,14 +30,12 @@ extension PostgreSQL {
             self.password = password
             self.database = database
             self.requiresTLS = requiresTLS
-            self.numberOfThreads = numberOfThreads
         }
 
         public init?(
             identifier: String = defaultIdentifier,
             url: URL,
-            requiresTLS: Bool = false,
-            numberOfThreads: Int = 1
+            requiresTLS: Bool = false
         ) {
             guard
                 let urlComponents = URLComponents(string: url.absoluteString),
@@ -56,7 +52,6 @@ extension PostgreSQL {
             username = urlComponents.user
             password = urlComponents.password
             self.requiresTLS = requiresTLS
-            self.numberOfThreads = numberOfThreads
             let database = urlComponents.path.droppingLeadingSlash
 
             if !database.isEmpty {
