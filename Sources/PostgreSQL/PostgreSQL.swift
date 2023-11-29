@@ -29,23 +29,13 @@ public final class PostgreSQL {
             if message.identifier == .sslSupported {
                 // TODO: implement SSL handshake
             } else {
-                let message = try await _connect()
+                let message = try await connect()
             }
         } else {
-            let message = try await _connect()
+            let message = try await connect()
         }
 
         isOpen = true
-    }
-
-    private func _connect() async throws -> Message {
-        let message = try await startupMessage()
-
-        if false { // TODO: check if password is needed to authenticate
-            let message = try await authenticate()
-        }
-
-        return message
     }
 
     public func close() async throws {
@@ -118,15 +108,15 @@ public final class PostgreSQL {
     }
 
     public func beginTransaction() async throws {
-        try await simpleQuery("BEGIN;")
+        try await query("BEGIN")
     }
 
     public func commitTransaction() async throws {
-        try await simpleQuery("COMMIT;")
+        try await query("COMMIT")
     }
 
     public func rollbackTransaction() async throws {
-        try await simpleQuery("ROLLBACK;")
+        try await query("ROLLBACK")
     }
 }
 
@@ -134,6 +124,16 @@ extension PostgreSQL {
     private func sslRequest() async throws -> Message {
         let messageType = Message.SSLRequest()
         return try await send(types: [messageType]).message
+    }
+
+    private func connect() async throws -> Message {
+        let message = try await startupMessage()
+
+        if false { // TODO: check if password is needed to authenticate
+            let message = try await authenticate()
+        }
+
+        return message
     }
 
     private func startupMessage() async throws -> Message {
