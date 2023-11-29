@@ -24,40 +24,42 @@ public final class PostgreSQL {
         try await channel.pipeline.addHandler(RequestHandler(connection: self)).get()
 
         if configuration.requiresTLS {
-            let message = try await sslRequest(in: channel)
+            let message = try await sslRequest()
 
             if message.identifier == .sslSupported {
                 // TODO: implement SSL handshake
             } else {
-                let message = try await _connect(in: channel)
+                let message = try await _connect()
             }
         } else {
-            let message = try await _connect(in: channel)
+            let message = try await _connect()
         }
 
         isOpen = true
     }
 
-    private func _connect(in channel: Channel) async throws -> Message {
-        let message = try await startupMessage(in: channel)
+    private func _connect() async throws -> Message {
+        let message = try await startupMessage()
 
         if false { // TODO: check if password is needed to authenticate
-            let message = try await authenticate(in: channel)
+            let message = try await authenticate()
         }
 
         return message
     }
 
     public func close() async throws {
-        isOpen = false
-        try await channel.close()
-        try await eventLoopGroup.shutdownGracefully()
+        if isOpen {
+            isOpen = false
+            try await channel.close()
+            try await eventLoopGroup.shutdownGracefully()
+        }
     }
 
     @discardableResult
     public func simpleQuery(_ string: String) async throws -> [Result] {
         let messageType = Message.SimpleQuery(string)
-        return try await send(types: [messageType], in: channel).results
+        return try await send(types: [messageType]).results
     }
 
     @discardableResult
@@ -109,8 +111,7 @@ public final class PostgreSQL {
                 Message.Execute(),
                 Message.Close(command: command, name: name),
                 Message.Sync()
-            ],
-            in: channel
+            ]
         )
 
         return response.results.first
@@ -130,23 +131,23 @@ public final class PostgreSQL {
 }
 
 extension PostgreSQL {
-    private func sslRequest(in channel: Channel) async throws -> Message {
+    private func sslRequest() async throws -> Message {
         let messageType = Message.SSLRequest()
-        return try await send(types: [messageType], in: channel).message
+        return try await send(types: [messageType]).message
     }
 
-    private func startupMessage(in channel: Channel) async throws -> Message {
+    private func startupMessage() async throws -> Message {
         let messageType = Message.StartupMessage(user: configuration.username ?? "", database: configuration.database)
-        return try await send(types: [messageType], in: channel).message
+        return try await send(types: [messageType]).message
     }
 
-    private func authenticate(in channel: Channel) async throws -> Message {
+    private func authenticate() async throws -> Message {
         let messageType = Message.Password(configuration.password ?? "")
-        return try await send(types: [messageType], in: channel).message
+        return try await send(types: [messageType]).message
     }
 
     @discardableResult
-    private func send(types: [MessageType], in channel: Channel) async throws -> Response {
+    private func send(types: [MessageType]) async throws -> Response {
         var messages = [Message]()
         let promise = channel.eventLoop.makePromise(of: Response.self)
 
