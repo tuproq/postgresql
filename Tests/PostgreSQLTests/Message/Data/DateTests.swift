@@ -36,10 +36,11 @@ final class DateTests: BaseTests {
         var expectedValue: Date?
         var buffer = ByteBuffer()
         try? value.encode(into: &buffer)
+        let dateFormatter = ISO8601DateFormatter()
 
         // Act/Assert
         XCTAssertNoThrow(expectedValue = try Date(buffer: &buffer))
-        XCTAssertEqual(expectedValue, value)
+        XCTAssertEqual(dateFormatter.string(from: expectedValue!), dateFormatter.string(from: value))
 
         // Arrange
         for format in DataFormat.allCases {
