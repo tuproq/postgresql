@@ -1,15 +1,9 @@
-// swift-tools-version:5.5
+// swift-tools-version:6.0
 
 import PackageDescription
 
 let package = Package(
     name: "tuproq-postgresql",
-    platforms: [
-        .iOS(.v13),
-        .macOS(.v12),
-        .tvOS(.v13),
-        .watchOS(.v6)
-    ],
     products: [
         .library(name: "PostgreSQL", targets: ["PostgreSQL"])
     ],
@@ -28,6 +22,5 @@ let package = Package(
         .testTarget(name: "PostgreSQLTests", dependencies: [
             .target(name: "PostgreSQL")
         ])
-    ],
-    swiftLanguageVersions: [.v5]
+    ]
 )
