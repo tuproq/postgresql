@@ -29,10 +29,10 @@ public final class PostgreSQL {
             if message.identifier == .sslSupported {
                 // TODO: implement SSL handshake
             } else {
-                let message = try await connect()
+                try await connect()
             }
         } else {
-            let message = try await connect()
+            try await connect()
         }
 
         isOpen = true
@@ -126,11 +126,12 @@ extension PostgreSQL {
         return try await send(types: [messageType]).message
     }
 
+    @discardableResult
     private func connect() async throws -> Message {
         let message = try await startupMessage()
 
-        if false { // TODO: check if password is needed to authenticate
-            let message = try await authenticate()
+        if configuration.password != nil {
+            return try await authenticate()
         }
 
         return message
