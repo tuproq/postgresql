@@ -1,6 +1,7 @@
 import Foundation
 
 extension String: PostgreSQLCodable {
+    public static var psqlFormat: DataFormat { .text }
     public static var psqlType: DataType { .text }
 
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
