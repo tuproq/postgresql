@@ -1,0 +1,1153 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Column.swift",
+      "line": 1,
+      "symbol": "Column",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Column.swift",
+      "line": 2,
+      "symbol": "Column.name",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Column.swift",
+      "line": 3,
+      "symbol": "Column.tableID",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Column.swift",
+      "line": 4,
+      "symbol": "Column.attributeNumber",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Column.swift",
+      "line": 5,
+      "symbol": "Column.dataTypeID",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Column.swift",
+      "line": 6,
+      "symbol": "Column.dataTypeSize",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Column.swift",
+      "line": 7,
+      "symbol": "Column.attributeTypeModifier",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Column.swift",
+      "line": 8,
+      "symbol": "Column.dataFormat",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Column.swift",
+      "line": 22,
+      "symbol": "Column.init(buffer:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataFormat.swift",
+      "line": 1,
+      "symbol": "DataFormat",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataFormat.swift",
+      "line": 2,
+      "symbol": "DataFormat.binary",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataFormat.swift",
+      "line": 3,
+      "symbol": "DataFormat.text",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 1,
+      "symbol": "DataType",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 2,
+      "symbol": "DataType.null",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 3,
+      "symbol": "DataType.bool",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 4,
+      "symbol": "DataType.bytea",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 5,
+      "symbol": "DataType.char",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 6,
+      "symbol": "DataType.name",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 7,
+      "symbol": "DataType.int8",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 8,
+      "symbol": "DataType.int2",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 9,
+      "symbol": "DataType.int4",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 10,
+      "symbol": "DataType.regproc",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 11,
+      "symbol": "DataType.text",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 12,
+      "symbol": "DataType.oid",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 13,
+      "symbol": "DataType.json",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 14,
+      "symbol": "DataType.pgNodeTree",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 15,
+      "symbol": "DataType.point",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 16,
+      "symbol": "DataType.float4",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 17,
+      "symbol": "DataType.float8",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 18,
+      "symbol": "DataType.money",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 19,
+      "symbol": "DataType.boolArray",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 20,
+      "symbol": "DataType.byteaArray",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 21,
+      "symbol": "DataType.charArray",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 22,
+      "symbol": "DataType.nameArray",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 23,
+      "symbol": "DataType.int2Array",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 24,
+      "symbol": "DataType.int4Array",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 25,
+      "symbol": "DataType.textArray",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 26,
+      "symbol": "DataType.varcharArray",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 27,
+      "symbol": "DataType.int8Array",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 28,
+      "symbol": "DataType.pointArray",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 29,
+      "symbol": "DataType.float4Array",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 30,
+      "symbol": "DataType.float8Array",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 31,
+      "symbol": "DataType.aclitemArray",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 32,
+      "symbol": "DataType.bpchar",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 33,
+      "symbol": "DataType.varchar",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 34,
+      "symbol": "DataType.date",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 35,
+      "symbol": "DataType.time",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 36,
+      "symbol": "DataType.timestamp",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 37,
+      "symbol": "DataType.timestampArray",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 38,
+      "symbol": "DataType.timestamptz",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 39,
+      "symbol": "DataType.timetz",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 40,
+      "symbol": "DataType.numeric",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 41,
+      "symbol": "DataType.void",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 42,
+      "symbol": "DataType.uuid",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 43,
+      "symbol": "DataType.uuidArray",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 44,
+      "symbol": "DataType.jsonb",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/DataType.swift",
+      "line": 45,
+      "symbol": "DataType.jsonbArray",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Array.swift",
+      "line": 4,
+      "symbol": "Array.psqlType",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Array.swift",
+      "line": 34,
+      "symbol": "Array.init(buffer:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Array.swift",
+      "line": 86,
+      "symbol": "Array.init(buffer:format:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Array.swift",
+      "line": 90,
+      "symbol": "Array.encode(into:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Bool.swift",
+      "line": 2,
+      "symbol": "Bool.psqlType",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Bool.swift",
+      "line": 4,
+      "symbol": "Bool.init(buffer:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Bool.swift",
+      "line": 24,
+      "symbol": "Bool.init(buffer:format:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Bool.swift",
+      "line": 28,
+      "symbol": "Bool.encode(into:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Data.swift",
+      "line": 5,
+      "symbol": "Data.psqlType",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Data.swift",
+      "line": 7,
+      "symbol": "Data.init(buffer:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Data.swift",
+      "line": 11,
+      "symbol": "Data.init(buffer:format:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Data.swift",
+      "line": 15,
+      "symbol": "Data.encode(into:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Date.swift",
+      "line": 4,
+      "symbol": "Date.psqlType",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Date.swift",
+      "line": 13,
+      "symbol": "Date.init(buffer:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Date.swift",
+      "line": 58,
+      "symbol": "Date.init(buffer:format:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Date.swift",
+      "line": 62,
+      "symbol": "Date.encode(into:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Decimal.swift",
+      "line": 4,
+      "symbol": "Decimal.psqlType",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Decimal.swift",
+      "line": 6,
+      "symbol": "Decimal.init(buffer:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Decimal.swift",
+      "line": 20,
+      "symbol": "Decimal.init(buffer:format:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Decimal.swift",
+      "line": 24,
+      "symbol": "Decimal.encode(into:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Double.swift",
+      "line": 2,
+      "symbol": "Double.psqlType",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Double.swift",
+      "line": 4,
+      "symbol": "Double.init(buffer:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Double.swift",
+      "line": 25,
+      "symbol": "Double.init(buffer:format:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Double.swift",
+      "line": 29,
+      "symbol": "Double.encode(into:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Float.swift",
+      "line": 2,
+      "symbol": "Float.psqlType",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Float.swift",
+      "line": 4,
+      "symbol": "Float.init(buffer:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Float.swift",
+      "line": 25,
+      "symbol": "Float.init(buffer:format:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Float.swift",
+      "line": 29,
+      "symbol": "Float.encode(into:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Int.swift",
+      "line": 2,
+      "symbol": "Int16.psqlType",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Int.swift",
+      "line": 4,
+      "symbol": "Int16.init(buffer:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Int.swift",
+      "line": 20,
+      "symbol": "Int16.init(buffer:format:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Int.swift",
+      "line": 24,
+      "symbol": "Int16.encode(into:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Int.swift",
+      "line": 37,
+      "symbol": "Int32.psqlType",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Int.swift",
+      "line": 39,
+      "symbol": "Int32.init(buffer:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Int.swift",
+      "line": 60,
+      "symbol": "Int32.init(buffer:format:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Int.swift",
+      "line": 64,
+      "symbol": "Int32.encode(into:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Int.swift",
+      "line": 77,
+      "symbol": "Int64.psqlType",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Int.swift",
+      "line": 79,
+      "symbol": "Int64.init(buffer:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Int.swift",
+      "line": 105,
+      "symbol": "Int64.init(buffer:format:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Int.swift",
+      "line": 109,
+      "symbol": "Int64.encode(into:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Int.swift",
+      "line": 122,
+      "symbol": "Int.psqlType",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Int.swift",
+      "line": 126,
+      "symbol": "Int.init(buffer:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Int.swift",
+      "line": 152,
+      "symbol": "Int.init(buffer:format:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/Int.swift",
+      "line": 156,
+      "symbol": "Int.encode(into:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/RawRepresentable.swift",
+      "line": 2,
+      "symbol": "RawRepresentable.psqlFormat",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/RawRepresentable.swift",
+      "line": 3,
+      "symbol": "RawRepresentable.psqlType",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/String.swift",
+      "line": 4,
+      "symbol": "String.psqlFormat",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/String.swift",
+      "line": 5,
+      "symbol": "String.psqlType",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/String.swift",
+      "line": 7,
+      "symbol": "String.init(buffer:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/String.swift",
+      "line": 21,
+      "symbol": "String.init(buffer:format:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/String.swift",
+      "line": 25,
+      "symbol": "String.encode(into:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/UInt.swift",
+      "line": 2,
+      "symbol": "UInt8.psqlType",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/UInt.swift",
+      "line": 4,
+      "symbol": "UInt8.init(buffer:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/UInt.swift",
+      "line": 15,
+      "symbol": "UInt8.init(buffer:format:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/UInt.swift",
+      "line": 19,
+      "symbol": "UInt8.encode(into:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/UUID.swift",
+      "line": 4,
+      "symbol": "UUID.psqlType",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/UUID.swift",
+      "line": 6,
+      "symbol": "UUID.init(buffer:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/UUID.swift",
+      "line": 31,
+      "symbol": "UUID.init(buffer:format:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Message/Data/UUID.swift",
+      "line": 35,
+      "symbol": "UUID.encode(into:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL+Configuration.swift",
+      "line": 4,
+      "symbol": "PostgreSQL.Configuration",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL+Configuration.swift",
+      "line": 5,
+      "symbol": "PostgreSQL.Configuration.defaultIdentifier",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL+Configuration.swift",
+      "line": 6,
+      "symbol": "PostgreSQL.Configuration.defaultHost",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL+Configuration.swift",
+      "line": 7,
+      "symbol": "PostgreSQL.Configuration.defaultPort",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL+Configuration.swift",
+      "line": 9,
+      "symbol": "PostgreSQL.Configuration.identifier",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL+Configuration.swift",
+      "line": 10,
+      "symbol": "PostgreSQL.Configuration.host",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL+Configuration.swift",
+      "line": 11,
+      "symbol": "PostgreSQL.Configuration.port",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL+Configuration.swift",
+      "line": 12,
+      "symbol": "PostgreSQL.Configuration.username",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL+Configuration.swift",
+      "line": 13,
+      "symbol": "PostgreSQL.Configuration.password",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL+Configuration.swift",
+      "line": 14,
+      "symbol": "PostgreSQL.Configuration.database",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL+Configuration.swift",
+      "line": 15,
+      "symbol": "PostgreSQL.Configuration.requiresTLS",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL+Configuration.swift",
+      "line": 17,
+      "symbol": "PostgreSQL.Configuration.init(identifier:host:port:username:password:database:requiresTLS:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL+Configuration.swift",
+      "line": 35,
+      "symbol": "PostgreSQL.Configuration.init(identifier:url:requiresTLS:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL.swift",
+      "line": 3,
+      "symbol": "PostgreSQL",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL.swift",
+      "line": 5,
+      "symbol": "PostgreSQL",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL.swift",
+      "line": 6,
+      "symbol": "PostgreSQL.eventLoopGroup",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL.swift",
+      "line": 7,
+      "symbol": "PostgreSQL.configuration",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL.swift",
+      "line": 8,
+      "symbol": "PostgreSQL.logger",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL.swift",
+      "line": 9,
+      "symbol": "PostgreSQL.channel",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL.swift",
+      "line": 10,
+      "symbol": "PostgreSQL.isOpen",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL.swift",
+      "line": 11,
+      "symbol": "PostgreSQL.serverParameters",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL.swift",
+      "line": 14,
+      "symbol": "PostgreSQL.init(eventLoopGroup:configuration:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL.swift",
+      "line": 41,
+      "symbol": "PostgreSQL.close()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL.swift",
+      "line": 50,
+      "symbol": "PostgreSQL.simpleQuery(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL.swift",
+      "line": 56,
+      "symbol": "PostgreSQL.query(_:name:arguments:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL.swift",
+      "line": 65,
+      "symbol": "PostgreSQL.query(_:name:arguments:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL.swift",
+      "line": 114,
+      "symbol": "PostgreSQL.beginTransaction()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL.swift",
+      "line": 118,
+      "symbol": "PostgreSQL.commitTransaction()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQL.swift",
+      "line": 122,
+      "symbol": "PostgreSQL.rollbackTransaction()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQLCodable.swift",
+      "line": 1,
+      "symbol": "PostgreSQLCodable",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQLCodable.swift",
+      "line": 3,
+      "symbol": "PostgreSQLDecodable",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQLCodable.swift",
+      "line": 4,
+      "symbol": "PostgreSQLDecodable.init(buffer:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQLCodable.swift",
+      "line": 7,
+      "symbol": "PostgreSQLDecodable",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQLCodable.swift",
+      "line": 8,
+      "symbol": "PostgreSQLDecodable.init(buffer:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQLCodable.swift",
+      "line": 13,
+      "symbol": "PostgreSQLEncodable",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQLCodable.swift",
+      "line": 14,
+      "symbol": "PostgreSQLEncodable.psqlFormat",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQLCodable.swift",
+      "line": 15,
+      "symbol": "PostgreSQLEncodable.psqlType",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQLCodable.swift",
+      "line": 17,
+      "symbol": "PostgreSQLEncodable.encode(into:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQLCodable.swift",
+      "line": 20,
+      "symbol": "PostgreSQLEncodable",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQLCodable.swift",
+      "line": 21,
+      "symbol": "PostgreSQLEncodable.psqlFormat",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQLCodable.swift",
+      "line": 23,
+      "symbol": "PostgreSQLEncodable.encode(into:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQLCodable.swift",
+      "line": 27,
+      "symbol": "PostgreSQLEncodable.encode(into:format:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQLCodable.swift",
+      "line": 31,
+      "symbol": "PostgreSQLEncodable.encode(into:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQLCodable.swift",
+      "line": 35,
+      "symbol": "PostgreSQLEncodable.encodeRaw(into:format:type:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/PostgreSQLError.swift",
+      "line": 3,
+      "symbol": "PostgreSQLError",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Result.swift",
+      "line": 1,
+      "symbol": "Result",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Result.swift",
+      "line": 2,
+      "symbol": "Result.columns",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/postgresql/postgresql/Sources/PostgreSQL/Result.swift",
+      "line": 3,
+      "symbol": "Result.rows",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/runner/work/postgresql/postgresql"
+}
