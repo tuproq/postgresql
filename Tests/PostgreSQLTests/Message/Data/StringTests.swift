@@ -4,7 +4,7 @@ import XCTest
 final class StringTests: BaseTests {
     func testDefaultFormatAndType() {
         // Assert
-        XCTAssertEqual(String.psqlFormat, .binary)
+        XCTAssertEqual(String.psqlFormat, .text)
         XCTAssertEqual(String.psqlType, .text)
     }
 
