@@ -69,6 +69,14 @@ public final class PostgreSQL {
     ) async throws -> Result? {
         let formats: [DataFormat] = parameters.map {
             if let parameter = $0 {
+                if let rawParameter = parameter as? any RawRepresentable {
+                    if let _ = rawParameter.rawValue as? String {
+                        return .text
+                    }
+
+                    return .binary
+                }
+
                 return type(of: parameter).psqlFormat
             }
 
