@@ -81,11 +81,15 @@ public final class PostgreSQL {
 
             return .null
         }
-        let parameters: [ByteBuffer?] = try parameters.map {
-            var buffer = ByteBuffer()
-            try $0?.encode(into: &buffer)
+        let parameters: [ByteBuffer?] = try parameters.map { parameter in
+            if let parameter {
+                var buffer = ByteBuffer()
+                try parameter.encode(into: &buffer)
 
-            return buffer
+                return buffer
+            }
+
+            return nil
         }
         let command: Message.Command = name.isEmpty ? .portal : .statement
         let response = try await send(
