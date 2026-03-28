@@ -130,25 +130,18 @@ extension PostgreSQL {
         return try await send(types: [messageType]).message
     }
 
-    @discardableResult
-    private func connect() async throws -> Message {
-        let message = try await startupMessage()
-
-        if configuration.password != nil {
-            return try await authenticate()
-        }
-
-        return message
-    }
-
-    private func startupMessage() async throws -> Message {
-        let messageType = Message.StartupMessage(user: configuration.username ?? "", database: configuration.database)
-        return try await send(types: [messageType]).message
-    }
-
-    private func authenticate() async throws -> Message {
-        let messageType = Message.Password(configuration.password ?? "")
-        return try await send(types: [messageType]).message
+    /// Send the StartupMessage and drive the authentication exchange to completion.
+    ///
+    /// The server may respond with an authentication challenge (e.g. cleartext
+    /// password request) before sending ReadyForQuery. `RequestHandler` handles
+    /// that exchange in-band, so a single `send()` here is sufficient — the
+    /// returned promise resolves only when ReadyForQuery is received.
+    private func connect() async throws {
+        let messageType = Message.StartupMessage(
+            user: configuration.username ?? "",
+            database: configuration.database
+        )
+        try await send(types: [messageType])
     }
 
     @discardableResult
