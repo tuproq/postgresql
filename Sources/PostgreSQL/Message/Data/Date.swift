@@ -8,7 +8,26 @@ extension Date: PostgreSQLCodable {
     static let secondsFrom1970To2000: TimeInterval = 946_684_800
     static let startDate = Date(timeIntervalSince1970: secondsFrom1970To2000)
 
-    private static let formatter = DateFormatter()
+    /// Create a fresh `DateFormatter` configured for PostgreSQL text-format dates.
+    ///
+    /// A new instance is returned on every call.  `DateFormatter` is not thread-safe,
+    /// so a shared `static let` would race when multiple NIO event-loop threads decode
+    /// date columns concurrently.  Thread-local caching would avoid repeated allocation,
+    /// but the text-format path is never exercised by normal queries — `query()` always
+    /// requests binary results, and `simpleQuery()` is the only path that can return
+    /// text-format columns.  The per-call cost is therefore negligible and the simpler
+    /// approach keeps this code free of NIO thread-identity assumptions.
+    ///
+    /// The formatter is pinned to `en_US_POSIX` locale (avoids locale-dependent digit /
+    /// AM-PM formatting) and UTC time zone (PostgreSQL text timestamps are in UTC).
+    private static func makeFormatter(dateFormat: String) -> DateFormatter {
+        let formatter = DateFormatter()
+        formatter.locale = .init(identifier: "en_US_POSIX")
+        formatter.timeZone = .init(secondsFromGMT: 0)
+        formatter.dateFormat = dateFormat
+
+        return formatter
+    }
 
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
         switch format {
@@ -33,18 +52,19 @@ extension Date: PostgreSQLCodable {
                 throw postgreSQLError(.invalidData(format: format, type: type))
             }
 
+            let dateFormat: String
+
             switch type {
-            case .date: Self.formatter.dateFormat = "yyyy-MM-dd"
-            case .timestamp: Self.formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            case .timestamptz: Self.formatter.dateFormat = "yyyy-MM-dd HH:mm:ssxxxxx"
+            case .date: dateFormat = "yyyy-MM-dd"
+            case .timestamp: dateFormat = "yyyy-MM-dd HH:mm:ss"
+            case .timestamptz: dateFormat = "yyyy-MM-dd HH:mm:ssxxxxx"
             default: throw postgreSQLError(.invalidDataType(type))
             }
 
-            var date = Self.formatter.date(from: dateString)
+            var date = Self.makeFormatter(dateFormat: dateFormat).date(from: dateString)
 
             if type == .timestamptz, date == nil {
-                Self.formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSxxxxx"
-                date = Self.formatter.date(from: dateString)
+                date = Self.makeFormatter(dateFormat: "yyyy-MM-dd HH:mm:ss.SSSxxxxx").date(from: dateString)
             }
 
             guard let date = date else {
@@ -73,14 +93,16 @@ extension Date: PostgreSQLCodable {
                 throw postgreSQLError(.invalidDataType(type))
             }
         case .text:
+            let dateFormat: String
+
             switch type {
-            case .date: Self.formatter.dateFormat = "yyyy-MM-dd"
-            case .timestamp: Self.formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            case .timestamptz: Self.formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSxxxxx"
+            case .date: dateFormat = "yyyy-MM-dd"
+            case .timestamp: dateFormat = "yyyy-MM-dd HH:mm:ss"
+            case .timestamptz: dateFormat = "yyyy-MM-dd HH:mm:ss.SSSxxxxx"
             default: throw postgreSQLError(.invalidDataType(type))
             }
 
-            let dateString = Self.formatter.string(from: self)
+            let dateString = Self.makeFormatter(dateFormat: dateFormat).string(from: self)
             buffer.writeString(dateString)
         }
     }
