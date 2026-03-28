@@ -62,13 +62,24 @@ extension Int32: PostgreSQLCodable {
     }
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
-        if type == .int2 || type == .int4 {
-            switch format {
-            case .binary: buffer.writeInteger(self)
-            case .text: buffer.writeString(String(self))
+        switch format {
+        case .binary:
+            switch type {
+            case .int2:
+                guard let value = Int16(exactly: self) else {
+                    throw postgreSQLError(.invalidData(format: format, type: type))
+                }
+                buffer.writeInteger(value)
+            case .int4:
+                buffer.writeInteger(self)
+            default:
+                throw postgreSQLError(.invalidDataType(type))
             }
-        } else {
-            throw postgreSQLError(.invalidDataType(type))
+        case .text:
+            guard type == .int2 || type == .int4 else {
+                throw postgreSQLError(.invalidDataType(type))
+            }
+            buffer.writeString(String(self))
         }
     }
 }
@@ -107,13 +118,29 @@ extension Int64: PostgreSQLCodable {
     }
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
-        if type == .int2 || type == .int4 || type == .int8 {
-            switch format {
-            case .binary: buffer.writeInteger(self)
-            case .text: buffer.writeString(String(self))
+        switch format {
+        case .binary:
+            switch type {
+            case .int2:
+                guard let value = Int16(exactly: self) else {
+                    throw postgreSQLError(.invalidData(format: format, type: type))
+                }
+                buffer.writeInteger(value)
+            case .int4:
+                guard let value = Int32(exactly: self) else {
+                    throw postgreSQLError(.invalidData(format: format, type: type))
+                }
+                buffer.writeInteger(value)
+            case .int8:
+                buffer.writeInteger(self)
+            default:
+                throw postgreSQLError(.invalidDataType(type))
             }
-        } else {
-            throw postgreSQLError(.invalidDataType(type))
+        case .text:
+            guard type == .int2 || type == .int4 || type == .int8 else {
+                throw postgreSQLError(.invalidDataType(type))
+            }
+            buffer.writeString(String(self))
         }
     }
 }
@@ -154,13 +181,29 @@ extension Int: PostgreSQLCodable {
     }
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
-        if type == .int2 || type == .int4 || type == .int8 {
-            switch format {
-            case .binary: buffer.writeInteger(self)
-            case .text: buffer.writeString(String(self))
+        switch format {
+        case .binary:
+            switch type {
+            case .int2:
+                guard let value = Int16(exactly: self) else {
+                    throw postgreSQLError(.invalidData(format: format, type: type))
+                }
+                buffer.writeInteger(value)
+            case .int4:
+                guard let value = Int32(exactly: self) else {
+                    throw postgreSQLError(.invalidData(format: format, type: type))
+                }
+                buffer.writeInteger(value)
+            case .int8:
+                buffer.writeInteger(Int64(self))
+            default:
+                throw postgreSQLError(.invalidDataType(type))
             }
-        } else {
-            throw postgreSQLError(.invalidDataType(type))
+        case .text:
+            guard type == .int2 || type == .int4 || type == .int8 else {
+                throw postgreSQLError(.invalidDataType(type))
+            }
+            buffer.writeString(String(self))
         }
     }
 }
