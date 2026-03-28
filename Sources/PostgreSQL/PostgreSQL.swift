@@ -11,8 +11,11 @@ public final class PostgreSQL {
     public internal(set) var serverParameters = [String: String]()
     var backendKeyData: Message.BackendKeyData?
 
-    public init(eventLoopGroup: EventLoopGroup? = nil, configuration: Configuration = .init()) async throws {
-        self.eventLoopGroup = eventLoopGroup ?? MultiThreadedEventLoopGroup.singleton
+    public init(
+        eventLoopGroup: EventLoopGroup = MultiThreadedEventLoopGroup.singleton,
+        configuration: Configuration = .init()
+    ) async throws {
+        self.eventLoopGroup = eventLoopGroup
         self.configuration = configuration
         logger = .init(label: configuration.identifier)
 
@@ -42,7 +45,6 @@ public final class PostgreSQL {
         if isOpen {
             isOpen = false
             try await channel.close()
-            try await eventLoopGroup.shutdownGracefully()
         }
     }
 
