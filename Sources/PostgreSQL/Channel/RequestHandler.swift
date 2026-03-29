@@ -154,6 +154,7 @@ final class RequestHandler: ChannelDuplexHandler {
                 }
             } catch {
                 connection.logger.error("\(error)")
+                setError(error)
             }
         case .readyForQuery:
             if let error = firstError {
