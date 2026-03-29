@@ -129,6 +129,10 @@ final class RequestHandler: ChannelDuplexHandler {
                 if let result = request?.results.last {
                     var row = [PostgreSQLCodable?]()
 
+                    guard dataRow.values.count == result.columns.count else {
+                        throw postgreSQLError(.invalidData(format: .binary, type: .null))
+                    }
+
                     for (index, buffer) in dataRow.values.enumerated() {
                         var buffer = buffer
                         let column = result.columns[index]
