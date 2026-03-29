@@ -8,15 +8,18 @@ public final class PostgreSQL {
     public let configuration: Configuration
     public let logger: Logger
     public let channel: Channel
-    public private(set) var isOpen = false
-
     private let lock = NIOLock()
+
+    private var _isOpen = false
+    private var _serverParameters = [String: String]()
+
+    public var isOpen: Bool {
+        lock.withLock { _isOpen }
+    }
 
     public var serverParameters: [String: String] {
         lock.withLock { _serverParameters }
     }
-
-    private var _serverParameters = [String: String]()
 
     public init(
         eventLoopGroup: EventLoopGroup = MultiThreadedEventLoopGroup.singleton,
@@ -45,12 +48,16 @@ public final class PostgreSQL {
             try await connect()
         }
 
-        isOpen = true
+        lock.withLock { _isOpen = true }
     }
 
     public func close() async throws {
-        if isOpen {
-            isOpen = false
+        let shouldClose = lock.withLock {
+            guard _isOpen else { return false }
+            _isOpen = false
+            return true
+        }
+        if shouldClose {
             try await channel.close()
         }
     }
@@ -138,7 +145,6 @@ public final class PostgreSQL {
 }
 
 extension PostgreSQL {
-    /// Called exclusively from `RequestHandler` on the NIO event-loop thread.
     func updateServerParameter(name: String, value: String) {
         lock.withLock { _serverParameters[name] = value }
     }
@@ -148,12 +154,6 @@ extension PostgreSQL {
         return try await send(types: [messageType]).message
     }
 
-    /// Send the StartupMessage and drive the authentication exchange to completion.
-    ///
-    /// The server may respond with an authentication challenge (e.g. cleartext
-    /// password request) before sending ReadyForQuery. `RequestHandler` handles
-    /// that exchange in-band, so a single `send()` here is sufficient — the
-    /// returned promise resolves only when ReadyForQuery is received.
     private func connect() async throws {
         let messageType = Message.StartupMessage(
             user: configuration.username ?? "",
