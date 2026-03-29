@@ -49,7 +49,7 @@ extension Array: PostgreSQLCodable where Element: PostgreSQLCodable {
         }
 
         guard isNotEmpty == 1 else {
-            self = []
+            self = .init()
             return
         }
 

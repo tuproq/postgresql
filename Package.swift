@@ -14,12 +14,14 @@ let package = Package(
         .library(name: "PostgreSQL", targets: ["PostgreSQL"])
     ],
     dependencies: [
+        .package(url: "https://github.com/apple/swift-crypto.git", from: "3.0.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.0.0"),
         .package(url: "https://github.com/apple/swift-nio-ssl.git", from: "2.0.0")
     ],
     targets: [
         .target(name: "PostgreSQL", dependencies: [
+            .product(name: "Crypto", package: "swift-crypto"),
             .product(name: "Logging", package: "swift-log"),
             .product(name: "NIO", package: "swift-nio"),
             .product(name: "NIOFoundationCompat", package: "swift-nio"),

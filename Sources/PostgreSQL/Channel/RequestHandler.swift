@@ -1,3 +1,4 @@
+import Crypto
 import Foundation
 import Logging
 import NIOCore
@@ -13,6 +14,17 @@ final class RequestHandler: ChannelDuplexHandler {
     /// True while we are waiting for the single-byte SSL response (which has no
     /// length prefix and whose byte value collides with other message identifiers).
     private var isAwaitingSSLResponse = false
+    /// Preserved between AuthenticationSASL and AuthenticationSASLContinue so we
+    /// can supply the client-first-message-bare when building the client proof.
+    private var scramState: SCRAMState?
+
+    /// Transient state kept between the two SCRAM-SHA-256 round-trips.
+    private struct SCRAMState {
+        let username: String
+        let password: String
+        let clientNonce: String
+        let clientFirstMessageBare: String
+    }
 
     init(connection: PostgreSQL) {
         self.connection = connection
@@ -40,18 +52,67 @@ final class RequestHandler: ChannelDuplexHandler {
             do {
                 let auth = try Message.Authentication(buffer: &buffer)
                 switch auth.kind {
+
                 case .ok:
-                    // Server accepted the credentials; wait for ReadyForQuery.
+                    // Server accepted our credentials; wait for ReadyForQuery.
                     break
+
                 case .cleartext:
                     let password = connection.configuration.password ?? ""
                     sendInband(Message.Password(password), context: context)
-                default:
-                    // MD5, SCRAM-SHA-256, etc. are not yet implemented.
-                    let error = PostgreSQLError(
-                        "Authentication method '\(auth.kind)' is not yet supported."
+
+                case .md5(let salt):
+                    let username = connection.configuration.username ?? ""
+                    let password = connection.configuration.password ?? ""
+                    let hash = md5AuthHash(password: password, username: username, salt: salt)
+                    sendInband(Message.Password("md5\(hash)"), context: context)
+
+                case .sasl(let mechanisms):
+                    guard mechanisms.contains("SCRAM-SHA-256") else {
+                        setError(PostgreSQLError(
+                            "No supported SASL mechanism. Server offered: \(mechanisms.joined(separator: ", "))"
+                        ))
+                        break
+                    }
+                    let username = connection.configuration.username ?? ""
+                    let password = connection.configuration.password ?? ""
+                    let state = makeSCRAMState(username: username, password: password)
+                    scramState = state
+                    let clientFirstMessage = "n,,\(state.clientFirstMessageBare)"
+                    sendInband(
+                        Message.SASLInitialResponse(
+                            mechanism: "SCRAM-SHA-256",
+                            initialResponse: Array(clientFirstMessage.utf8)
+                        ),
+                        context: context
                     )
-                    setError(error)
+
+                case .saslContinue(let data):
+                    guard let state = scramState,
+                          let serverFirst = String(bytes: data, encoding: .utf8) else {
+                        setError(PostgreSQLError("SCRAM: invalid server-first message"))
+                        break
+                    }
+                    scramState = nil
+                    do {
+                        let clientFinal = try computeSCRAMClientFinal(
+                            state: state,
+                            serverFirst: serverFirst
+                        )
+                        sendInband(Message.SASLResponse(data: Array(clientFinal.utf8)), context: context)
+                    } catch {
+                        setError(error)
+                    }
+
+                case .saslFinal:
+                    // Optionally verify the server signature here. For now we trust
+                    // the server and wait for AuthenticationOk followed by ReadyForQuery.
+                    break
+
+                case .unsupported(let rawValue):
+                    setError(PostgreSQLError(
+                        "Authentication method \(rawValue) is not supported."
+                    ))
                 }
             } catch {
                 connection.logger.error("\(error)")
@@ -196,5 +257,124 @@ final class RequestHandler: ChannelDuplexHandler {
         if firstError == nil {
             firstError = error
         }
+    }
+
+    // MARK: - Authentication helpers
+
+    /// Build the MD5 password hash expected by PostgreSQL:
+    ///   "md5" + hex(MD5(hex(MD5(password + username)) + salt))
+    private func md5AuthHash(password: String, username: String, salt: [UInt8]) -> String {
+        // Step 1: MD5(password_bytes + username_bytes) → hex string
+        let step1Input = Array(password.utf8) + Array(username.utf8)
+        let step1Digest = Insecure.MD5.hash(data: step1Input)
+        let step1Hex = step1Digest.map { String(format: "%02x", $0) }.joined()
+
+        // Step 2: MD5(step1_hex_bytes + raw_salt_bytes) → hex string
+        let step2Input = Array(step1Hex.utf8) + salt
+        let step2Digest = Insecure.MD5.hash(data: step2Input)
+        return step2Digest.map { String(format: "%02x", $0) }.joined()
+    }
+
+    /// Create initial SCRAM-SHA-256 state with a freshly generated client nonce.
+    /// The nonce is 24 random bytes encoded as base64, which produces only
+    /// printable ASCII characters and no commas — safe to embed in SCRAM messages.
+    private func makeSCRAMState(username: String, password: String) -> SCRAMState {
+        // Generate a cryptographically random 24-byte nonce.
+        var rng = SystemRandomNumberGenerator()
+        let nonceBytes = (0..<24).map { _ in UInt8.random(in: .min ... .max, using: &rng) }
+        let clientNonce = Data(nonceBytes).base64EncodedString()
+
+        // RFC 5802: ',' and '=' in the username must be escaped.
+        let safeUsername = username
+            .replacingOccurrences(of: "=", with: "=3D")
+            .replacingOccurrences(of: ",", with: "=2C")
+        let clientFirstMessageBare = "n=\(safeUsername),r=\(clientNonce)"
+
+        return SCRAMState(
+            username: username,
+            password: password,
+            clientNonce: clientNonce,
+            clientFirstMessageBare: clientFirstMessageBare
+        )
+    }
+
+    /// Compute the SCRAM-SHA-256 client-final-message (including the proof)
+    /// given the client state and the server-first-message.
+    ///
+    /// SCRAM-SHA-256 (RFC 5802):
+    ///   SaltedPassword = PBKDF2-SHA256(password, salt, iterations)
+    ///   ClientKey      = HMAC(SaltedPassword, "Client Key")
+    ///   StoredKey      = SHA256(ClientKey)
+    ///   AuthMessage    = client-first-bare + "," + server-first + "," + client-final-without-proof
+    ///   ClientProof    = ClientKey XOR HMAC(StoredKey, AuthMessage)
+    private func computeSCRAMClientFinal(state: SCRAMState, serverFirst: String) throws -> String {
+        // --- Parse server-first-message ---
+        var serverNonce: String?
+        var saltBase64: String?
+        var iterations: Int?
+
+        for part in serverFirst.split(separator: ",", omittingEmptySubsequences: false) {
+            let attribute = String(part)
+            if attribute.hasPrefix("r=") { serverNonce = String(attribute.dropFirst(2)) }
+            else if attribute.hasPrefix("s=") { saltBase64 = String(attribute.dropFirst(2)) }
+            else if attribute.hasPrefix("i=") { iterations = Int(attribute.dropFirst(2)) }
+        }
+
+        guard let serverNonce,
+              serverNonce.hasPrefix(state.clientNonce),
+              let saltBase64,
+              let saltData = Data(base64Encoded: saltBase64),
+              let iterations, iterations > 0 else {
+            throw PostgreSQLError("SCRAM: malformed server-first-message")
+        }
+
+        let salt = [UInt8](saltData)
+        let passwordBytes = Array(state.password.utf8)
+
+        // --- Derive keys ---
+        let saltedPasswordBytes = pbkdf2SHA256(password: passwordBytes, salt: salt, iterations: iterations)
+        let saltedKey = SymmetricKey(data: saltedPasswordBytes)
+
+        let clientKey = [UInt8](HMAC<SHA256>.authenticationCode(
+            for: Array("Client Key".utf8), using: saltedKey))
+        let storedKey = [UInt8](SHA256.hash(data: clientKey))
+        let storedSymKey = SymmetricKey(data: storedKey)
+
+        // --- Build auth message ---
+        // GS2 header "n,," base64-encoded = "biws" (no channel binding)
+        let clientFinalWithoutProof = "c=biws,r=\(serverNonce)"
+        let authMessage = "\(state.clientFirstMessageBare),\(serverFirst),\(clientFinalWithoutProof)"
+
+        // --- Compute proof ---
+        let clientSignature = [UInt8](HMAC<SHA256>.authenticationCode(
+            for: Array(authMessage.utf8), using: storedSymKey))
+        let clientProof = zip(clientKey, clientSignature).map { keyByte, signatureByte in keyByte ^ signatureByte }
+        let clientProofBase64 = Data(clientProof).base64EncodedString()
+
+        return "\(clientFinalWithoutProof),p=\(clientProofBase64)"
+    }
+
+    /// PBKDF2-HMAC-SHA256: derives a 32-byte key for a single output block.
+    ///
+    /// PostgreSQL uses SCRAM with a 32-byte (256-bit) derived key, which fits
+    /// exactly in one PBKDF2 block, so the simple one-block implementation below
+    /// is correct and avoids pulling in a full PBKDF2 library.
+    ///
+    /// Formula: U1 = HMAC(password, salt || 0x00000001)
+    ///          Ui = HMAC(password, U(i-1))
+    ///          T  = U1 XOR U2 XOR … XOR Uiterations
+    private func pbkdf2SHA256(password: [UInt8], salt: [UInt8], iterations: Int) -> [UInt8] {
+        let hmacKey = SymmetricKey(data: password)
+        // Block index 1 appended as a 4-byte big-endian integer.
+        let blockSuffix: [UInt8] = [0, 0, 0, 1]
+        var currentBlock = [UInt8](HMAC<SHA256>.authenticationCode(for: salt + blockSuffix, using: hmacKey))
+        var xorAccumulator = currentBlock
+        for _ in 1..<iterations {
+            currentBlock = [UInt8](HMAC<SHA256>.authenticationCode(for: currentBlock, using: hmacKey))
+            for byteIndex in 0..<xorAccumulator.count {
+                xorAccumulator[byteIndex] ^= currentBlock[byteIndex]
+            }
+        }
+        return xorAccumulator
     }
 }
