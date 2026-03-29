@@ -70,13 +70,13 @@ extension Int32: PostgreSQLCodable {
                     throw postgreSQLError(.invalidData(format: format, type: type))
                 }
                 buffer.writeInteger(value)
-            case .int4:
+            case .int4, .oid:
                 buffer.writeInteger(self)
             default:
                 throw postgreSQLError(.invalidDataType(type))
             }
         case .text:
-            guard type == .int2 || type == .int4 else {
+            guard type == .int2 || type == .int4 || type == .oid else {
                 throw postgreSQLError(.invalidDataType(type))
             }
             buffer.writeString(String(self))
