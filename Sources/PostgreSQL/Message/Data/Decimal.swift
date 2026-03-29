@@ -25,7 +25,8 @@ extension Decimal: PostgreSQLCodable {
     }
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
-        if type == .numeric {
+        switch (format, type) {
+        case (.binary, .numeric):
             let numeric = Numeric(decimal: self)
             buffer.writeInteger(numeric.ndigits)
             buffer.writeInteger(numeric.weight)
@@ -35,8 +36,8 @@ extension Decimal: PostgreSQLCodable {
             for digit in numeric.digits {
                 buffer.writeInteger(digit)
             }
-        } else {
-            throw postgreSQLError(.invalidDataType(type))
+        case (.text, .numeric): buffer.writeString(description)
+        default: throw postgreSQLError(.invalidDataType(type))
         }
     }
 }
