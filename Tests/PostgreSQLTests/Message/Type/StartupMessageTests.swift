@@ -13,7 +13,7 @@ final class MessageStartupMessageTests: BaseTests {
         XCTAssertEqual(messageType.protocolVersion, 0x00_03_00_00)
         XCTAssertEqual(messageType.user, user)
         XCTAssertEqual (messageType.database, user)
-        XCTAssertEqual(messageType.replication, .false)
+        XCTAssertNil(messageType.replication)
     }
 
     func testEncode() {
@@ -27,8 +27,6 @@ final class MessageStartupMessageTests: BaseTests {
         expectedBuffer.writeNullTerminatedString(messageType.user)
         expectedBuffer.writeNullTerminatedString("database")
         expectedBuffer.writeNullTerminatedString(messageType.database)
-        expectedBuffer.writeNullTerminatedString("replication")
-        expectedBuffer.writeNullTerminatedString(messageType.replication.rawValue)
         expectedBuffer.writeNullTerminatedString("")
 
         // Act

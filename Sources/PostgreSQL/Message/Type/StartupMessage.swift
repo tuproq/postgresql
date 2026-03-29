@@ -4,7 +4,7 @@ extension Message {
         var protocolVersion: Int32
         var user: String
         var database: String
-        var replication: Replication
+        var replication: Replication?
 
         enum Replication: String {
             case `true`
@@ -16,7 +16,7 @@ extension Message {
             protocolVersion: Int32 = 0x00_03_00_00,
             user: String,
             database: String? = nil,
-            replication: Replication = .false
+            replication: Replication? = nil
         ) {
             self.protocolVersion = protocolVersion
             self.user = user
@@ -30,8 +30,10 @@ extension Message {
             buffer.writeNullTerminatedString(user)
             buffer.writeNullTerminatedString("database")
             buffer.writeNullTerminatedString(database)
-            buffer.writeNullTerminatedString("replication")
-            buffer.writeNullTerminatedString(replication.rawValue)
+            if let replication {
+                buffer.writeNullTerminatedString("replication")
+                buffer.writeNullTerminatedString(replication.rawValue)
+            }
             buffer.writeNullTerminatedString("")
         }
     }
