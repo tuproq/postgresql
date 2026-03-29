@@ -84,7 +84,9 @@ extension Date: PostgreSQLCodable {
         case .binary:
             if type == .date {
                 let calendar = Calendar.current
-                let days = calendar.dateComponents([.day], from: Self.startDate, to: self).day!
+                guard let days = calendar.dateComponents([.day], from: Self.startDate, to: self).day else {
+                    throw postgreSQLError(.invalidData(format: format, type: type))
+                }
                 buffer.writeInteger(Int32(days))
             } else if type == .timestamp || type == .timestamptz {
                 let seconds = timeIntervalSince(Self.startDate) * Self.microsecondsInSecond

@@ -5,7 +5,7 @@ extension Data: PostgreSQLCodable {
     public static var psqlType: DataType { .bytea }
 
     public init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
-        self = buffer.readData(length: buffer.readableBytes, byteTransferStrategy: .automatic)!
+        self = buffer.readData(length: buffer.readableBytes, byteTransferStrategy: .automatic) ?? .init()
     }
 
     public init(buffer: inout ByteBuffer, format: DataFormat = Self.psqlFormat) throws {

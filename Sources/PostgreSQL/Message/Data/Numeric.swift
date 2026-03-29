@@ -11,7 +11,7 @@ struct Numeric {
     var dscale: Int16
     var value: ByteBuffer
 
-    var decimal: Decimal { Decimal(string: string)! }
+    var decimal: Decimal? { .init(string: string, locale: .init(identifier: "en_US_POSIX")) }
 
     var string: String {
         guard ndigits > 0 else { return zero }
@@ -111,7 +111,7 @@ struct Numeric {
 
         for chunk in integer.chunkFromEnd(by: chunkSize) {
             weight += 1
-            buffer.writeInteger(Int16(chunk)!)
+            buffer.writeInteger(Int16(chunk) ?? 0)
         }
 
         var dscale = 0
@@ -119,8 +119,8 @@ struct Numeric {
         if let fraction = fraction {
             for chunk in fraction.chunkFromStart(by: chunkSize) {
                 dscale += chunk.count
-                let string = chunk + String(repeating: zero, count: chunkSize - chunk.count)
-                buffer.writeInteger(Int16(string)!)
+                let paddedChunk = chunk + String(repeating: zero, count: chunkSize - chunk.count)
+                buffer.writeInteger(Int16(paddedChunk) ?? 0)
             }
         }
 
