@@ -9,7 +9,10 @@ final class MessageDecoder: ByteToMessageDecoder {
         self.connection = connection
     }
 
-    func decode(context: ChannelHandlerContext, buffer: inout ByteBuffer) throws -> DecodingState {
+    func decode(
+        context: ChannelHandlerContext,
+        buffer: inout ByteBuffer
+    ) throws -> DecodingState {
         var currentBuffer = buffer
         guard let rawByte = currentBuffer.readInteger(as: UInt8.self) else { return .needMoreData }
         let backendIdentifier = Message.BackendIdentifier(rawByte)
@@ -28,6 +31,14 @@ final class MessageDecoder: ByteToMessageDecoder {
             guard let messageSize = currentBuffer
                 .readInteger(as: Int32.self)
                 .flatMap(Int.init) else { return .needMoreData }
+            guard messageSize >= 4 else {
+                throw postgreSQLError(
+                    .invalidData(
+                        format: .binary,
+                        type: .null
+                    )
+                )
+            }
             guard let messageBuffer = currentBuffer.readSlice(length: messageSize - 4) else { return .needMoreData }
             message = Message(
                 identifier: messageIdentifier,
@@ -43,7 +54,11 @@ final class MessageDecoder: ByteToMessageDecoder {
         return .continue
     }
 
-    func decodeLast(context: ChannelHandlerContext, buffer: inout ByteBuffer, seenEOF: Bool) throws -> DecodingState {
+    func decodeLast(
+        context: ChannelHandlerContext,
+        buffer: inout ByteBuffer,
+        seenEOF: Bool
+    ) throws -> DecodingState {
         .needMoreData
     }
 }
