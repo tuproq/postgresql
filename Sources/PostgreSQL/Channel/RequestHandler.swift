@@ -31,9 +31,6 @@ final class RequestHandler: ChannelDuplexHandler {
         var message = unwrapInboundIn(data)
         var buffer = message.buffer
 
-        // The SSL response is a raw single byte ('S' or 'N') with no length prefix.
-        // Its identifier byte value (0x53 / 0x4E) collides with parameterStatus /
-        // noticeResponse, so we must intercept it before the type-based switch.
         if isAwaitingSSLResponse {
             isAwaitingSSLResponse = false
             request?.promise.succeed(Response(message: message))
@@ -43,27 +40,18 @@ final class RequestHandler: ChannelDuplexHandler {
 
         switch message.identifier {
         case .authentication:
-            // Parse the server's authentication challenge and respond in-band.
-            // The promise must NOT be resolved here — ReadyForQuery is always the
-            // terminal signal that ends a request/response cycle.
             do {
                 let auth = try Message.Authentication(buffer: &buffer)
                 switch auth.kind {
-
-                case .ok:
-                    // Server accepted our credentials; wait for ReadyForQuery.
-                    break
-
+                case .ok: break
                 case .cleartext:
                     let password = connection.configuration.password ?? ""
                     sendInband(Message.Password(password), context: context)
-
                 case .md5(let salt):
                     let username = connection.configuration.username ?? ""
                     let password = connection.configuration.password ?? ""
                     let hash = md5AuthHash(password: password, username: username, salt: salt)
                     sendInband(Message.Password("md5\(hash)"), context: context)
-
                 case .sasl(let mechanisms):
                     guard mechanisms.contains("SCRAM-SHA-256") else {
                         setError(PostgreSQLError(
@@ -83,7 +71,6 @@ final class RequestHandler: ChannelDuplexHandler {
                         ),
                         context: context
                     )
-
                 case .saslContinue(let data):
                     guard let state = scramState,
                           let serverFirst = String(bytes: data, encoding: .utf8) else {
@@ -91,6 +78,7 @@ final class RequestHandler: ChannelDuplexHandler {
                         break
                     }
                     scramState = nil
+
                     do {
                         let clientFinal = try computeSCRAMClientFinal(
                             state: state,
@@ -100,12 +88,10 @@ final class RequestHandler: ChannelDuplexHandler {
                     } catch {
                         setError(error)
                     }
-
                 case .saslFinal:
                     // Optionally verify the server signature here. For now we trust
                     // the server and wait for AuthenticationOk followed by ReadyForQuery.
                     break
-
                 case .unsupported(let rawValue):
                     setError(PostgreSQLError(
                         "Authentication method \(rawValue) is not supported."
@@ -238,12 +224,7 @@ final class RequestHandler: ChannelDuplexHandler {
             case .numeric: return try Decimal(buffer: &buffer, format: format, type: type)
             case .timestamp, .timestamptz, .date: return try Date(buffer: &buffer, format: format, type: type)
             case .uuid: return try UUID(buffer: &buffer, format: format, type: type)
-            case .varchar, .text:
-                do {
-                    return try UUID(buffer: &buffer, format: format, type: type)
-                } catch {
-                    return try String(buffer: &buffer, format: format, type: type)
-                }
+            case .varchar, .text: return try String(buffer: &buffer, format: format, type: type)
             default: return buffer.readString()
             }
         }
