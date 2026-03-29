@@ -1,4 +1,4 @@
-// swift-tools-version:5.10
+// swift-tools-version:6.2
 
 import PackageDescription
 
@@ -14,7 +14,7 @@ let package = Package(
         .library(name: "PostgreSQL", targets: ["PostgreSQL"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-crypto.git", from: "3.0.0"),
+        .package(url: "https://github.com/apple/swift-crypto.git", from: "4.0.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.0.0"),
         .package(url: "https://github.com/apple/swift-nio-ssl.git", from: "2.0.0")
