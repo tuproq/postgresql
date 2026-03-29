@@ -62,7 +62,6 @@ public final class PostgreSQL {
         }
     }
 
-    @discardableResult
     public func simpleQuery(_ string: String) async throws -> [Result] {
         let messageType = Message.SimpleQuery(string)
         return try await send(types: [messageType]).results
@@ -157,6 +156,10 @@ public final class PostgreSQL {
             name: name,
             arguments: parameters
         )
+    }
+
+    public func execute(_ string: String) async throws {
+        _ = try await simpleQuery(string)
     }
 
     public func beginTransaction() async throws {
