@@ -79,7 +79,8 @@ struct Numeric {
         decodedDigits.reserveCapacity(Int(ndigits))
 
         for _ in 0..<ndigits {
-            decodedDigits.append(buffer.readInteger(as: Int16.self) ?? 0)
+            guard let digit = buffer.readInteger(as: Int16.self) else { return nil }
+            decodedDigits.append(digit)
         }
 
         digits = decodedDigits
