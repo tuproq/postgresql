@@ -68,7 +68,6 @@ public final class PostgreSQL {
         return try await send(types: [messageType]).results
     }
 
-    @discardableResult
     public func query(
         _ string: String,
         name: String = "",
@@ -77,7 +76,6 @@ public final class PostgreSQL {
         try await query(string, name: name, arguments: parameters)
     }
 
-    @discardableResult
     public func query(
         _ string: String,
         name: String = "",
@@ -131,16 +129,46 @@ public final class PostgreSQL {
         return response.results.first
     }
 
+    /// Execute a statement and discard any returned rows.
+    ///
+    /// Use this for DDL statements, DML without a result set (`INSERT`, `UPDATE`,
+    /// `DELETE`), and control statements (`BEGIN`, `COMMIT`, etc.) where the caller
+    /// intentionally does not need the result. Using `query()` for such statements
+    /// would produce a compile-time warning because its return value would go unused.
+    public func execute(
+        _ string: String,
+        name: String = "",
+        arguments parameters: PostgreSQLCodable?...
+    ) async throws {
+        try await execute(
+            string,
+            name: name,
+            arguments: parameters
+        )
+    }
+
+    public func execute(
+        _ string: String,
+        name: String = "",
+        arguments parameters: [PostgreSQLCodable?]
+    ) async throws {
+        _ = try await query(
+            string,
+            name: name,
+            arguments: parameters
+        )
+    }
+
     public func beginTransaction() async throws {
-        try await query("BEGIN")
+        try await execute("BEGIN")
     }
 
     public func commitTransaction() async throws {
-        try await query("COMMIT")
+        try await execute("COMMIT")
     }
 
     public func rollbackTransaction() async throws {
-        try await query("ROLLBACK")
+        try await execute("ROLLBACK")
     }
 }
 
