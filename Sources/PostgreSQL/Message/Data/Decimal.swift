@@ -32,8 +32,9 @@ extension Decimal: PostgreSQLCodable {
             buffer.writeInteger(numeric.sign)
             buffer.writeInteger(numeric.dscale)
 
-            var value = numeric.value
-            buffer.writeBuffer(&value)
+            for digit in numeric.digits {
+                buffer.writeInteger(digit)
+            }
         } else {
             throw postgreSQLError(.invalidDataType(type))
         }

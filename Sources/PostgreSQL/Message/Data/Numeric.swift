@@ -9,7 +9,7 @@ struct Numeric {
     var weight: Int16
     var sign: Int16
     var dscale: Int16
-    var value: ByteBuffer
+    var digits: [Int16]
 
     var decimal: Decimal? { .init(string: string, locale: .init(identifier: "en_US_POSIX")) }
 
@@ -17,10 +17,9 @@ struct Numeric {
         guard ndigits > 0 else { return zero }
         var integer = ""
         var fraction = ""
-        var value = self.value
 
         for offset in 0..<ndigits {
-            let character = value.readInteger(as: Int16.self) ?? 0
+            let character = digits[Int(offset)]
             let characterString = character.description
 
             if weight - offset >= 0 {
@@ -75,7 +74,15 @@ struct Numeric {
         self.weight = weight
         self.sign = sign
         self.dscale = dscale
-        value = buffer
+
+        var decodedDigits = [Int16]()
+        decodedDigits.reserveCapacity(Int(ndigits))
+
+        for _ in 0..<ndigits {
+            decodedDigits.append(buffer.readInteger(as: Int16.self) ?? 0)
+        }
+
+        digits = decodedDigits
     }
 
     init(decimal: Decimal) {
@@ -106,12 +113,12 @@ struct Numeric {
             isNegative = false
         }
 
-        var buffer = ByteBuffer()
+        var encodedDigits = [Int16]()
         var weight = -1
 
         for chunk in integer.chunkFromEnd(by: chunkSize) {
             weight += 1
-            buffer.writeInteger(Int16(chunk) ?? 0)
+            encodedDigits.append(Int16(chunk) ?? 0)
         }
 
         var dscale = 0
@@ -120,14 +127,14 @@ struct Numeric {
             for chunk in fraction.chunkFromStart(by: chunkSize) {
                 dscale += chunk.count
                 let paddedChunk = chunk + String(repeating: zero, count: chunkSize - chunk.count)
-                buffer.writeInteger(Int16(paddedChunk) ?? 0)
+                encodedDigits.append(Int16(paddedChunk) ?? 0)
             }
         }
 
-        ndigits = numericCast(buffer.readableBytes / 2)
+        ndigits = Int16(encodedDigits.count)
         self.weight = numericCast(weight)
         sign = isNegative ? negativeSign : 0
         self.dscale = numericCast(dscale)
-        value = buffer
+        digits = encodedDigits
     }
 }
