@@ -190,7 +190,7 @@ extension PostgreSQL {
 
     private func sslRequest() async throws -> Message {
         let messageType = Message.SSLRequest()
-        return try await send(types: [messageType]).message
+        return try await send(types: [messageType], isSSLRequest: true).message
     }
 
     private func connect() async throws {
@@ -202,7 +202,10 @@ extension PostgreSQL {
     }
 
     @discardableResult
-    private func send(types: [MessageType]) async throws -> Response {
+    private func send(
+        types: [MessageType],
+        isSSLRequest: Bool = false
+    ) async throws -> Response {
         var messages = [Message]()
         let promise = channel.eventLoop.makePromise(of: Response.self)
 
@@ -217,7 +220,11 @@ extension PostgreSQL {
             messages.append(message)
         }
 
-        let request = Request(messages: messages, promise: promise)
+        let request = Request(
+            messages: messages,
+            promise: promise,
+            isSSLRequest: isSSLRequest
+        )
         try await channel.writeAndFlush(request).get()
 
         return try await promise.futureResult.get()

@@ -219,7 +219,7 @@ final class RequestHandler: ChannelDuplexHandler {
     func write(context: ChannelHandlerContext, data: NIOAny, promise: EventLoopPromise<Void>?) {
         let request = unwrapOutboundIn(data)
         self.request = request
-        isAwaitingSSLResponse = request.messages.first?.identifier == .frontend(.sslRequest)
+        isAwaitingSSLResponse = request.isSSLRequest
 
         for (index, message) in request.messages.enumerated() {
             let messagePromise = index == request.messages.count - 1 ? promise : nil
