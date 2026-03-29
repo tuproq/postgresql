@@ -8,10 +8,13 @@ extension Message {
                 if value == 0 {
                     break
                 }
-                guard let field = Field(rawValue: value), let string = buffer.readNullTerminatedString() else {
+                guard let string = buffer.readNullTerminatedString() else {
                     throw postgreSQLError(.cantParseErrorResponseFields)
                 }
-                fields[field] = string
+
+                if let field = Field(rawValue: value) {
+                    fields[field] = string
+                }
             }
         }
     }
