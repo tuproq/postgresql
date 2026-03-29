@@ -14,6 +14,7 @@ final class RequestHandler: ChannelDuplexHandler {
     private var backendKeyData: Message.BackendKeyData?
     private var isAwaitingSSLResponse = false
     private var scramState: SCRAMState?
+    private var expectedSCRAMServerSignature: [UInt8]?
 
     /// Transient state kept between the two SCRAM-SHA-256 round-trips.
     private struct SCRAMState {
@@ -82,18 +83,35 @@ final class RequestHandler: ChannelDuplexHandler {
                     scramState = nil
 
                     do {
-                        let clientFinal = try computeSCRAMClientFinal(
+                        let (clientFinal, serverSignature) = try computeSCRAMClientFinal(
                             state: state,
                             serverFirst: serverFirst
                         )
+                        expectedSCRAMServerSignature = serverSignature
                         sendInband(Message.SASLResponse(data: Array(clientFinal.utf8)), context: context)
                     } catch {
                         setError(error)
                     }
-                case .saslFinal:
-                    // Optionally verify the server signature here. For now we trust
-                    // the server and wait for AuthenticationOk followed by ReadyForQuery.
-                    break
+                case .saslFinal(let data):
+                    guard let serverFinal = String(bytes: data, encoding: .utf8),
+                          let expectedSignature = expectedSCRAMServerSignature else {
+                        setError(PostgreSQLError("SCRAM: missing expected server signature for verification"))
+                        break
+                    }
+                    expectedSCRAMServerSignature = nil
+
+                    var serverSignatureBase64: String?
+                    for part in serverFinal.split(separator: ",", omittingEmptySubsequences: false) {
+                        let attribute = String(part)
+                        if attribute.hasPrefix("v=") { serverSignatureBase64 = String(attribute.dropFirst(2)) }
+                    }
+
+                    guard let serverSignatureBase64,
+                          let serverSignatureData = Data(base64Encoded: serverSignatureBase64),
+                          [UInt8](serverSignatureData) == expectedSignature else {
+                        setError(PostgreSQLError("SCRAM: server signature verification failed"))
+                        break
+                    }
                 case .unsupported(let rawValue):
                     setError(PostgreSQLError(
                         "Authentication method \(rawValue) is not supported."
@@ -175,6 +193,7 @@ final class RequestHandler: ChannelDuplexHandler {
 
             request = nil
             firstError = nil
+            expectedSCRAMServerSignature = nil
         case .errorResponse:
             do {
                 let errorResponse = try Message.ErrorResponse(buffer: &buffer)
@@ -302,7 +321,10 @@ final class RequestHandler: ChannelDuplexHandler {
     ///   StoredKey      = SHA256(ClientKey)
     ///   AuthMessage    = client-first-bare + "," + server-first + "," + client-final-without-proof
     ///   ClientProof    = ClientKey XOR HMAC(StoredKey, AuthMessage)
-    private func computeSCRAMClientFinal(state: SCRAMState, serverFirst: String) throws -> String {
+    private func computeSCRAMClientFinal(
+        state: SCRAMState,
+        serverFirst: String
+    ) throws -> (clientFinal: String, serverSignature: [UInt8]) {
         // --- Parse server-first-message ---
         var serverNonce: String?
         var saltBase64: String?
@@ -327,7 +349,11 @@ final class RequestHandler: ChannelDuplexHandler {
         let passwordBytes = Array(state.password.utf8)
 
         // --- Derive keys ---
-        let saltedPasswordBytes = pbkdf2SHA256(password: passwordBytes, salt: salt, iterations: iterations)
+        let saltedPasswordBytes = pbkdf2SHA256(
+            password: passwordBytes,
+            salt: salt,
+            iterations: iterations
+        )
         let saltedKey = SymmetricKey(data: saltedPasswordBytes)
 
         let clientKey = [UInt8](HMAC<SHA256>.authenticationCode(
@@ -340,13 +366,20 @@ final class RequestHandler: ChannelDuplexHandler {
         let clientFinalWithoutProof = "c=biws,r=\(serverNonce)"
         let authMessage = "\(state.clientFirstMessageBare),\(serverFirst),\(clientFinalWithoutProof)"
 
-        // --- Compute proof ---
+        // --- Compute client proof ---
         let clientSignature = [UInt8](HMAC<SHA256>.authenticationCode(
             for: Array(authMessage.utf8), using: storedSymKey))
         let clientProof = zip(clientKey, clientSignature).map { keyByte, signatureByte in keyByte ^ signatureByte }
         let clientProofBase64 = Data(clientProof).base64EncodedString()
 
-        return "\(clientFinalWithoutProof),p=\(clientProofBase64)"
+        // --- Derive expected server signature (RFC 5802 §3) ---
+        let serverKey = [UInt8](HMAC<SHA256>.authenticationCode(
+            for: Array("Server Key".utf8), using: saltedKey))
+        let serverSymKey = SymmetricKey(data: serverKey)
+        let serverSignature = [UInt8](HMAC<SHA256>.authenticationCode(
+            for: Array(authMessage.utf8), using: serverSymKey))
+
+        return ("\(clientFinalWithoutProof),p=\(clientProofBase64)", serverSignature)
     }
 
     /// PBKDF2-HMAC-SHA256: derives a 32-byte key for a single output block.
@@ -358,18 +391,35 @@ final class RequestHandler: ChannelDuplexHandler {
     /// Formula: U1 = HMAC(password, salt || 0x00000001)
     ///          Ui = HMAC(password, U(i-1))
     ///          T  = U1 XOR U2 XOR … XOR Uiterations
-    private func pbkdf2SHA256(password: [UInt8], salt: [UInt8], iterations: Int) -> [UInt8] {
+    private func pbkdf2SHA256(
+        password: [UInt8],
+        salt: [UInt8],
+        iterations: Int
+    ) -> [UInt8] {
         let hmacKey = SymmetricKey(data: password)
         // Block index 1 appended as a 4-byte big-endian integer.
         let blockSuffix: [UInt8] = [0, 0, 0, 1]
-        var currentBlock = [UInt8](HMAC<SHA256>.authenticationCode(for: salt + blockSuffix, using: hmacKey))
+        var currentBlock = [UInt8](
+            HMAC<SHA256>.authenticationCode(
+                for: salt + blockSuffix,
+                using: hmacKey
+            )
+        )
         var xorAccumulator = currentBlock
+
         for _ in 1..<iterations {
-            currentBlock = [UInt8](HMAC<SHA256>.authenticationCode(for: currentBlock, using: hmacKey))
+            currentBlock = [UInt8](
+                HMAC<SHA256>.authenticationCode(
+                    for: currentBlock,
+                    using: hmacKey
+                )
+            )
+
             for byteIndex in 0..<xorAccumulator.count {
                 xorAccumulator[byteIndex] ^= currentBlock[byteIndex]
             }
         }
+
         return xorAccumulator
     }
 }
