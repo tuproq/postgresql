@@ -12,7 +12,12 @@ extension Decimal: PostgreSQLCodable {
             }
             self = value
         case (.text, .numeric):
-            guard let string = buffer.readString(), let value = Decimal(string: string) else {
+            guard let string = buffer.readString(),
+                  let value = Decimal(
+                    string: string,
+                    locale: .init(identifier: "en_US_POSIX")
+                  )
+            else {
                 throw postgreSQLError(.invalidData(format: format, type: type))
             }
             self = value

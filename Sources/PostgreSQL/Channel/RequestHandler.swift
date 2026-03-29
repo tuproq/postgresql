@@ -221,8 +221,9 @@ final class RequestHandler: ChannelDuplexHandler {
         self.request = request
         isAwaitingSSLResponse = request.messages.first?.identifier == .frontend(.sslRequest)
 
-        for message in request.messages {
-            context.write(wrapOutboundOut(message), promise: promise)
+        for (index, message) in request.messages.enumerated() {
+            let messagePromise = index == request.messages.count - 1 ? promise : nil
+            context.write(wrapOutboundOut(message), promise: messagePromise)
         }
     }
 
