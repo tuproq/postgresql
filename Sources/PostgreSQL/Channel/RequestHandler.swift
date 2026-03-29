@@ -11,11 +11,8 @@ final class RequestHandler: ChannelDuplexHandler {
     let connection: PostgreSQL
     private var request: Request?
     private var firstError: Error?
-    /// True while we are waiting for the single-byte SSL response (which has no
-    /// length prefix and whose byte value collides with other message identifiers).
+    private var backendKeyData: Message.BackendKeyData?
     private var isAwaitingSSLResponse = false
-    /// Preserved between AuthenticationSASL and AuthenticationSASLContinue so we
-    /// can supply the client-first-message-bare when building the client proof.
     private var scramState: SCRAMState?
 
     /// Transient state kept between the two SCRAM-SHA-256 round-trips.
@@ -120,13 +117,13 @@ final class RequestHandler: ChannelDuplexHandler {
         case .parameterStatus:
             do {
                 let parameterStatus = try Message.ParameterStatus(buffer: &buffer)
-                connection.serverParameters[parameterStatus.name] = parameterStatus.value
+                connection.updateServerParameter(name: parameterStatus.name, value: parameterStatus.value)
             } catch {
                 connection.logger.error("\(error)")
             }
         case .backendKeyData:
             do {
-                connection.backendKeyData = try Message.BackendKeyData(buffer: &buffer)
+                backendKeyData = try Message.BackendKeyData(buffer: &buffer)
             } catch {
                 connection.logger.error("\(error)")
             }

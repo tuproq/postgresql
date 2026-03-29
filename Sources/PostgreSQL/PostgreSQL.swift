@@ -1,4 +1,5 @@
 import Logging
+import NIOConcurrencyHelpers
 import NIOCore
 import NIOPosix
 
@@ -8,8 +9,14 @@ public final class PostgreSQL {
     public let logger: Logger
     public let channel: Channel
     public private(set) var isOpen = false
-    public internal(set) var serverParameters = [String: String]()
-    var backendKeyData: Message.BackendKeyData?
+
+    private let lock = NIOLock()
+
+    public var serverParameters: [String: String] {
+        lock.withLock { _serverParameters }
+    }
+
+    private var _serverParameters = [String: String]()
 
     public init(
         eventLoopGroup: EventLoopGroup = MultiThreadedEventLoopGroup.singleton,
@@ -96,7 +103,11 @@ public final class PostgreSQL {
         let command: Message.Command = name.isEmpty ? .portal : .statement
         let response = try await send(
             types: [
-                Message.Parse(statementName: name, query: string, parameterTypes: types),
+                Message.Parse(
+                    statementName: name,
+                    query: string,
+                    parameterTypes: types
+                ),
                 Message.Bind(
                     statementName: name,
                     parameterDataFormats: formats,
@@ -127,6 +138,11 @@ public final class PostgreSQL {
 }
 
 extension PostgreSQL {
+    /// Called exclusively from `RequestHandler` on the NIO event-loop thread.
+    func updateServerParameter(name: String, value: String) {
+        lock.withLock { _serverParameters[name] = value }
+    }
+
     private func sslRequest() async throws -> Message {
         let messageType = Message.SSLRequest()
         return try await send(types: [messageType]).message
@@ -154,7 +170,11 @@ extension PostgreSQL {
         for type in types {
             var buffer = ByteBuffer()
             type.encode(into: &buffer)
-            let message = Message(identifier: type.identifier, source: .frontend, buffer: buffer)
+            let message = Message(
+                identifier: type.identifier,
+                source: .frontend,
+                buffer: buffer
+            )
             messages.append(message)
         }
 
