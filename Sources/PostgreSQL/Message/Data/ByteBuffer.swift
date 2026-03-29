@@ -17,6 +17,10 @@ extension ByteBuffer {
     }
 
     mutating func writeArray<T>(_ array: [T], handler: (inout ByteBuffer, T) -> ()) {
+        precondition(
+            array.count <= Int16.max,
+            "Array count \(array.count) exceeds the maximum Int16 value allowed by the PostgreSQL protocol (\(Int16.max))."
+        )
         writeInteger(Int16(array.count))
 
         for element in array {
