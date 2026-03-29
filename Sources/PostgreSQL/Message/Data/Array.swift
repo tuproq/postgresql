@@ -88,22 +88,27 @@ extension Array: PostgreSQLCodable where Element: PostgreSQLCodable {
     }
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
+        let elementType = String(describing: Element.Type.self)
+
+        guard case .binary = format else {
+            throw postgreSQLError(.decoding(type: elementType)) // binary format only
+        }
+
         let isNotEmpty: Int32 = !isEmpty ? 1 : 0
-        let format = DataFormat.binary // A binary format support only
-        let type = Element.psqlType
+        let elementDataType = Element.psqlType
         buffer.writeInteger(isNotEmpty)
         buffer.writeInteger(Int32(format.rawValue))
-        buffer.writeInteger(type.rawValue)
+        buffer.writeInteger(elementDataType.rawValue)
 
         guard !isEmpty else { return }
 
         let size = Int32(count)
-        let dimensions: Int32 = 1 // 1 dimensional array support only
+        let dimensions: Int32 = 1 // 1-dimensional arrays only
         buffer.writeInteger(size)
         buffer.writeInteger(dimensions)
 
         for element in self {
-            try element.encodeRaw(into: &buffer, format: format, type: type)
+            try element.encodeRaw(into: &buffer, format: format, type: elementDataType)
         }
     }
 }
