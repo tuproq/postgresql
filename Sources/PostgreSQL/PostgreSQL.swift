@@ -2,6 +2,7 @@ import Logging
 import NIOConcurrencyHelpers
 import NIOCore
 import NIOPosix
+import NIOSSL
 
 public final class PostgreSQL {
     public let eventLoopGroup: EventLoopGroup
@@ -40,9 +41,16 @@ public final class PostgreSQL {
             let message = try await sslRequest()
 
             if message.identifier == .backend(.sslSupported) {
-                // TODO: implement SSL handshake
-            } else {
+                let tlsConfiguration = TLSConfiguration.makeClientConfiguration()
+                let sslContext = try NIOSSLContext(configuration: tlsConfiguration)
+                let sslHandler = try NIOSSLClientHandler(
+                    context: sslContext,
+                    serverHostname: configuration.host
+                )
+                try await channel.pipeline.addHandler(sslHandler, position: .first).get()
                 try await connect()
+            } else {
+                throw PostgreSQLError("The server does not support TLS but requiresTLS is set to true.")
             }
         } else {
             try await connect()
