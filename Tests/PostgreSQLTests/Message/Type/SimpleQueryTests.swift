@@ -9,7 +9,7 @@ final class MessageSimpleQueryTests: BaseTests {
         let messageType = Message.SimpleQuery(query)
 
         // Assert
-        XCTAssertEqual(messageType.identifier, .simpleQuery)
+        XCTAssertEqual(messageType.identifier, .frontend(.simpleQuery))
         XCTAssertEqual(messageType.string, query)
     }
 

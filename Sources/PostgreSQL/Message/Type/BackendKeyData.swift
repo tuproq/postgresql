@@ -1,6 +1,6 @@
 extension Message {
     struct BackendKeyData: MessageType {
-        let identifier: Identifier = .backendKeyData
+        let identifier: Identifier = .backend(.backendKeyData)
         let processID: Int32
         let secretKey: Int32
 

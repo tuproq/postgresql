@@ -23,7 +23,10 @@ final class MessageParameterDescriptionTests: BaseTests {
         // Act/Assert
         XCTAssertThrowsError(try Message.ParameterDescription(buffer: &buffer)) { error in
             XCTAssertNotNil(error as? PostgreSQLError)
-            XCTAssertEqual(error.localizedDescription, postgreSQLError(.cantParseParameterDataType).localizedDescription)
+            XCTAssertEqual(
+                error.localizedDescription,
+                postgreSQLError(.cantParseParameterDataType).localizedDescription
+            )
         }
 
         // Arrange
@@ -35,7 +38,7 @@ final class MessageParameterDescriptionTests: BaseTests {
         let messageType = try! Message.ParameterDescription(buffer: &buffer)
 
         // Assert
-        XCTAssertEqual(messageType.identifier, .parameterDescription)
+        XCTAssertEqual(messageType.identifier, .backend(.parameterDescription))
         XCTAssertEqual(messageType.dataTypeIDs, [dataTypeID])
     }
 }

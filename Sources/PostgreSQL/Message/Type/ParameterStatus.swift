@@ -1,6 +1,6 @@
 extension Message {
     struct ParameterStatus: MessageType {
-        let identifier: Identifier = .parameterStatus
+        let identifier: Identifier = .backend(.parameterStatus)
         var name: String
         var value: String
 

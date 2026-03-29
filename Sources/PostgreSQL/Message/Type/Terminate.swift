@@ -1,5 +1,5 @@
 extension Message {
     struct Terminate: MessageType {
-        let identifier: Identifier = .terminate
+        let identifier: Identifier = .frontend(.terminate)
     }
 }

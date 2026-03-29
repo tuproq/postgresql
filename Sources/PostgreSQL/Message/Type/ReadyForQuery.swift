@@ -1,6 +1,6 @@
 extension Message {
     struct ReadyForQuery: MessageType {
-        let identifier: Identifier = .readyForQuery
+        let identifier: Identifier = .backend(.readyForQuery)
         let status: Status
         var description: String { "\(identifier) \(status)" }
 

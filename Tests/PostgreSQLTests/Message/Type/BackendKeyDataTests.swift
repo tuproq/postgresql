@@ -39,7 +39,7 @@ final class MessageBackendKeyDataTests: BaseTests {
         let messageType = try! Message.BackendKeyData(buffer: &buffer)
 
         // Assert
-        XCTAssertEqual(messageType.identifier, .backendKeyData)
+        XCTAssertEqual(messageType.identifier, .backend(.backendKeyData))
         XCTAssertEqual(messageType.processID, processID)
         XCTAssertEqual(messageType.secretKey, secretKey)
     }

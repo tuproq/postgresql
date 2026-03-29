@@ -11,17 +11,17 @@ final class MessageDecoder: ByteToMessageDecoder {
 
     func decode(context: ChannelHandlerContext, buffer: inout ByteBuffer) throws -> DecodingState {
         var currentBuffer = buffer
-        guard let messageIdentifier = currentBuffer
-            .readInteger(as: UInt8.self)
-            .map(Message.Identifier.init) else { return .needMoreData }
+        guard let rawByte = currentBuffer.readInteger(as: UInt8.self) else { return .needMoreData }
+        let backendIdentifier = Message.BackendIdentifier(rawByte)
+        let messageIdentifier = Message.Identifier.backend(backendIdentifier)
         let message: Message
 
         if isFirstMessage &&
             connection.configuration.requiresTLS &&
-            (messageIdentifier == .sslSupported || messageIdentifier == .sslUnsupported) {
+            (backendIdentifier == .sslSupported || backendIdentifier == .sslUnsupported) {
             message = Message(
                 identifier: messageIdentifier,
-                source: .backend,
+                type: .backend,
                 buffer: context.channel.allocator.buffer(capacity: 0)
             )
         } else {
@@ -29,7 +29,11 @@ final class MessageDecoder: ByteToMessageDecoder {
                 .readInteger(as: Int32.self)
                 .flatMap(Int.init) else { return .needMoreData }
             guard let messageBuffer = currentBuffer.readSlice(length: messageSize - 4) else { return .needMoreData }
-            message = Message(identifier: messageIdentifier, source: .backend, buffer: messageBuffer)
+            message = Message(
+                identifier: messageIdentifier,
+                type: .backend,
+                buffer: messageBuffer
+            )
         }
 
         isFirstMessage = false

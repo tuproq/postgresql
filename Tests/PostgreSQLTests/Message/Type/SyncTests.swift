@@ -7,6 +7,6 @@ final class MessageSyncTests: BaseTests {
         let messageType = Message.Sync()
 
         // Assert
-        XCTAssertEqual(messageType.identifier, .sync)
+        XCTAssertEqual(messageType.identifier, .frontend(.sync))
     }
 }

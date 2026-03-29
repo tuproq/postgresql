@@ -1,6 +1,6 @@
 extension Message {
     struct CommandComplete: MessageType {
-        let identifier: Identifier = .commandComplete
+        let identifier: Identifier = .backend(.commandComplete)
         let command: String
 
         init(buffer: inout ByteBuffer) throws {

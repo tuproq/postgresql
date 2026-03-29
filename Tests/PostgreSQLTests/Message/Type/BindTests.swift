@@ -27,7 +27,7 @@ final class MessageBindTests: BaseTests {
         )
 
         // Assert
-        XCTAssertEqual(messageType.identifier, .bind)
+        XCTAssertEqual(messageType.identifier, .frontend(.bind))
         XCTAssertEqual(messageType.portalName, portalName)
         XCTAssertEqual(messageType.statementName, statementName)
         XCTAssertEqual(messageType.parameterDataFormats, parameterDataFormats)

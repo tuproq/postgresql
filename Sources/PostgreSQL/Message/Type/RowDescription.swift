@@ -1,6 +1,6 @@
 extension Message {
     struct RowDescription: MessageType, Equatable {
-        let identifier: Identifier = .rowDescription
+        let identifier: Identifier = .backend(.rowDescription)
         let columns: [Column]
 
         init(buffer: inout ByteBuffer) throws {

@@ -21,7 +21,7 @@ final class MessageCommandCompleteTests: BaseTests {
         let messageType = try! Message.CommandComplete(buffer: &buffer)
 
         // Assert
-        XCTAssertEqual(messageType.identifier, .commandComplete)
+        XCTAssertEqual(messageType.identifier, .backend(.commandComplete))
         XCTAssertEqual(messageType.command, command)
     }
 }

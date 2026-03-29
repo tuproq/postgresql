@@ -1,6 +1,6 @@
 extension Message {
     struct Parse: MessageType {
-        let identifier: Identifier = .parse
+        let identifier: Identifier = .frontend(.parse)
         let statementName: String
         let query: String
         let parameterTypes: [DataType]

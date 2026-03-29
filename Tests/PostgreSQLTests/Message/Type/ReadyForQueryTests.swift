@@ -24,7 +24,7 @@ final class MessageReadyForQueryTests: BaseTests {
         let messageType = try! Message.ReadyForQuery(buffer: &buffer)
 
         // Assert
-        XCTAssertEqual(messageType.identifier, .readyForQuery)
+        XCTAssertEqual(messageType.identifier, .backend(.readyForQuery))
         XCTAssertEqual(messageType.status, status)
     }
 

@@ -1,6 +1,6 @@
 extension Message {
     struct SASLResponse: MessageType {
-        let identifier: Identifier = .saslResponse
+        let identifier: Identifier = .frontend(.saslResponse)
         let data: [UInt8]
 
         init(data: [UInt8] = .init()) {

@@ -1,6 +1,6 @@
 extension Message {
     struct Password: MessageType {
-        let identifier: Identifier = .password
+        let identifier: Identifier = .frontend(.password)
         var value: String
 
         init(_ value: String) {

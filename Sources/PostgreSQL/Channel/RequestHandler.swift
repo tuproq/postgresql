@@ -38,7 +38,9 @@ final class RequestHandler: ChannelDuplexHandler {
             return
         }
 
-        switch message.identifier {
+        guard case .backend(let backendIdentifier) = message.identifier else { return }
+
+        switch backendIdentifier {
         case .authentication:
             do {
                 let auth = try Message.Authentication(buffer: &buffer)
@@ -148,10 +150,16 @@ final class RequestHandler: ChannelDuplexHandler {
 
                     switch readyForQuery.status {
                     case .idle:
-                        let response = Response(message: message, results: request?.results ?? .init())
+                        let response = Response(
+                            message: message,
+                            results: request?.results ?? .init()
+                        )
                         request?.promise.succeed(response)
                     case .transaction:
-                        let response = Response(message: message, results: request?.results ?? .init())
+                        let response = Response(
+                            message: message,
+                            results: request?.results ?? .init()
+                        )
                         request?.promise.succeed(response)
                     case .transactionFailed:
                         request?.promise.succeed(Response(message: message))
@@ -188,7 +196,7 @@ final class RequestHandler: ChannelDuplexHandler {
     func write(context: ChannelHandlerContext, data: NIOAny, promise: EventLoopPromise<Void>?) {
         let request = unwrapOutboundIn(data)
         self.request = request
-        isAwaitingSSLResponse = request.messages.first?.identifier == .sslRequest
+        isAwaitingSSLResponse = request.messages.first?.identifier == .frontend(.sslRequest)
 
         for message in request.messages {
             context.write(wrapOutboundOut(message), promise: promise)
@@ -200,10 +208,14 @@ final class RequestHandler: ChannelDuplexHandler {
     /// send mid-handshake responses (e.g. password) that are part of an ongoing
     /// request/response cycle rather than a new top-level request.
     private func sendInband<T: MessageType>(_ type: T, context: ChannelHandlerContext) {
-        var buf = context.channel.allocator.buffer(capacity: 64)
-        type.encode(into: &buf)
-        let msg = Message(identifier: type.identifier, source: .frontend, buffer: buf)
-        context.writeAndFlush(wrapOutboundOut(msg), promise: nil)
+        var buffer = context.channel.allocator.buffer(capacity: 64)
+        type.encode(into: &buffer)
+        let message = Message(
+            identifier: type.identifier,
+            type: .frontend,
+            buffer: buffer
+        )
+        context.writeAndFlush(wrapOutboundOut(message), promise: nil)
     }
 
     private func decode(from buffer: inout ByteBuffer?, to column: Column) throws -> PostgreSQLCodable? {

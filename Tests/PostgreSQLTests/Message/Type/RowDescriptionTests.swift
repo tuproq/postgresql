@@ -42,7 +42,7 @@ final class MessageRowDescriptionTests: BaseTests {
         let messageType = try! Message.RowDescription(buffer: &buffer)
 
         // Assert
-        XCTAssertEqual(messageType.identifier, .rowDescription)
+        XCTAssertEqual(messageType.identifier, .backend(.rowDescription))
         XCTAssertEqual(messageType.columns, columns)
     }
 }

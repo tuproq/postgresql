@@ -1,6 +1,6 @@
 extension Message {
     struct Authentication: MessageType {
-        let identifier: Identifier = .authentication
+        let identifier: Identifier = .backend(.authentication)
         let kind: Kind
 
         /// Associated-value enum carrying all data the handler needs to respond.

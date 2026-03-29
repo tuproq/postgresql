@@ -11,7 +11,7 @@ final class MessageParseTests: BaseTests {
         let messageType = Message.Parse(statementName: statementName, query: query, parameterTypes: parameterTypes)
 
         // Assert
-        XCTAssertEqual(messageType.identifier, .parse)
+        XCTAssertEqual(messageType.identifier, .frontend(.parse))
         XCTAssertEqual(messageType.statementName, statementName)
         XCTAssertEqual(messageType.query, query)
         XCTAssertEqual(messageType.parameterTypes, parameterTypes)

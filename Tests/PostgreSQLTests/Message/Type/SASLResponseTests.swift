@@ -13,7 +13,7 @@ final class MessageSASLResponseTests: BaseTests {
         let messageType = Message.SASLResponse(buffer: &buffer)
 
         // Assert
-        XCTAssertEqual(messageType.identifier, .saslResponse)
+        XCTAssertEqual(messageType.identifier, .frontend(.saslResponse))
         XCTAssertEqual(messageType.data, data)
     }
 

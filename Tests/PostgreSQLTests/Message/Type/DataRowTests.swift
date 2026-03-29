@@ -22,7 +22,7 @@ final class MessageDataRowTests: BaseTests {
 
         // Act/Assert
         XCTAssertNoThrow(messageType = try Message.DataRow(buffer: &buffer))
-        XCTAssertEqual(messageType?.identifier, .dataRow)
+        XCTAssertEqual(messageType?.identifier, .backend(.dataRow))
         XCTAssertEqual(messageType?.values.count, 2)
     }
 }

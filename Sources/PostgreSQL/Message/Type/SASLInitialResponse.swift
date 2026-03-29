@@ -8,7 +8,7 @@ extension Message {
     ///   Int32    – byte length of the initial client response (-1 if absent)
     ///   Byten    – initial client response (not null-terminated)
     struct SASLInitialResponse: MessageType {
-        let identifier: Identifier = .saslInitialResponse
+        let identifier: Identifier = .frontend(.saslInitialResponse)
         let mechanism: String
         let initialResponse: [UInt8]
 

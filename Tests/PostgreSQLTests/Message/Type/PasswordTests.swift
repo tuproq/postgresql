@@ -9,7 +9,7 @@ final class MessagePasswordTests: BaseTests {
         let messageType = Message.Password(password)
 
         // Assert
-        XCTAssertEqual(messageType.identifier, .password)
+        XCTAssertEqual(messageType.identifier, .frontend(.password))
         XCTAssertEqual(messageType.value, password)
     }
 

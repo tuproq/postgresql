@@ -7,17 +7,23 @@ final class MessageExecuteTests: BaseTests {
 
     func testInit() {
         // Act
-        let messageType = Message.Execute(portalName: portalName, maxRows: maxRows)
+        let messageType = Message.Execute(
+            portalName: portalName,
+            maxRows: maxRows
+        )
 
         // Assert
-        XCTAssertEqual(messageType.identifier, .execute)
+        XCTAssertEqual(messageType.identifier, .frontend(.execute))
         XCTAssertEqual(messageType.portalName, portalName)
         XCTAssertEqual(messageType.maxRows, maxRows)
     }
 
     func testEncode() {
         // Arrange
-        let messageType = Message.Execute(portalName: portalName, maxRows: maxRows)
+        let messageType = Message.Execute(
+            portalName: portalName,
+            maxRows: maxRows
+        )
         var buffer = ByteBuffer()
 
         var expectedBuffer = ByteBuffer()

@@ -57,7 +57,7 @@ final class MessageNotificationResponseTests: BaseTests {
         let messageType = try! Message.NotificationResponse(buffer: &buffer)
 
         // Assert
-        XCTAssertEqual(messageType.identifier, .notificationResponse)
+        XCTAssertEqual(messageType.identifier, .backend(.notificationResponse))
         XCTAssertEqual(messageType.processID, processID)
         XCTAssertEqual(messageType.channel, channel)
         XCTAssertEqual(messageType.payload, payload)

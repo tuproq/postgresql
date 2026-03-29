@@ -7,10 +7,13 @@ final class MessageDescribeTests: BaseTests {
 
     func testInit() {
         // Act
-        let messageType = Message.Describe(command: command, name: portalOrStatementName)
+        let messageType = Message.Describe(
+            command: command,
+            name: portalOrStatementName
+        )
 
         // Assert
-        XCTAssertEqual(messageType.identifier, .describe)
+        XCTAssertEqual(messageType.identifier, .frontend(.describe))
         XCTAssertEqual(messageType.command, command)
         XCTAssertEqual(messageType.name, portalOrStatementName)
     }
@@ -23,7 +26,10 @@ final class MessageDescribeTests: BaseTests {
 
     func testEncode() {
         // Arrange
-        let messageType = Message.Describe(command: command, name: portalOrStatementName)
+        let messageType = Message.Describe(
+            command: command,
+            name: portalOrStatementName
+        )
         var buffer = ByteBuffer()
 
         var expectedBuffer = ByteBuffer()

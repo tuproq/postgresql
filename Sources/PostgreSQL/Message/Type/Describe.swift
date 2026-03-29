@@ -1,6 +1,6 @@
 extension Message {
     struct Describe: MessageType {
-        let identifier: Identifier = .describe
+        let identifier: Identifier = .frontend(.describe)
         let command: Command
         let name: String
 

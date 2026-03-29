@@ -7,10 +7,13 @@ final class MessageCloseTests: BaseTests {
 
     func testInit() {
         // Act
-        let messageType = Message.Close(command: command, name: portalOrStatementName)
+        let messageType = Message.Close(
+            command: command,
+            name: portalOrStatementName
+        )
 
         // Assert
-        XCTAssertEqual(messageType.identifier, .close)
+        XCTAssertEqual(messageType.identifier, .frontend(.close))
         XCTAssertEqual(messageType.command, command)
         XCTAssertEqual(messageType.name, portalOrStatementName)
     }
@@ -23,7 +26,10 @@ final class MessageCloseTests: BaseTests {
 
     func testEncode() {
         // Arrange
-        let messageType = Message.Close(command: command, name: portalOrStatementName)
+        let messageType = Message.Close(
+            command: command,
+            name: portalOrStatementName
+        )
         var buffer = ByteBuffer()
 
         var expectedBuffer = ByteBuffer()

@@ -1,6 +1,6 @@
 extension Message {
     struct SimpleQuery: MessageType {
-        let identifier: Identifier = .simpleQuery
+        let identifier: Identifier = .frontend(.simpleQuery)
         var string: String
 
         init(_ string: String) {

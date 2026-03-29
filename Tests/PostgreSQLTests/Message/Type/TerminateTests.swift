@@ -7,6 +7,6 @@ final class MessageTerminateTests: BaseTests {
         let messageType = Message.Terminate()
 
         // Assert
-        XCTAssertEqual(messageType.identifier, .terminate)
+        XCTAssertEqual(messageType.identifier, .frontend(.terminate))
     }
 }

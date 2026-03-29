@@ -6,7 +6,9 @@ final class MessageEncoder: MessageToByteEncoder {
     func encode(data: Message, out: inout ByteBuffer) throws {
         var message = data
 
-        if message.identifier != .sslRequest && message.identifier != .startupMessage {
+        // SSLRequest and StartupMessage have no type byte — they are identified
+        // solely by their length prefix, so we skip writing the identifier byte.
+        if message.identifier != .frontend(.sslRequest) && message.identifier != .frontend(.startupMessage) {
             out.writeInteger(message.identifier.value)
         }
 

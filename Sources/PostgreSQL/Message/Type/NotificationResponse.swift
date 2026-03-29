@@ -1,6 +1,6 @@
 extension Message {
     struct NotificationResponse: MessageType {
-        let identifier: Identifier = .notificationResponse
+        let identifier: Identifier = .backend(.notificationResponse)
         let processID: Int32
         let channel: String
         let payload: String

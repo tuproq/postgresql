@@ -1,6 +1,6 @@
 extension Message {
     struct ErrorResponse: MessageType {
-        let identifier: Identifier = .errorResponse
+        let identifier: Identifier = .backend(.errorResponse)
         var fields = [Field: String]()
 
         init(buffer: inout ByteBuffer) throws {

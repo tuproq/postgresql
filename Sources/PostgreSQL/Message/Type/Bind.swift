@@ -1,6 +1,6 @@
 extension Message {
     struct Bind: MessageType {
-        let identifier: Identifier = .bind
+        let identifier: Identifier = .frontend(.bind)
         let portalName: String
         let statementName: String
         let parameterDataFormats: [DataFormat]

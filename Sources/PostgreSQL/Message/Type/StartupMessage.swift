@@ -1,6 +1,6 @@
 extension Message {
     struct StartupMessage: MessageType {
-        let identifier: Identifier = .startupMessage
+        let identifier: Identifier = .frontend(.startupMessage)
         var protocolVersion: Int32
         var user: String
         var database: String

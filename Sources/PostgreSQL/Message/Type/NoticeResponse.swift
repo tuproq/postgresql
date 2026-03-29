@@ -1,6 +1,6 @@
 extension Message {
     struct NoticeResponse: MessageType {
-        let identifier: Identifier = .noticeResponse
+        let identifier: Identifier = .backend(.noticeResponse)
         var fields = [Field: String]()
 
         init(buffer: inout ByteBuffer) throws {

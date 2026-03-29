@@ -39,7 +39,7 @@ final class MessageParameterStatusTests: BaseTests {
         let messageType = try! Message.ParameterStatus(buffer: &buffer)
 
         // Assert
-        XCTAssertEqual(messageType.identifier, .parameterStatus)
+        XCTAssertEqual(messageType.identifier, .backend(.parameterStatus))
         XCTAssertEqual(messageType.name, name)
         XCTAssertEqual(messageType.value, value)
     }

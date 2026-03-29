@@ -1,6 +1,6 @@
 extension Message {
     struct Close: MessageType {
-        let identifier: Identifier = .close
+        let identifier: Identifier = .frontend(.close)
         let command: Command
         let name: String
 

@@ -39,7 +39,7 @@ public final class PostgreSQL {
         if configuration.requiresTLS {
             let message = try await sslRequest()
 
-            if message.identifier == .sslSupported {
+            if message.identifier == .backend(.sslSupported) {
                 // TODO: implement SSL handshake
             } else {
                 try await connect()
@@ -172,7 +172,7 @@ extension PostgreSQL {
             type.encode(into: &buffer)
             let message = Message(
                 identifier: type.identifier,
-                source: .frontend,
+                type: .frontend,
                 buffer: buffer
             )
             messages.append(message)

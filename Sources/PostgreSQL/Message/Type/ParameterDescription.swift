@@ -1,6 +1,6 @@
 extension Message {
     struct ParameterDescription: MessageType {
-        let identifier: Identifier = .parameterDescription
+        let identifier: Identifier = .backend(.parameterDescription)
         let dataTypeIDs: [DataType]
 
         init(buffer: inout ByteBuffer) throws {
