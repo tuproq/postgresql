@@ -27,13 +27,11 @@ extension Float: PostgreSQLCodable {
     }
 
     public func encode(into buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws {
-        if type == .float4 || type == .float8 {
-            switch format {
-            case .binary: buffer.writeFloat(self)
-            case .text: buffer.writeString(String(self))
-            }
-        } else {
-            throw postgreSQLError(.invalidDataType(type))
+        switch (format, type) {
+        case (.binary, .float4): buffer.writeFloat(self)
+        case (.binary, .float8): buffer.writeDouble(Double(self))
+        case (.text, .float4), (.text, .float8): buffer.writeString(String(self))
+        default: throw postgreSQLError(.invalidDataType(type))
         }
     }
 }

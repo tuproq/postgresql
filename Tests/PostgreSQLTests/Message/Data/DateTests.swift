@@ -30,7 +30,8 @@ final class DateTests: BaseTests {
 
     func testInitWithValidValues() {
         // Arrange
-        let calendar = Calendar.current
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
         let value = Date()
         let type: DataType = .date
         var expectedValue: Date?
