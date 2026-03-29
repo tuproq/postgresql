@@ -4,7 +4,7 @@ extension Message {
         let values: [ByteBuffer?]
 
         init(buffer: inout ByteBuffer) throws {
-            guard let values = buffer.readArray(as: ByteBuffer?.self, { buffer in
+            guard let values = try buffer.readArray(as: ByteBuffer?.self, { buffer in
                 buffer.readBytes()
             }) else {
                 throw postgreSQLError(.cantParseDataRowValues)

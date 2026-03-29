@@ -2,8 +2,10 @@ import Foundation
 import enum NIOCore.Endianness
 
 extension ByteBuffer {
-    mutating func readArray<T>(as type: T.Type, _ handler: (inout ByteBuffer) throws -> (T)) rethrows -> [T]? {
-        guard let count: Int = readInteger(as: Int16.self).flatMap(numericCast) else { return nil }
+    mutating func readArray<T>(as type: T.Type, _ handler: (inout ByteBuffer) throws -> (T)) throws -> [T]? {
+        guard let rawCount = readInteger(as: Int16.self) else { return nil }
+        guard rawCount >= 0 else { throw postgreSQLError(.invalidData(format: .binary, type: .null)) }
+        let count = Int(rawCount)
         var array = [T]()
         array.reserveCapacity(count)
 
