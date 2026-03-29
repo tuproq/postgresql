@@ -1,6 +1,6 @@
 public typealias PostgreSQLCodable = PostgreSQLDecodable & PostgreSQLEncodable
 
-public protocol PostgreSQLDecodable: Decodable {
+public protocol PostgreSQLDecodable {
     init(buffer: inout ByteBuffer, format: DataFormat, type: DataType) throws
 }
 
@@ -10,7 +10,7 @@ extension PostgreSQLDecodable {
     }
 }
 
-public protocol PostgreSQLEncodable: Encodable {
+public protocol PostgreSQLEncodable {
     static var psqlFormat: DataFormat { get }
     static var psqlType: DataType { get }
 
