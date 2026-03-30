@@ -112,7 +112,7 @@ public final class PostgreSQL {
 
             return nil
         }
-        let command: Message.Command = name.isEmpty ? .portal : .statement
+        let closeCommand: Message.Command = name.isEmpty ? .portal : .statement
         let response = try await send(
             types: [
                 Message.Parse(
@@ -126,9 +126,9 @@ public final class PostgreSQL {
                     parameters: parameters,
                     resultDataFormats: [.binary]
                 ),
-                Message.Describe(command: command),
+                Message.Describe(command: .portal),
                 Message.Execute(),
-                Message.Close(command: command, name: name),
+                Message.Close(command: closeCommand, name: name),
                 Message.Sync()
             ]
         )
