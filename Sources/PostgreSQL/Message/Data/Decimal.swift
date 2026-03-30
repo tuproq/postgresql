@@ -41,7 +41,7 @@ extension Decimal: PostgreSQLCodable {
             for digit in numeric.digits {
                 buffer.writeInteger(digit)
             }
-        case (.text, .numeric): buffer.writeString(description)
+        case (.text, .numeric): buffer.writeString(Numeric(decimal: self).string)
         default: throw postgreSQLError(.invalidDataType(type))
         }
     }
