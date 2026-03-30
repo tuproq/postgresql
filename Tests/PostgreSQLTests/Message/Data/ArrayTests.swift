@@ -88,4 +88,128 @@ final class ArrayTests: BaseTests {
         XCTAssertNoThrow(expectedValues = try Array<T>(buffer: &buffer, format: format))
         XCTAssertEqual(expectedValues, values)
     }
+
+    // MARK: Text-format rejection
+
+    func testInitWithTextFormatThrows() {
+        // Array only supports binary format; text format must throw.
+        var buffer = ByteBuffer()
+        try? [Int32(1), Int32(2)].encode(into: &buffer, format: .binary)
+        // Re-encode in text format is not supported; just pass a non-empty buffer
+        // with format: .text and confirm it throws.
+        XCTAssertThrowsError(try Array<Int32>(buffer: &buffer, format: .text)) { error in
+            XCTAssertNotNil(error as? PostgreSQLError)
+        }
+    }
+
+    func testEncodeWithTextFormatThrows() {
+        let values = [Int32(1), Int32(2)]
+        var buffer = ByteBuffer()
+
+        XCTAssertThrowsError(try values.encode(into: &buffer, format: .text, type: .int4Array)) { error in
+            XCTAssertNotNil(error as? PostgreSQLError)
+        }
+    }
+
+    // MARK: Invalid data — decode failures
+
+    func testInitWithTruncatedHeader() {
+        // Arrange — write only 1 Int32 instead of the required 3
+        var buffer = ByteBuffer()
+        buffer.writeInteger(Int32(1))  // isNotEmpty, but missing format and elementType
+
+        XCTAssertThrowsError(try Array<Int32>(buffer: &buffer, format: .binary)) { error in
+            XCTAssertNotNil(error as? PostgreSQLError)
+        }
+    }
+
+    func testInitWithInvalidIsNotEmptyFlag() {
+        // Arrange — isNotEmpty must be 0 or 1; 2 is invalid
+        var buffer = ByteBuffer()
+        buffer.writeInteger(Int32(2))      // invalid flag
+        buffer.writeInteger(Int32(DataFormat.binary.rawValue))
+        buffer.writeInteger(DataType.int4Array.rawValue)
+
+        XCTAssertThrowsError(try Array<Int32>(buffer: &buffer, format: .binary)) { error in
+            XCTAssertNotNil(error as? PostgreSQLError)
+        }
+    }
+
+    func testInitWithFormatMismatch() {
+        // Arrange — binary payload but elementFormatValue says text (1)
+        var buffer = ByteBuffer()
+        buffer.writeInteger(Int32(1))       // isNotEmpty
+        buffer.writeInteger(Int32(1))       // format = text (mismatch with .binary)
+        buffer.writeInteger(DataType.int4Array.rawValue)
+
+        XCTAssertThrowsError(try Array<Int32>(buffer: &buffer, format: .binary)) { error in
+            XCTAssertNotNil(error as? PostgreSQLError)
+        }
+    }
+
+    func testInitWithInvalidElementDataType() {
+        // Arrange — 0xFFFFFFFF is not a valid DataType rawValue
+        var buffer = ByteBuffer()
+        buffer.writeInteger(Int32(1))       // isNotEmpty
+        buffer.writeInteger(Int32(DataFormat.binary.rawValue))
+        buffer.writeInteger(Int32(bitPattern: 0xFFFFFFFF))  // unknown DataType
+
+        XCTAssertThrowsError(try Array<Int32>(buffer: &buffer, format: .binary)) { error in
+            XCTAssertNotNil(error as? PostgreSQLError)
+        }
+    }
+
+    func testInitWithMissingElementData() {
+        // Arrange — header says 2 elements but no element data follows
+        var buffer = ByteBuffer()
+        buffer.writeInteger(Int32(1))       // isNotEmpty
+        buffer.writeInteger(Int32(DataFormat.binary.rawValue))
+        buffer.writeInteger(DataType.int4Array.rawValue)
+        buffer.writeInteger(Int32(2))       // elementsCount = 2
+        buffer.writeInteger(Int32(1))       // dimensions = 1
+        // No element payloads follow — truncated
+
+        XCTAssertThrowsError(try Array<Int32>(buffer: &buffer, format: .binary)) { error in
+            XCTAssertNotNil(error as? PostgreSQLError)
+        }
+    }
+
+    func testInitWithInvalidDimensions() {
+        // Arrange — multi-dimensional array (dimensions != 1) is unsupported
+        var buffer = ByteBuffer()
+        buffer.writeInteger(Int32(1))       // isNotEmpty
+        buffer.writeInteger(Int32(DataFormat.binary.rawValue))
+        buffer.writeInteger(DataType.int4Array.rawValue)
+        buffer.writeInteger(Int32(1))       // elementsCount = 1
+        buffer.writeInteger(Int32(2))       // dimensions = 2 (unsupported)
+
+        XCTAssertThrowsError(try Array<Int32>(buffer: &buffer, format: .binary)) { error in
+            XCTAssertNotNil(error as? PostgreSQLError)
+        }
+    }
+
+    func testInitWithZeroElementsCount() {
+        // Arrange — isNotEmpty == 1 but elementsCount == 0 is invalid
+        var buffer = ByteBuffer()
+        buffer.writeInteger(Int32(1))       // isNotEmpty
+        buffer.writeInteger(Int32(DataFormat.binary.rawValue))
+        buffer.writeInteger(DataType.int4Array.rawValue)
+        buffer.writeInteger(Int32(0))       // elementsCount = 0 — must be > 0 per spec
+        buffer.writeInteger(Int32(1))       // dimensions
+
+        XCTAssertThrowsError(try Array<Int32>(buffer: &buffer, format: .binary)) { error in
+            XCTAssertNotNil(error as? PostgreSQLError)
+        }
+    }
+
+    func testInitEmptyArrayRoundTrip() {
+        // Encode an empty array and confirm it decodes back as empty
+        let values: [Int32] = []
+        var buffer = ByteBuffer()
+        XCTAssertNoThrow(try values.encode(into: &buffer, format: .binary, type: .int4Array))
+
+        var decoded: [Int32]?
+        XCTAssertNoThrow(decoded = try Array<Int32>(buffer: &buffer, format: .binary, type: .int4Array))
+        XCTAssertEqual(decoded, [])
+    }
 }

@@ -5,10 +5,7 @@ import PackageDescription
 let package = Package(
     name: "tuproq-postgresql",
     platforms: [
-        .iOS(.v13),
-        .macOS(.v12),
-        .tvOS(.v13),
-        .watchOS(.v6)
+        .macOS(.v12)
     ],
     products: [
         .library(name: "PostgreSQL", targets: ["PostgreSQL"])

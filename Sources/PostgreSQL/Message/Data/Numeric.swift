@@ -87,7 +87,11 @@ struct Numeric {
     }
 
     init(decimal: Decimal) {
-        self.init(string: decimal.description)
+        let string = decimal.description.replacingOccurrences(
+            of: ",",
+            with: "."
+        )
+        self.init(string: string)
     }
 
     private init(string: String) {
