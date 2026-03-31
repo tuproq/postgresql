@@ -64,7 +64,11 @@ extension Date: PostgreSQLCodable {
             var date = Self.makeFormatter(dateFormat: dateFormat).date(from: dateString)
 
             if type == .timestamptz, date == nil {
-                date = Self.makeFormatter(dateFormat: "yyyy-MM-dd HH:mm:ss.SSSxxxxx").date(from: dateString)
+                // PostgreSQL sends timestamptz with up to 6 fractional-second digits
+                // (microseconds), e.g. "2024-06-15 10:30:00.123456+00".  The 3-digit
+                // SSS pattern only covers millisecond precision; use SSSSSS to match
+                // the full microsecond range that PostgreSQL actually emits.
+                date = Self.makeFormatter(dateFormat: "yyyy-MM-dd HH:mm:ss.SSSSSSxxxxx").date(from: dateString)
             }
 
             // PostgreSQL text timestamps often include sub-second precision (e.g. "2024-01-15 12:34:56.789012").

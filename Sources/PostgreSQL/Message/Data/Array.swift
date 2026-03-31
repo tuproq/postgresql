@@ -68,12 +68,18 @@ extension Array: PostgreSQLCodable where Element: PostgreSQLCodable {
             throw postgreSQLError(.decoding(type: elementType))
         }
 
-        guard let (elementsCount, dimensions) = buffer.readMultipleIntegers(as: (Int32, Int32).self),
-              elementsCount > 0,
-              dimensions == 1
+        // Each dimension is described by a (size, lbound) pair.  PostgreSQL arrays
+        // are 1-based by default (lbound = 1) but can be declared with any lower
+        // bound (e.g. '[0:2]={1,2,3}'::int4[]).  We only support 1-dimensional arrays
+        // (ndim == 1, enforced above), so we read exactly one (size, lbound) pair.
+        // lbound is stored for completeness but not validated — restricting to lbound==1
+        // would silently reject valid non-default-lower-bound arrays.
+        guard let (elementsCount, _lbound) = buffer.readMultipleIntegers(as: (Int32, Int32).self),
+              elementsCount > 0
         else {
             throw postgreSQLError(.decoding(type: elementType))
         }
+        _ = _lbound  // lower bound accepted but unused; only 1D access by index is exposed
 
         var result = Array<Element>()
         result.reserveCapacity(Int(elementsCount))
@@ -102,7 +108,7 @@ extension Array: PostgreSQLCodable where Element: PostgreSQLCodable {
         let elementType = String(describing: Element.Type.self)
 
         guard case .binary = format else {
-            throw postgreSQLError(.decoding(type: elementType)) // binary format only
+            throw postgreSQLError(.encoding(type: elementType)) // binary format only
         }
 
         let isNotEmpty: Int32 = !isEmpty ? 1 : 0
@@ -114,9 +120,9 @@ extension Array: PostgreSQLCodable where Element: PostgreSQLCodable {
         guard !isEmpty else { return }
 
         let size = Int32(count)
-        let dimensions: Int32 = 1 // 1-dimensional arrays only
+        let lbound: Int32 = 1 // lower bound: 1-based (PostgreSQL default)
         buffer.writeInteger(size)
-        buffer.writeInteger(dimensions)
+        buffer.writeInteger(lbound)
 
         for element in self {
             try element.encodeRaw(into: &buffer, format: format, type: elementDataType)

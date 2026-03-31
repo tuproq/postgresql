@@ -34,7 +34,11 @@ final class RequestHandler: ChannelDuplexHandler {
 
     func channelRead(context: ChannelHandlerContext, data: NIOAny) {
         var message = unwrapInboundIn(data)
-        var buffer = message.buffer
+        // `var buffer` is declared locally inside each switch case that reads from it
+        // rather than up here, to avoid an unnecessary CoW reference-count increment on
+        // every inbound message.  The two highest-traffic cases (.rowDescription and
+        // .dataRow) access `message.buffer` directly and would otherwise pay for a copy
+        // they never use.
 
         if isAwaitingSSLResponse {
             isAwaitingSSLResponse = false
@@ -48,6 +52,7 @@ final class RequestHandler: ChannelDuplexHandler {
         switch backendIdentifier {
         case .authentication:
             do {
+                var buffer = message.buffer
                 let auth = try Message.Authentication(buffer: &buffer)
                 switch auth.kind {
                 case .ok: break
@@ -127,6 +132,7 @@ final class RequestHandler: ChannelDuplexHandler {
             }
         case .parameterStatus:
             do {
+                var buffer = message.buffer
                 let parameterStatus = try Message.ParameterStatus(buffer: &buffer)
                 connection.updateServerParameter(name: parameterStatus.name, value: parameterStatus.value)
             } catch {
@@ -134,6 +140,7 @@ final class RequestHandler: ChannelDuplexHandler {
             }
         case .backendKeyData:
             do {
+                var buffer = message.buffer
                 backendKeyData = try Message.BackendKeyData(buffer: &buffer)
             } catch {
                 connection.logger.error("\(error)")
@@ -174,6 +181,7 @@ final class RequestHandler: ChannelDuplexHandler {
                 request?.promise.fail(error)
             } else {
                 do {
+                    var buffer = message.buffer
                     let readyForQuery = try Message.ReadyForQuery(buffer: &buffer)
 
                     switch readyForQuery.status {
@@ -204,6 +212,7 @@ final class RequestHandler: ChannelDuplexHandler {
             dispatchNextRequest(context: context)
         case .errorResponse:
             do {
+                var buffer = message.buffer
                 let errorResponse = try Message.ErrorResponse(buffer: &buffer)
                 let message = errorResponse.fields[.message] ?? "An unknown error."
                 let error = PostgreSQLError(message)
@@ -213,6 +222,7 @@ final class RequestHandler: ChannelDuplexHandler {
             }
         case .noticeResponse:
             do {
+                var buffer = message.buffer
                 let noticeResponse = try Message.NoticeResponse(buffer: &buffer)
                 let message = noticeResponse.fields[.message] ?? "An unknown warning."
                 connection.logger.warning("\(message)")
@@ -408,7 +418,17 @@ final class RequestHandler: ChannelDuplexHandler {
         }
 
         let salt = [UInt8](saltData)
-        let passwordBytes = Array(state.password.utf8)
+
+        // RFC 5802 §5.1 requires that the password be normalized via the SASLprep
+        // profile of Stringprep (RFC 4013) before key derivation.  A full SASLprep
+        // implementation would additionally map specific Unicode code points (e.g.
+        // non-ASCII spaces → U+0020) and prohibit prohibited characters.  As a
+        // best-effort approximation we apply NFKC normalization (Unicode compatibility
+        // decomposition followed by canonical composition), which covers the most
+        // common real-world cases and matches what PostgreSQL's server-side verifier
+        // uses.  Passwords consisting entirely of printable ASCII are unaffected.
+        let normalizedPassword = state.password.precomposedStringWithCompatibilityMapping
+        let passwordBytes = Array(normalizedPassword.utf8)
 
         // --- Derive keys ---
         let saltedPasswordBytes = pbkdf2SHA256(

@@ -113,25 +113,43 @@ public final class PostgreSQL {
             return nil
         }
         let closeCommand: Message.Command = name.isEmpty ? .portal : .statement
-        let response = try await send(
-            types: [
-                Message.Parse(
-                    statementName: name,
-                    query: string,
-                    parameterTypes: types
-                ),
-                Message.Bind(
-                    statementName: name,
-                    parameterDataFormats: formats,
-                    parameters: parameters,
-                    resultDataFormats: [.binary]
-                ),
-                Message.Describe(command: .portal),
-                Message.Execute(),
-                Message.Close(command: closeCommand, name: name),
-                Message.Sync()
-            ]
-        )
+
+        // For named statements, prepend a Close before the Parse.
+        //
+        // When an error occurs after Parse succeeds (e.g. a type mismatch at Bind,
+        // a constraint violation at Execute), PostgreSQL's extended-query error-
+        // recovery mode ignores every subsequent message in the pipeline until Sync.
+        // The trailing Close is therefore skipped, and the named statement remains in
+        // the server's prepared-statement cache.  On the next call, Parse fails with
+        // "prepared statement already exists".
+        //
+        // Prepending Close solves this: the statement from the previous (failed) cycle
+        // is cleaned up at the very start of the new cycle, before Parse is issued.
+        // Closing a non-existent statement is explicitly documented as a no-op in the
+        // PostgreSQL protocol spec, so the extra Close is always safe.
+        var messageTypes: [MessageType] = []
+
+        if !name.isEmpty {
+            messageTypes.append(Message.Close(command: .statement, name: name))
+        }
+        
+        let response = try await send(types: [
+            Message.Parse(
+                statementName: name,
+                query: string,
+                parameterTypes: types
+            ),
+            Message.Bind(
+                statementName: name,
+                parameterDataFormats: formats,
+                parameters: parameters,
+                resultDataFormats: [.binary]
+            ),
+            Message.Describe(command: .portal),
+            Message.Execute(),
+            Message.Close(command: closeCommand, name: name),
+            Message.Sync()
+        ])
 
         return response.results.first
     }

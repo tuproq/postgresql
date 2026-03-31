@@ -29,6 +29,7 @@ public struct PostgreSQLError: LocalizedError {
 
 enum ErrorType: CustomStringConvertible {
     case decoding(type: String)
+    case encoding(type: String)
     case invalidData(format: DataFormat, type: DataType)
     case invalidDataType(_ type: DataType)
     case unknown
@@ -38,6 +39,7 @@ enum ErrorType: CustomStringConvertible {
     var message: String {
         switch self {
         case .decoding(let type): return "Can't decode the `\(type)`."
+        case .encoding(let type): return "Can't encode the `\(type)`."
         case .invalidData(let format, let type):
             return "An invalid data type `\(type)` for data format `\(format)`."
         case .invalidDataType(let type): return "An invalid data type `\(type)`."
