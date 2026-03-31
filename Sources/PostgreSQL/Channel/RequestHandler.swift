@@ -216,6 +216,20 @@ final class RequestHandler: ChannelDuplexHandler {
         }
     }
 
+    func channelInactive(context: ChannelHandlerContext) {
+        if let pendingRequest = request {
+            let error: Error = firstError
+                ?? PostgreSQLError("The connection was closed before a response was received.")
+            pendingRequest.promise.fail(error)
+            request = nil
+            firstError = nil
+            scramState = nil
+            expectedSCRAMServerSignature = nil
+        }
+
+        context.fireChannelInactive()
+    }
+
     func write(context: ChannelHandlerContext, data: NIOAny, promise: EventLoopPromise<Void>?) {
         let request = unwrapOutboundIn(data)
         self.request = request
