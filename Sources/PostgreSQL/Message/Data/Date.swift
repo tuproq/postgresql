@@ -108,7 +108,7 @@ extension Date: PostgreSQLCodable {
             switch type {
             case .date: dateFormat = "yyyy-MM-dd"
             case .timestamp: dateFormat = "yyyy-MM-dd HH:mm:ss"
-            case .timestamptz: dateFormat = "yyyy-MM-dd HH:mm:ss.SSSxxxxx"
+            case .timestamptz: dateFormat = "yyyy-MM-dd HH:mm:ss.SSSSSSxxxxx"
             default: throw postgreSQLError(.invalidDataType(type))
             }
 

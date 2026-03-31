@@ -1,9 +1,9 @@
 import Foundation
 
 struct Numeric {
-    let chunkSize = 4
-    let negativeSign: Int16 = 0x4000
-    let zero = "0"
+    static let chunkSize = 4
+    static let negativeSign: Int16 = 0x4000
+    static let zero = "0"
 
     var ndigits: Int16
     var weight: Int16
@@ -14,7 +14,7 @@ struct Numeric {
     var decimal: Decimal? { .init(string: string, locale: .init(identifier: "en_US_POSIX")) }
 
     var string: String {
-        guard ndigits > 0 else { return zero }
+        guard ndigits > 0 else { return Self.zero }
         var integer = ""
         var fraction = ""
 
@@ -26,10 +26,10 @@ struct Numeric {
                 if offset == 0 {
                     integer += characterString
                 } else {
-                    integer += String(repeating: zero, count: chunkSize - characterString.count) + characterString
+                    integer += String(repeating: Self.zero, count: Self.chunkSize - characterString.count) + characterString
                 }
             } else {
-                fraction += String(repeating: zero, count: chunkSize - characterString.count) + characterString
+                fraction += String(repeating: Self.zero, count: Self.chunkSize - characterString.count) + characterString
             }
         }
 
@@ -44,15 +44,15 @@ struct Numeric {
         if offset > 0 {
             for _ in 0..<offset {
                 if weight > 0 {
-                    integer = integer + String(repeating: zero, count: chunkSize)
+                    integer = integer + String(repeating: Self.zero, count: Self.chunkSize)
                 } else {
-                    fraction = String(repeating: zero, count: chunkSize) + fraction
+                    fraction = String(repeating: Self.zero, count: Self.chunkSize) + fraction
                 }
             }
         }
 
         if integer.isEmpty {
-            integer = zero
+            integer = Self.zero
         }
 
         if fraction.count > dscale {
@@ -62,7 +62,7 @@ struct Numeric {
 
         let numeric = fraction.isEmpty ? integer : "\(integer).\(fraction)"
 
-        return (sign & negativeSign) == 0 ? numeric : "-\(numeric)"
+        return (sign & Self.negativeSign) == 0 ? numeric : "-\(numeric)"
     }
 
     init?(buffer: inout ByteBuffer) {
@@ -70,6 +70,11 @@ struct Numeric {
               let weight = buffer.readInteger(as: Int16.self),
               let sign = buffer.readInteger(as: Int16.self),
               let dscale = buffer.readInteger(as: Int16.self) else { return nil }
+
+        // A negative ndigits is a malformed server response — reject it rather
+        // than creating an invalid CountableRange (0..<n where n<0 traps in debug).
+        guard ndigits >= 0 else { return nil }
+
         self.ndigits = ndigits
         self.weight = weight
         self.sign = sign
@@ -121,7 +126,7 @@ struct Numeric {
         var encodedDigits = [Int16]()
         var weight = -1
 
-        for chunk in integer.chunkFromEnd(by: chunkSize) {
+        for chunk in integer.chunkFromEnd(by: Self.chunkSize) {
             weight += 1
             encodedDigits.append(Int16(chunk) ?? 0)
         }
@@ -129,17 +134,33 @@ struct Numeric {
         var dscale = 0
 
         if let fraction = fraction {
-            for chunk in fraction.chunkFromStart(by: chunkSize) {
+            for chunk in fraction.chunkFromStart(by: Self.chunkSize) {
                 dscale += chunk.count
-                let paddedChunk = chunk + String(repeating: zero, count: chunkSize - chunk.count)
+                let paddedChunk = chunk + String(repeating: Self.zero, count: Self.chunkSize - chunk.count)
                 encodedDigits.append(Int16(paddedChunk) ?? 0)
             }
         }
 
+        // Foundation.Decimal is limited to 38 significant digits, so these
+        // conversions are safe in practice.  The checked forms are used here
+        // to make the failure mode explicit should this code ever be called
+        // with values outside the Decimal range (e.g. from a raw string path).
+        precondition(
+            encodedDigits.count <= Int16.max,
+            "Numeric digit count \(encodedDigits.count) exceeds Int16.max — value too large for PostgreSQL NUMERIC"
+        )
         ndigits = Int16(encodedDigits.count)
-        self.weight = numericCast(weight)
-        sign = isNegative ? negativeSign : 0
-        self.dscale = numericCast(dscale)
+        precondition(
+            weight >= Int16.min && weight <= Int16.max,
+            "Numeric weight \(weight) overflows Int16"
+        )
+        self.weight = Int16(weight)
+        sign = isNegative ? Self.negativeSign : 0
+        precondition(
+            dscale >= 0 && dscale <= Int16.max,
+            "Numeric dscale \(dscale) overflows Int16"
+        )
+        self.dscale = Int16(dscale)
         digits = encodedDigits
     }
 }
