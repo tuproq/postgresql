@@ -119,10 +119,19 @@ extension Message {
         static let readyForQuery: Self = .init(0x5A) // 'Z'
         /// RowDescription (B)
         static let rowDescription: Self = .init(0x54) // 'T'
-        /// SSL negotiation response: server supports SSL
-        static let sslSupported: Self = .init(0x53) // 'S'
-        /// SSL negotiation response: server does not support SSL
-        static let sslUnsupported: Self = .init(0x4E) // 'N'
+        /// SSL negotiation response: server supports SSL.
+        ///
+        /// The wire byte is 'S' (0x53), which collides with `parameterStatus`.
+        /// A synthetic value (0xFE) is used here so that the two identifiers are
+        /// distinct at the type level.  `MessageDecoder` detects the SSL response
+        /// by comparing the raw wire byte directly and then constructs this
+        /// synthetic identifier — it never reaches the normal message framing path.
+        static let sslSupported: Self = .init(0xFE)
+        /// SSL negotiation response: server does not support SSL.
+        ///
+        /// The wire byte is 'N' (0x4E), which collides with `noticeResponse`.
+        /// A synthetic value (0xFF) is used for the same reason as `sslSupported`.
+        static let sslUnsupported: Self = .init(0xFF)
 
         let value: UInt8
         var description: String { "\(Character(Unicode.Scalar(value)))" }

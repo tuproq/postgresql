@@ -57,8 +57,8 @@ final class MessageIdentifierTests: BaseTests {
             (0x73, .portalSuspended),
             (0x5A, .readyForQuery),
             (0x54, .rowDescription),
-            (0x53, .sslSupported),
-            (0x4E, .sslUnsupported)
+            (0xFE, .sslSupported),
+            (0xFF, .sslUnsupported)
         ]
 
         for (expectedByte, backendIdentifier) in cases {

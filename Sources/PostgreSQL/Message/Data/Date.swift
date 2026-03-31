@@ -67,6 +67,13 @@ extension Date: PostgreSQLCodable {
                 date = Self.makeFormatter(dateFormat: "yyyy-MM-dd HH:mm:ss.SSSxxxxx").date(from: dateString)
             }
 
+            // PostgreSQL text timestamps often include sub-second precision (e.g. "2024-01-15 12:34:56.789012").
+            // The primary format strings above omit fractional seconds, so retry with up to 6-digit
+            // fractional seconds when the initial parse fails.
+            if type == .timestamp, date == nil {
+                date = Self.makeFormatter(dateFormat: "yyyy-MM-dd HH:mm:ss.SSSSSS").date(from: dateString)
+            }
+
             guard let date = date else {
                 throw postgreSQLError(.invalidData(format: format, type: type))
             }
@@ -87,7 +94,7 @@ extension Date: PostgreSQLCodable {
                 buffer.writeInteger(days)
             } else if type == .timestamp || type == .timestamptz {
                 let seconds = timeIntervalSince(Self.startDate) * Self.microsecondsInSecond
-                buffer.writeInteger(Int64(seconds))
+                buffer.writeInteger(Int64(seconds.rounded()))
             } else {
                 throw postgreSQLError(.invalidDataType(type))
             }

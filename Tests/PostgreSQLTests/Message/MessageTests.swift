@@ -145,23 +145,32 @@ final class MessageTests: BaseTests {
             )
         }
 
-        // 0x53 collision: .parameterStatus appears before .sslSupported in the switch.
-        for identifier: Message.BackendIdentifier in [.parameterStatus, .sslSupported] {
-            let message = Message(identifier: .backend(identifier), type: .backend, buffer: ByteBuffer())
-            XCTAssertTrue(
-                message.description.contains("ParameterStatus"),
-                "Expected 'ParameterStatus' (first 0x53 case) in description, got: '\(message.description)'"
-            )
-        }
+        // .sslSupported and .sslUnsupported now carry synthetic byte values (0xFE / 0xFF)
+        // that don't collide with .parameterStatus (0x53) or .noticeResponse (0x4E), so
+        // each identifier gets its own description string.
+        let sslSupportedMessage = Message(identifier: .backend(.sslSupported), type: .backend, buffer: ByteBuffer())
+        XCTAssertTrue(
+            sslSupportedMessage.description.contains("SSLSupported"),
+            "Expected 'SSLSupported' in description, got: '\(sslSupportedMessage.description)'"
+        )
 
-        // 0x4E collision: .noticeResponse appears before .sslUnsupported in the switch.
-        for identifier: Message.BackendIdentifier in [.noticeResponse, .sslUnsupported] {
-            let message = Message(identifier: .backend(identifier), type: .backend, buffer: ByteBuffer())
-            XCTAssertTrue(
-                message.description.contains("NoticeResponse"),
-                "Expected 'NoticeResponse' (first 0x4E case) in description, got: '\(message.description)'"
-            )
-        }
+        let sslUnsupportedMessage = Message(identifier: .backend(.sslUnsupported), type: .backend, buffer: ByteBuffer())
+        XCTAssertTrue(
+            sslUnsupportedMessage.description.contains("SSLUnsupported"),
+            "Expected 'SSLUnsupported' in description, got: '\(sslUnsupportedMessage.description)'"
+        )
+
+        let parameterStatusMessage = Message(identifier: .backend(.parameterStatus), type: .backend, buffer: ByteBuffer())
+        XCTAssertTrue(
+            parameterStatusMessage.description.contains("ParameterStatus"),
+            "Expected 'ParameterStatus' in description, got: '\(parameterStatusMessage.description)'"
+        )
+
+        let noticeResponseMessage = Message(identifier: .backend(.noticeResponse), type: .backend, buffer: ByteBuffer())
+        XCTAssertTrue(
+            noticeResponseMessage.description.contains("NoticeResponse"),
+            "Expected 'NoticeResponse' in description, got: '\(noticeResponseMessage.description)'"
+        )
     }
 
     func testDescriptionForUnknownBackendIdentifier() {

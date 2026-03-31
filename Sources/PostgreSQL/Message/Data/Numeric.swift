@@ -51,7 +51,7 @@ struct Numeric {
             }
         }
 
-        if integer.count == 0 {
+        if integer.isEmpty {
             integer = zero
         }
 

@@ -15,19 +15,25 @@ final class MessageDecoder: ByteToMessageDecoder {
     ) throws -> DecodingState {
         var currentBuffer = buffer
         guard let rawByte = currentBuffer.readInteger(as: UInt8.self) else { return .needMoreData }
-        let backendIdentifier = Message.BackendIdentifier(rawByte)
-        let messageIdentifier = Message.Identifier.backend(backendIdentifier)
         let message: Message
 
+        // SSL negotiation produces a single-byte response ('S' = 0x53 supported,
+        // 'N' = 0x4E unsupported) with no length field.  These bytes collide with
+        // `parameterStatus` and `noticeResponse` in the normal message stream, so
+        // we detect them by raw byte value *before* constructing a BackendIdentifier,
+        // and map them to the synthetic non-colliding identifiers defined in
+        // BackendIdentifier (0xFE / 0xFF).
         if isFirstMessage &&
             connection.configuration.requiresTLS &&
-            (backendIdentifier == .sslSupported || backendIdentifier == .sslUnsupported) {
+            (rawByte == 0x53 || rawByte == 0x4E) {
+            let sslIdentifier: Message.BackendIdentifier = rawByte == 0x53 ? .sslSupported : .sslUnsupported
             message = Message(
-                identifier: messageIdentifier,
+                identifier: .backend(sslIdentifier),
                 type: .backend,
                 buffer: context.channel.allocator.buffer(capacity: 0)
             )
         } else {
+            let backendIdentifier = Message.BackendIdentifier(rawByte)
             guard let messageSize = currentBuffer
                 .readInteger(as: Int32.self)
                 .flatMap(Int.init) else { return .needMoreData }
@@ -41,7 +47,7 @@ final class MessageDecoder: ByteToMessageDecoder {
             }
             guard let messageBuffer = currentBuffer.readSlice(length: messageSize - 4) else { return .needMoreData }
             message = Message(
-                identifier: messageIdentifier,
+                identifier: .backend(backendIdentifier),
                 type: .backend,
                 buffer: messageBuffer
             )
