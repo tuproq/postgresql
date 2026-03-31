@@ -16,6 +16,10 @@ final class RequestHandler: ChannelDuplexHandler {
     private var scramState: SCRAMState?
     private var expectedSCRAMServerSignature: [UInt8]?
 
+    /// Requests that arrived while another request was already in flight.
+    /// They are sent in FIFO order each time a `ReadyForQuery` clears the slot.
+    private var pendingRequests: [(request: Request, writePromise: EventLoopPromise<Void>?)] = []
+
     /// Transient state kept between the two SCRAM-SHA-256 round-trips.
     private struct SCRAMState {
         let username: String
@@ -119,6 +123,7 @@ final class RequestHandler: ChannelDuplexHandler {
                 }
             } catch {
                 connection.logger.error("\(error)")
+                setError(error)
             }
         case .parameterStatus:
             do {
@@ -139,6 +144,7 @@ final class RequestHandler: ChannelDuplexHandler {
                 request?.results.append(Result(columns: rowDescription.columns))
             } catch {
                 connection.logger.error("\(error)")
+                setError(error)
             }
         case .dataRow:
             do {
@@ -188,12 +194,14 @@ final class RequestHandler: ChannelDuplexHandler {
                     }
                 } catch {
                     connection.logger.error("\(error)")
+                    request?.promise.fail(error)
                 }
             }
 
             request = nil
             firstError = nil
             expectedSCRAMServerSignature = nil
+            dispatchNextRequest(context: context)
         case .errorResponse:
             do {
                 let errorResponse = try Message.ErrorResponse(buffer: &buffer)
@@ -217,9 +225,10 @@ final class RequestHandler: ChannelDuplexHandler {
     }
 
     func channelInactive(context: ChannelHandlerContext) {
+        let closedError = PostgreSQLError("The connection was closed before a response was received.")
+
         if let pendingRequest = request {
-            let error: Error = firstError
-                ?? PostgreSQLError("The connection was closed before a response was received.")
+            let error: Error = firstError ?? closedError
             pendingRequest.promise.fail(error)
             request = nil
             firstError = nil
@@ -227,18 +236,51 @@ final class RequestHandler: ChannelDuplexHandler {
             expectedSCRAMServerSignature = nil
         }
 
+        // Fail every queued request that never got a chance to be sent.
+        for (queuedRequest, _) in pendingRequests {
+            queuedRequest.promise.fail(closedError)
+        }
+        pendingRequests.removeAll()
+
         context.fireChannelInactive()
     }
 
     func write(context: ChannelHandlerContext, data: NIOAny, promise: EventLoopPromise<Void>?) {
-        let request = unwrapOutboundIn(data)
-        self.request = request
-        isAwaitingSSLResponse = request.isSSLRequest
+        let incomingRequest = unwrapOutboundIn(data)
 
-        for (index, message) in request.messages.enumerated() {
-            let messagePromise = index == request.messages.count - 1 ? promise : nil
+        guard request == nil else {
+            // A request is already in flight. Queue this one; dispatchNextRequest
+            // will send it once ReadyForQuery clears the slot.
+            pendingRequests.append((request: incomingRequest, writePromise: promise))
+            return
+        }
+
+        sendRequest(incomingRequest, writePromise: promise, context: context)
+    }
+
+    /// Write all messages of a request to the channel and mark it as in-flight.
+    /// Must only be called when `self.request == nil`.
+    private func sendRequest(
+        _ newRequest: Request,
+        writePromise: EventLoopPromise<Void>?,
+        context: ChannelHandlerContext
+    ) {
+        request = newRequest
+        isAwaitingSSLResponse = newRequest.isSSLRequest
+
+        for (index, message) in newRequest.messages.enumerated() {
+            let messagePromise = index == newRequest.messages.count - 1 ? writePromise : nil
             context.write(wrapOutboundOut(message), promise: messagePromise)
         }
+    }
+
+    /// Dequeue and send the next waiting request, if any.
+    /// Called after every `ReadyForQuery` once `self.request` has been cleared.
+    private func dispatchNextRequest(context: ChannelHandlerContext) {
+        guard !pendingRequests.isEmpty else { return }
+        let (nextRequest, writePromise) = pendingRequests.removeFirst()
+        sendRequest(nextRequest, writePromise: writePromise, context: context)
+        context.flush()
     }
 
     /// Write and flush a single frontend message directly on the channel without
@@ -275,7 +317,12 @@ final class RequestHandler: ChannelDuplexHandler {
             case .timestamp, .timestamptz, .date: return try Date(buffer: &buffer, format: format, type: type)
             case .uuid: return try UUID(buffer: &buffer, format: format, type: type)
             case .varchar, .text: return try String(buffer: &buffer, format: format, type: type)
-            default: return buffer.readString()
+            default:
+                // Unrecognised column type. Return the raw bytes as Data so the caller
+                // can inspect or decode them. Returning buffer.readString() was wrong:
+                // it reinterprets arbitrary binary data as UTF-8, producing garbage.
+                let rawBytes = buffer.readBytes(length: buffer.readableBytes) ?? []
+                return Data(rawBytes)
             }
         }
 

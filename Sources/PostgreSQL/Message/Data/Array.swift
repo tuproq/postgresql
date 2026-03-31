@@ -38,13 +38,24 @@ extension Array: PostgreSQLCodable where Element: PostgreSQLCodable {
             throw postgreSQLError(.decoding(type: elementType)) // A binary format support only
         }
 
-        guard let (isNotEmpty, elementFormatValue, elementTypeValue) = buffer.readMultipleIntegers(
+        // PostgreSQL binary array header: ndim (Int32), flags (Int32), element OID (Int32).
+        // flags is a has-null-elements indicator: 0 = no nulls, 1 = has nulls.
+        // It is NOT a format code — comparing it to format.rawValue was wrong and
+        // caused every real PostgreSQL array (flags=0, no nulls) to fail to decode.
+        guard let (isNotEmpty, flags, elementTypeValue) = buffer.readMultipleIntegers(
             as: (Int32, Int32, Int32).self
         ),
               isNotEmpty >= 0,
               isNotEmpty <= 1,
-              elementFormatValue == format.rawValue
+              flags == 0 || flags == 1
         else {
+            throw postgreSQLError(.decoding(type: elementType))
+        }
+
+        // Arrays with null elements cannot be decoded into [Element] where Element
+        // is non-optional.  The element-level guard (elementLength >= 0) below would
+        // also catch this, but an early check here produces a clearer error.
+        if flags == 1 {
             throw postgreSQLError(.decoding(type: elementType))
         }
 
@@ -97,7 +108,7 @@ extension Array: PostgreSQLCodable where Element: PostgreSQLCodable {
         let isNotEmpty: Int32 = !isEmpty ? 1 : 0
         let elementDataType = Element.psqlType
         buffer.writeInteger(isNotEmpty)
-        buffer.writeInteger(Int32(format.rawValue))
+        buffer.writeInteger(Int32(0)) // flags: 0 = no null elements (not a format code)
         buffer.writeInteger(elementDataType.rawValue)
 
         guard !isEmpty else { return }
