@@ -37,23 +37,33 @@ public final class PostgreSQL {
         try await channel.pipeline.addHandler(MessageToByteHandler(MessageEncoder())).get()
         try await channel.pipeline.addHandler(RequestHandler(connection: self)).get()
 
-        if configuration.requiresTLS {
-            let message = try await sslRequest()
+        // All operations that can fail after the channel is open are wrapped so
+        // that the channel is closed before the error is rethrown.  Without this,
+        // a handshake failure (e.g. auth error, TLS not supported) would leave a
+        // live TCP connection open with no owner to close it.
+        do {
+            if configuration.requiresTLS {
+                let message = try await sslRequest()
 
-            if message.identifier == .backend(.sslSupported) {
-                let tlsConfiguration = TLSConfiguration.makeClientConfiguration()
-                let sslContext = try NIOSSLContext(configuration: tlsConfiguration)
-                let sslHandler = try NIOSSLClientHandler(
-                    context: sslContext,
-                    serverHostname: configuration.host
-                )
-                try await channel.pipeline.addHandler(sslHandler, position: .first).get()
-                try await connect()
+                if message.identifier == .backend(.sslSupported) {
+                    let tlsConfiguration = TLSConfiguration.makeClientConfiguration()
+                    let sslContext = try NIOSSLContext(configuration: tlsConfiguration)
+                    let sslHandler = try NIOSSLClientHandler(
+                        context: sslContext,
+                        serverHostname: configuration.host
+                    )
+                    try await channel.pipeline.addHandler(sslHandler, position: .first).get()
+                    try await connect()
+                } else {
+                    throw PostgreSQLError("The server does not support TLS but requiresTLS is set to true.")
+                }
             } else {
-                throw PostgreSQLError("The server does not support TLS but requiresTLS is set to true.")
+                try await connect()
             }
-        } else {
-            try await connect()
+        } catch {
+            // Best-effort close: ignore secondary errors from the close itself.
+            try? await channel.close()
+            throw error
         }
 
         lock.withLock { _isOpen = true }
@@ -127,29 +137,39 @@ public final class PostgreSQL {
         // is cleaned up at the very start of the new cycle, before Parse is issued.
         // Closing a non-existent statement is explicitly documented as a no-op in the
         // PostgreSQL protocol spec, so the extra Close is always safe.
-        var messageTypes: [MessageType] = []
+        var messageTypes = [MessageType]()
 
         if !name.isEmpty {
-            messageTypes.append(Message.Close(command: .statement, name: name))
+            messageTypes.append(
+                Message.Close(
+                    command: .statement,
+                    name: name
+                )
+            )
         }
-        
-        let response = try await send(types: [
-            Message.Parse(
-                statementName: name,
-                query: string,
-                parameterTypes: types
-            ),
-            Message.Bind(
-                statementName: name,
-                parameterDataFormats: formats,
-                parameters: parameters,
-                resultDataFormats: [.binary]
-            ),
-            Message.Describe(command: .portal),
-            Message.Execute(),
-            Message.Close(command: closeCommand, name: name),
-            Message.Sync()
-        ])
+
+        let response = try await send(
+            types: [
+                Message.Parse(
+                    statementName: name,
+                    query: string,
+                    parameterTypes: types
+                ),
+                Message.Bind(
+                    statementName: name,
+                    parameterDataFormats: formats,
+                    parameters: parameters,
+                    resultDataFormats: [.binary]
+                ),
+                Message.Describe(command: .portal),
+                Message.Execute(),
+                Message.Close(
+                    command: closeCommand,
+                    name: name
+                ),
+                Message.Sync()
+            ]
+        )
 
         return response.results.first
     }

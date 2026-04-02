@@ -135,12 +135,16 @@ final class ArrayTests: BaseTests {
         }
     }
 
-    func testInitWithFormatMismatch() {
-        // Arrange — binary payload but elementFormatValue says text (1)
+    func testInitWithNullElements() {
+        // Arrange — flags=1 means the array has at least one NULL element;
+        // [Element] (non-optional) cannot represent NULLs and must throw.
         var buffer = ByteBuffer()
-        buffer.writeInteger(Int32(1))       // isNotEmpty
-        buffer.writeInteger(Int32(1))       // format = text (mismatch with .binary)
+        buffer.writeInteger(Int32(1))       // ndim = 1
+        buffer.writeInteger(Int32(1))       // flags = 1 (has null elements)
         buffer.writeInteger(DataType.int4Array.rawValue)
+        buffer.writeInteger(Int32(1))       // dim[0] = 1
+        buffer.writeInteger(Int32(1))       // lbound = 1
+        buffer.writeInteger(Int32(-1))      // element length = -1 (NULL)
 
         XCTAssertThrowsError(try Array<Int32>(buffer: &buffer, format: .binary)) { error in
             XCTAssertNotNil(error as? PostgreSQLError)
@@ -148,11 +152,12 @@ final class ArrayTests: BaseTests {
     }
 
     func testInitWithInvalidElementDataType() {
-        // Arrange — 0xFFFFFFFF is not a valid DataType rawValue
+        // Arrange — 0xFFFFFFFF is not a valid DataType OID; must throw at the OID
+        // validation guard, BEFORE attempting to read the (elementsCount, lbound) pair.
         var buffer = ByteBuffer()
-        buffer.writeInteger(Int32(1))       // isNotEmpty
-        buffer.writeInteger(Int32(DataFormat.binary.rawValue))
-        buffer.writeInteger(Int32(bitPattern: 0xFFFFFFFF))  // unknown DataType
+        buffer.writeInteger(Int32(1))                        // ndim = 1
+        buffer.writeInteger(Int32(0))                        // flags = 0 (no nulls)
+        buffer.writeInteger(Int32(bitPattern: 0xFFFFFFFF))  // unknown element OID
 
         XCTAssertThrowsError(try Array<Int32>(buffer: &buffer, format: .binary)) { error in
             XCTAssertNotNil(error as? PostgreSQLError)
@@ -160,13 +165,13 @@ final class ArrayTests: BaseTests {
     }
 
     func testInitWithMissingElementData() {
-        // Arrange — header says 2 elements but no element data follows
+        // Arrange — header says 2 elements but no element length/value bytes follow.
         var buffer = ByteBuffer()
-        buffer.writeInteger(Int32(1))       // isNotEmpty
-        buffer.writeInteger(Int32(DataFormat.binary.rawValue))
+        buffer.writeInteger(Int32(1))       // ndim = 1
+        buffer.writeInteger(Int32(0))       // flags = 0 (no nulls)
         buffer.writeInteger(DataType.int4Array.rawValue)
         buffer.writeInteger(Int32(2))       // elementsCount = 2
-        buffer.writeInteger(Int32(1))       // dimensions = 1
+        buffer.writeInteger(Int32(1))       // lbound = 1
         // No element payloads follow — truncated
 
         XCTAssertThrowsError(try Array<Int32>(buffer: &buffer, format: .binary)) { error in
@@ -174,14 +179,13 @@ final class ArrayTests: BaseTests {
         }
     }
 
-    func testInitWithInvalidDimensions() {
-        // Arrange — multi-dimensional array (dimensions != 1) is unsupported
+    func testInitWithMultiDimensionalArray() {
+        // Arrange — ndim = 2 is unsupported; only 1-dimensional arrays are decoded.
+        // ndim = 2 fails the isNotEmpty <= 1 guard in the header check.
         var buffer = ByteBuffer()
-        buffer.writeInteger(Int32(1))       // isNotEmpty
-        buffer.writeInteger(Int32(DataFormat.binary.rawValue))
+        buffer.writeInteger(Int32(2))       // ndim = 2 (invalid: only 0 or 1 supported)
+        buffer.writeInteger(Int32(0))       // flags = 0 (no nulls)
         buffer.writeInteger(DataType.int4Array.rawValue)
-        buffer.writeInteger(Int32(1))       // elementsCount = 1
-        buffer.writeInteger(Int32(2))       // dimensions = 2 (unsupported)
 
         XCTAssertThrowsError(try Array<Int32>(buffer: &buffer, format: .binary)) { error in
             XCTAssertNotNil(error as? PostgreSQLError)
@@ -189,13 +193,13 @@ final class ArrayTests: BaseTests {
     }
 
     func testInitWithZeroElementsCount() {
-        // Arrange — isNotEmpty == 1 but elementsCount == 0 is invalid
+        // Arrange — ndim == 1 but elementsCount == 0 is invalid per the guard (> 0).
         var buffer = ByteBuffer()
-        buffer.writeInteger(Int32(1))       // isNotEmpty
-        buffer.writeInteger(Int32(DataFormat.binary.rawValue))
+        buffer.writeInteger(Int32(1))       // ndim = 1
+        buffer.writeInteger(Int32(0))       // flags = 0 (no nulls)
         buffer.writeInteger(DataType.int4Array.rawValue)
-        buffer.writeInteger(Int32(0))       // elementsCount = 0 — must be > 0 per spec
-        buffer.writeInteger(Int32(1))       // dimensions
+        buffer.writeInteger(Int32(0))       // elementsCount = 0 — must be > 0 per guard
+        buffer.writeInteger(Int32(1))       // lbound = 1
 
         XCTAssertThrowsError(try Array<Int32>(buffer: &buffer, format: .binary)) { error in
             XCTAssertNotNil(error as? PostgreSQLError)

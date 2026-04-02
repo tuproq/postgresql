@@ -185,13 +185,7 @@ final class RequestHandler: ChannelDuplexHandler {
                     let readyForQuery = try Message.ReadyForQuery(buffer: &buffer)
 
                     switch readyForQuery.status {
-                    case .idle:
-                        let response = Response(
-                            message: message,
-                            results: request?.results ?? .init()
-                        )
-                        request?.promise.succeed(response)
-                    case .transaction:
+                    case .idle, .transaction:
                         let response = Response(
                             message: message,
                             results: request?.results ?? .init()
@@ -208,6 +202,7 @@ final class RequestHandler: ChannelDuplexHandler {
 
             request = nil
             firstError = nil
+            scramState = nil
             expectedSCRAMServerSignature = nil
             dispatchNextRequest(context: context)
         case .errorResponse:
@@ -250,8 +245,8 @@ final class RequestHandler: ChannelDuplexHandler {
         for (queuedRequest, _) in pendingRequests {
             queuedRequest.promise.fail(closedError)
         }
-        pendingRequests.removeAll()
 
+        pendingRequests.removeAll()
         context.fireChannelInactive()
     }
 
